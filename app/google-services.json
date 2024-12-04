@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "307428377734",
+    "project_id": "petpot-f41d3",
+    "storage_bucket": "petpot-f41d3.appspot.com",
+    "firebase_url": "https://petpot-f41d3-default-rtdb.europe-west1.firebasedatabase.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307428377734:android:82fe6e073c8c60624b7d07",
+        "android_client_info": {
+          "package_name": "com.example.progettoesame_petpot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt3hHMF2GpoQ6tY2uTJIXkJdF89jexOFg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
