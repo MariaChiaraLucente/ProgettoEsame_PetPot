@@ -1,5 +1,7 @@
 package com.example.progettoesame_petpot
 
+import FoodQuantityScreen
+import HomeScreen
 import RegistrationScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,7 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ProgettoEsamePetPotTheme {
-                RegistrationScreen()
+                HomeScreen()
             }
         }
     }
