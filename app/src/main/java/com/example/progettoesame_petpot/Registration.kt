@@ -84,12 +84,13 @@ fun Registration(navController: NavHostController) {
                 db.child("users").push().setValue(user)
                     .addOnSuccessListener { /* Registration successful */ }
                     .addOnFailureListener { /* Registration failed */ }
+                navController.navigate("An_bio1")
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
             modifier = Modifier.width(180.dp).height(45.dp),
             border = BorderStroke(2.dp, Color.Black)
         ) {
-            Text("Register" , color = Color.White, fontSize = 16.sp)
+            Text("Submit" , color = Color.White, fontSize = 16.sp)
         }
         Spacer(modifier = Modifier.height(15.dp))
         Text(
