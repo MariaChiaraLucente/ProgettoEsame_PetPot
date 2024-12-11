@@ -1,4 +1,4 @@
-package com.example.progettoesame_petpot
+package com.example.progettoesame_petpot.Login
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -18,13 +18,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import androidx.navigation.NavHostController
+import com.example.progettoesame_petpot.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Registration(navController: NavHostController) {
+fun Login(navController: NavHostController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -48,7 +49,7 @@ fun Registration(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(15.dp))
         Text(
-            text = "Register",
+            text = "Login",
             color = Color.White,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp),
@@ -84,26 +85,25 @@ fun Registration(navController: NavHostController) {
                 db.child("users").push().setValue(user)
                     .addOnSuccessListener { /* Registration successful */ }
                     .addOnFailureListener { /* Registration failed */ }
-                navController.navigate("An_bio1")
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
             modifier = Modifier.width(180.dp).height(45.dp),
             border = BorderStroke(2.dp, Color.Black)
         ) {
-            Text("Submit" , color = Color.White, fontSize = 16.sp)
+            Text("Login" , color = Color.White, fontSize = 16.sp)
         }
         Spacer(modifier = Modifier.height(15.dp))
         Text(
-            text = "I already have an account",
+            text = "I don’t have an account",
             color = Color.White,
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp)
         )
         Text(
-            text = "Login",
+            text = "Register",
             color = Color(0xFF5A3679),
             style = MaterialTheme.typography.bodyLarge.copy(textDecoration = TextDecoration.Underline),
-            modifier = Modifier.padding(top = 8.dp).clickable { navController.navigate("login")},
+            modifier = Modifier.padding(top = 8.dp).clickable { navController.navigate("registration")},
             fontWeight = FontWeight.Bold,
         )
     }

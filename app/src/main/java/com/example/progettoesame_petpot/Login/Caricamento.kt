@@ -1,6 +1,5 @@
-package com.example.progettoesame_petpot
+package com.example.progettoesame_petpot.Login
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,23 +8,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
-import android.widget.MediaController
-import android.widget.VideoView
 import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.request.ImageRequest
+import com.example.progettoesame_petpot.R
 
 @Composable
-fun Caricamento(navController: NavHostController) {
+fun Caricamento(navController: NavHostController, chosenPage: String) {
 
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .components {
@@ -35,7 +30,7 @@ fun Caricamento(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         delay(2000)
-        navController.navigate("registration")
+        navController.navigate(chosenPage)
     }
 
     Box(
@@ -54,3 +49,6 @@ fun Caricamento(navController: NavHostController) {
         )
     }
 }
+
+
+

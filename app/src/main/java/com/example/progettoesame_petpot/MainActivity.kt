@@ -1,6 +1,6 @@
 package com.example.progettoesame_petpot
 
-import RegistrationScreen
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,11 +9,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import com.example.progettoesame_petpot.Calendar.Components.EventViewModel
 import com.example.progettoesame_petpot.ui.theme.ProgettoEsamePetPotTheme
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
+
 class MainActivity : ComponentActivity() {
+    //aggiungo qui per ora il view model
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

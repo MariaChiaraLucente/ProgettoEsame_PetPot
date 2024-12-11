@@ -1,4 +1,4 @@
-package com.example.progettoesame_petpot
+package com.example.progettoesame_petpot.Login
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.progettoesame_petpot.R
 
 
 @Composable
