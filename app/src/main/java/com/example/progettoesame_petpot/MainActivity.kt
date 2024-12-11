@@ -1,6 +1,6 @@
 package com.example.progettoesame_petpot
 
-import RegistrationScreen
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

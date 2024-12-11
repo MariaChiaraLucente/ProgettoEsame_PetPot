@@ -1,16 +1,10 @@
-package com.example.progettoesame_petpot
+package com.example.progettoesame_petpot.registration_2
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -30,15 +24,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.navigation.NavHostController
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalMaterial3Api
@@ -62,10 +53,21 @@ fun AnimalBio2(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
+            Text(
+                text = "Animal Bio",
+                color = Color.White,
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 8.dp),
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        item { Spacer(modifier = Modifier.height(12.dp)) }
+        item {
             OutlinedTextField(
-                value = vet_name,
-                onValueChange = { vet_name = it },
-                placeholder = { Text("Vet's name") },
+                value = breed,
+                onValueChange = { breed = it },
+                placeholder = { Text("Breed") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -76,15 +78,61 @@ fun AnimalBio2(navController: NavHostController) {
         item { Spacer(modifier = Modifier.height(12.dp)) }
         item {
             OutlinedTextField(
-                value = vet_phone,
-                onValueChange = { vet_phone = it },
-                placeholder = { Text("Vet's phone") },
+                value = favorite_food,
+                onValueChange = { favorite_food = it },
+                placeholder = { Text("Favorite food") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.White
                 )
             )
+        }
+        item { Spacer(modifier = Modifier.height(12.dp)) }
+
+        item {
+            OutlinedTextField(
+                value = allergies_or_intolerances,
+                onValueChange = { allergies_or_intolerances = it },
+                placeholder = { Text("Allergies or intolerances") },
+                modifier = Modifier.width(300.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White
+                )
+            )
+        }
+        item { Spacer(modifier = Modifier.height(12.dp)) }
+
+        item {
+            OutlinedTextField(
+                value = other_information,
+                onValueChange = { other_information = it },
+                placeholder = { Text("Other information") },
+                modifier = Modifier.width(300.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White
+                )
+            )
+        }
+        item { Spacer(modifier = Modifier.height(55.dp)) }
+        item {
+            Button(
+                onClick = {
+                    //val db = Firebase.database.reference
+                    //val user = mapOf("username" to username, "password" to password)
+                    //db.child("users").push().setValue(user)
+                    //.addOnSuccessListener { /* Registration successful */ }
+                    //.addOnFailureListener { /* Registration failed */ }
+                    navController.navigate("VetContact")
+                },
+                colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
+                modifier = Modifier.width(180.dp).height(45.dp),
+                border = BorderStroke(2.dp, Color.Black)
+            ) {
+                Text("Register", color = Color.White, fontSize = 16.sp)
+            }
         }
     }
 }
