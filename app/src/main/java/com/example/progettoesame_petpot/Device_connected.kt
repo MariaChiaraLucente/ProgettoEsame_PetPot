@@ -15,6 +15,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -40,13 +42,17 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.progettoesame_petpot.R
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeviceConnected(navController: NavHostController) {
     val image: Painter = painterResource(R.drawable.dispenser)
@@ -69,7 +75,6 @@ fun DeviceConnected(navController: NavHostController) {
             painter = image,
             contentDescription = "Dispenser",
             modifier = Modifier.size(300.dp)
-                .clickable { navController.navigate("registration") },
         )
 
         Text(
@@ -83,19 +88,35 @@ fun DeviceConnected(navController: NavHostController) {
         OutlinedTextField(
             value = dispenser_name,
             onValueChange = { dispenser_name = it },
-            placeholder = { Text("Dispenser name")},
-            modifier = Modifier.width(190.dp).align(Alignment.BottomCenter).padding(bottom = 190.dp),
+            placeholder = {
+                Text(
+                    text = "Dispenser name",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(top = 405.dp)
+                .width(190.dp)
+                .height(50.dp),
             shape = RoundedCornerShape(24.dp),
-            colors = TextFieldDefaults.colors(Color.White, Color.White, Color.White, Color.White)
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                containerColor = Color(0xFF8AA2CA),
+            )
         )
 
         Button(
             onClick = {
-                // Aggiungi il codice per salvare il nome del dispenser
-                navController.navigate("registration")
+                val db = Firebase.database.reference
+                val name = mapOf("dispenser_name" to dispenser_name)
+                db.child("name").push().setValue(name)
+                    .addOnSuccessListener { /* Registration successful */ }
+                    .addOnFailureListener { /* Registration failed */ }
+                navController.navigate("caricamento")
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
-            modifier = Modifier.width(180.dp).height(45.dp),
+            modifier = Modifier.align(Alignment.Center).padding(top = 560.dp).width(150.dp).height(45.dp),
             border = BorderStroke(2.dp, Color.Black)
         ) {
             Text("Next" , color = Color.White, fontSize = 16.sp)
