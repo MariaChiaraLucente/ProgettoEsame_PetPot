@@ -16,7 +16,7 @@ import com.example.progettoesame_petpot.Calendar.Components.Event
 import com.example.progettoesame_petpot.Calendar.Components.NewEventScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
+
 /*@Composable
 fun AppNavigation() {
     val navController = rememberNavController() // Inizializza il NavController
