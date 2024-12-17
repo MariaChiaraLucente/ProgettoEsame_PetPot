@@ -1,0 +1,35 @@
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun QuickFeedButton() {
+    Button(
+        onClick = { /*TODO: Aggiungere azione*/ },
+        shape = CircleShape,
+        modifier = Modifier
+            .size(130.dp)
+            .border(3.dp, Color.Black, CircleShape), // Add a black border, // Increase the button size
+        colors = ButtonDefaults.buttonColors(Color(0xFF3A5EAB))
+    ) {
+        Text(
+            text = "Quick Feed",
+            color = Color.White,
+            style = MaterialTheme.typography.headlineLarge, // Use a larger text style
+            textAlign = TextAlign.Center
+        )
+    }
+}
