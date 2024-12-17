@@ -1,4 +1,5 @@
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -81,8 +82,8 @@ fun RegistrationScreen() {
                 val db = Firebase.database.reference
                 val user = mapOf("username" to username, "password" to password)
                 db.child("users").push().setValue(user)
-                    .addOnSuccessListener { /* Registration successful */ }
-                    .addOnFailureListener { /* Registration failed */ }
+                    .addOnSuccessListener { Log.d("RIUSCITO?", "SI") }
+                    .addOnFailureListener { Log.d("RIUSCITO?", "NO") }
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
             modifier = Modifier.width(200.dp).height(45.dp),
