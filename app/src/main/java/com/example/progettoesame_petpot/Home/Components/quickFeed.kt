@@ -14,11 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 @Composable
-fun QuickFeedButton() {
+fun QuickFeedButton(navController: NavController) {
     Button(
-        onClick = { /*TODO: Aggiungere azione*/ },
+        onClick = { navController.navigate("QuickFeed") },
         shape = CircleShape,
         modifier = Modifier
             .size(130.dp)

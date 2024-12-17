@@ -4,6 +4,7 @@ import HomePage
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -12,6 +13,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.progettoesame_petpot.Calendar.Components.Event
 import com.example.progettoesame_petpot.Calendar.Components.NewEventScreen
+import com.example.progettoesame_petpot.Home.Components.Drawers
+import com.example.progettoesame_petpot.Home.componenti_fede.QuickFeed
 import com.example.progettoesame_petpot.Login.BluetoothSearching
 import com.example.progettoesame_petpot.Login.Caricamento
 import com.example.progettoesame_petpot.Login.Device
@@ -28,6 +31,7 @@ import java.util.Calendar
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController() // Inizializza il NavController
+    val currentScreen = remember { mutableStateOf("Home") }
     val navControllerCalendar = rememberNavController()
     val events = remember { mutableStateListOf<Event>() }
 
@@ -44,8 +48,10 @@ fun AppNavigation() {
         composable(
             "caricamento") { Caricamento(navController)
         }
-
+        composable("Drawers") { Drawers(navController) }
+        composable("QuickFeed") { QuickFeed(navController) }
         composable("HomePage") { HomePage(navController) }
+        composable("An_bio1") { AnimalBio1(navController) }
         composable("An_bio2") { AnimalBio2(navController) }
         composable("VetContact") { VetContact(navController) }
         composable("calendar") {

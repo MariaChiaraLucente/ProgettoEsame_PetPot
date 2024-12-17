@@ -30,7 +30,7 @@ fun Caricamento(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         delay(2000)
-        navController.navigate("HomePage")
+        navController.navigate("Drawers")
     }
 
     Box(

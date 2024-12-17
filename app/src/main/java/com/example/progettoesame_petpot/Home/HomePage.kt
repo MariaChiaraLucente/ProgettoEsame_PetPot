@@ -16,11 +16,11 @@ fun HomePage(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF5A7EB1)), // Colore di sfondo della schermata
+            .background(Color(0xFF5576B4)), // Colore di sfondo della schermata
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Sezione superiore con icone e il nome
-        TopBar(navController)
+        //TopBar(navController)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -35,14 +35,14 @@ fun HomePage(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Pulsante centrale "Quick Feed"
-        QuickFeedButton()
+        QuickFeedButton(navController)
 
         Spacer(modifier = Modifier.height(8.dp))
 
         // Barra inferiore con icone
         BottomNavBar(
             selectedScreen = "Home",
-            onScreenSelected = { /*TODO: Aggiungere azione*/ }
+            onScreenSelected = { navController.navigate(it) }
         )
     }
 }

@@ -151,6 +151,7 @@ fun SwipeableScreenContent(day: Int?) {
 }
 */
 
+import BottomNavBar
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -510,7 +511,10 @@ fun CalendarScreen( navController: NavController, events: MutableList<Event>) {
                 onClose = { isSheetVisible = false }
             )
         }
+
     }
+    // Barra inferiore con icone
+
 }
 
 @Composable
@@ -679,6 +683,7 @@ fun SwipeableScreenContent(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
     }
 }
 

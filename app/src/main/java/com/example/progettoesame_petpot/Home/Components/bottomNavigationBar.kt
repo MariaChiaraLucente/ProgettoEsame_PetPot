@@ -44,8 +44,9 @@ import com.example.progettoesame_petpot.R
 fun BottomNavBar(
     selectedScreen: String,
     onScreenSelected: (String) -> Unit
+
 ) {
-    val screens = listOf("Program", "Home", "Recent")
+    val screens = listOf("calendar", "HomePage", "Recent")
     val icons = listOf(
         R.drawable.calendar,  // Placeholder per icona Program
         R.drawable.home,     // Placeholder per icona Home
@@ -119,12 +120,14 @@ fun BottomNavBar(
                     .offset(y = (-90).dp), // Posizione inferiore rispetto all'icona Home
                 horizontalArrangement = Arrangement.SpaceBetween // Distanzia le icone ai lati
             ) {
-                // Program
-                BottomNavIcon(
-                    isSelected = selectedScreen == "Program",
+
+               BottomNavIcon(
+                    isSelected = selectedScreen == "calendar",
                     iconResId = R.drawable.calendar,
-                    label = "Program",
-                    onClick = { onScreenSelected("Program") },
+                    label = "Calendar",
+                    onClick = {
+                        onScreenSelected("calendar")
+                        },
                     modifier = Modifier.offset(x = 22.dp),
                     verticalOffset = 10.dp // Più in basso rispetto a Home
                 )
@@ -142,10 +145,10 @@ fun BottomNavBar(
 
             // Icona centrale (Home)
             BottomNavIcon(
-                isSelected = selectedScreen == "Home",
+                isSelected = selectedScreen == "HomePage",
                 iconResId = R.drawable.home,
                 label = "Home",
-                onClick = { onScreenSelected("Home") },
+                onClick = { onScreenSelected("HomePage") },
                 modifier = Modifier
                     .align(Alignment.BottomCenter) // Allinea al centro della ciambella
                     .offset(y = (-150).dp), // Posizione più alta
