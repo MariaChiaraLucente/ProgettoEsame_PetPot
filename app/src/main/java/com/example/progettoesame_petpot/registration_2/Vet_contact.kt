@@ -85,9 +85,9 @@ fun VetContact(navController: NavHostController) {
                     //db.child("users").push().setValue(user)
                     //.addOnSuccessListener { /* Registration successful */ }
                     //.addOnFailureListener { /* Registration failed */ }
-                    chosenPage= "Calendar"
 
-                    navController.navigate("caricamento/$chosenPage")
+
+                    navController.navigate("caricamento")
                 },
                 colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
                 modifier = Modifier.width(180.dp).height(45.dp),

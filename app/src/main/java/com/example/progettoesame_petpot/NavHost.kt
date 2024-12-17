@@ -1,5 +1,6 @@
 package com.example.progettoesame_petpot
 
+import HomePage
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -41,14 +42,10 @@ fun AppNavigation() {
         composable("login") { Login(navController) }
         composable("registration") { Registration(navController) }
         composable(
-            "caricamento/{chosenPage}",
-            arguments = listOf(
-                navArgument("chosenPage") { type = NavType.StringType }
-            )        ) { backStackEntry ->
-            val chosenPage = backStackEntry.arguments?.getString("login") ?: ""
-            Caricamento(navController, chosenPage)
+            "caricamento") { Caricamento(navController)
         }
-        composable("An_bio1") { AnimalBio1(navController) }
+
+        composable("HomePage") { HomePage(navController) }
         composable("An_bio2") { AnimalBio2(navController) }
         composable("VetContact") { VetContact(navController) }
         composable("calendar") {

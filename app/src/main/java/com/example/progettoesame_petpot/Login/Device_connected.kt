@@ -96,8 +96,8 @@ fun DeviceConnected(navController: NavHostController) {
                 db.child("name").push().setValue(name)
                     .addOnSuccessListener { /* Registration successful */ }
                     .addOnFailureListener { /* Registration failed */ }
-                val chosenPage = "login"
-                navController.navigate("caricamento/$chosenPage")
+
+                navController.navigate("caricamento")
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
             modifier = Modifier.align(Alignment.Center).padding(top = 560.dp).width(150.dp).height(45.dp),
