@@ -97,7 +97,7 @@ fun DeviceConnected(navController: NavHostController) {
                     .addOnSuccessListener { /* Registration successful */ }
                     .addOnFailureListener { /* Registration failed */ }
 
-                navController.navigate("caricamento")
+                navController.navigate("caricamento/registration")
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
             modifier = Modifier.align(Alignment.Center).padding(top = 560.dp).width(150.dp).height(45.dp),

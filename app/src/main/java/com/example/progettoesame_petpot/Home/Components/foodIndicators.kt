@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
@@ -39,13 +40,10 @@ fun FoodIndicators() {
             progressColor = Color(0xFFFFC107) // Giallo
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
         // Riga con indicatori laterali
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(0.dp),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween, // Elementi ai lati
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -80,16 +78,16 @@ fun FoodDispenserSideIndicator(
     progressColor: Color,
     alignment: Alignment.Horizontal,
     isRightFacing: Boolean, // Indica se il semicerchio è rivolto a destra o sinistra
-    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = Modifier
-            .size(150.dp)
+            .size(200.dp)
+            .offset(x = if (isRightFacing) (-100).dp else (100).dp)
             .padding(horizontal = if (alignment == Alignment.Start) 0.dp else 0.dp), // Attaccato ai lati
         contentAlignment = Alignment.Center
     ) {
         Canvas(
-            modifier = Modifier.size(150.dp)
+            modifier = Modifier.size(200.dp)
         ) {
             val sweepAngle = 180f * (currentWeight / totalWeight.toFloat())
             val startAngle = if (isRightFacing) 270f else 90f // Destra o sinistra
@@ -100,7 +98,7 @@ fun FoodDispenserSideIndicator(
                 startAngle = startAngle,
                 sweepAngle = 180f,
                 useCenter = false,
-                style = Stroke(width = 48.dp.toPx())
+                style = Stroke(width = 50.dp.toPx())
             )
             // Semicerchio colorato (progresso)
             drawArc(
@@ -108,20 +106,20 @@ fun FoodDispenserSideIndicator(
                 startAngle = startAngle,
                 sweepAngle = sweepAngle,
                 useCenter = false,
-                style = Stroke(width = 48.dp.toPx())
+                style = Stroke(width = 50.dp.toPx())
             )
         }
         Icon(
             painter = painterResource(id = icon),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier.size(30.dp).offset(y = (-10).dp, x = (if (isRightFacing) 25 else -25).dp)
         )
         Text(
-            text = "$currentWeight g",
+            text = "$currentWeight",
             color = Color.White,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter).offset(y = (-60).dp, x = (if (isRightFacing) 25 else -25).dp)
         )
     }
 }
@@ -133,7 +131,7 @@ fun DogBowlIndicator(
     progressColor: Color
 ) {
     Box(
-        modifier = Modifier.size(150.dp),
+        modifier = Modifier.size(120.dp),
         contentAlignment = Alignment.Center
 
     ) {
@@ -145,7 +143,7 @@ fun DogBowlIndicator(
                 startAngle = 180f,
                 sweepAngle = 180f,
                 useCenter = false,
-                style = Stroke(width = 40.dp.toPx())
+                style = Stroke(width = 30.dp.toPx())
             )
             // Semicerchio colorato (progresso)
             drawArc(
@@ -153,7 +151,7 @@ fun DogBowlIndicator(
                 startAngle = 180f,
                 sweepAngle = sweepAngle,
                 useCenter = false,
-                style = Stroke(width = 40.dp.toPx())
+                style = Stroke(width = 30.dp.toPx())
             )
 
             // Scritte ai bordi dell'indicatore
@@ -175,7 +173,7 @@ fun DogBowlIndicator(
             contentDescription = null,
             tint = Color.Unspecified,
             modifier = Modifier
-                .size(70.dp) // Ingrandire l'icona
+                .size(50.dp) // Ingrandire l'icona
                 .offset(y = (-10).dp) // Spostarla più in basso
         )
     }

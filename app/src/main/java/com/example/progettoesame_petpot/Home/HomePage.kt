@@ -22,8 +22,6 @@ fun HomePage(navController: NavController) {
         // Sezione superiore con icone e il nome
         //TopBar(navController)
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         // Nome dell'animale con icone decorative
         PetNameSection()
 
@@ -32,12 +30,8 @@ fun HomePage(navController: NavController) {
         // Indicatore di cibo
         FoodIndicators()
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         // Pulsante centrale "Quick Feed"
         QuickFeedButton(navController)
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         // Barra inferiore con icone
         BottomNavBar(

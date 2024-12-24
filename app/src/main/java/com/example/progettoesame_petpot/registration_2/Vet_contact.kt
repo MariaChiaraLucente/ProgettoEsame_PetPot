@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.progettoesame_petpot.Login.Caricamento
@@ -54,6 +56,16 @@ fun VetContact(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
+            Text(
+            text = "Vet Info",
+            color = Color.White,
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 8.dp),
+            fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+        item {
             OutlinedTextField(
                 value = vet_name,
                 onValueChange = { vet_name = it },
@@ -77,7 +89,7 @@ fun VetContact(navController: NavHostController) {
                     containerColor = Color.White
                 )
             )
-
+            Spacer(modifier = Modifier.height(12.dp))
             Button(
                 onClick = {
                     //val db = Firebase.database.reference
@@ -87,7 +99,7 @@ fun VetContact(navController: NavHostController) {
                     //.addOnFailureListener { /* Registration failed */ }
 
 
-                    navController.navigate("caricamento")
+                    navController.navigate("caricamento/drawers")
                 },
                 colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
                 modifier = Modifier.width(180.dp).height(45.dp),

@@ -45,8 +45,9 @@ fun AppNavigation() {
         composable("device") { Device(navController) }
         composable("login") { Login(navController) }
         composable("registration") { Registration(navController) }
-        composable(
-            "caricamento") { Caricamento(navController)
+        composable("caricamento/{destination}", arguments = listOf(navArgument("destination") { type = NavType.StringType })) { backStackEntry ->
+            val destination = backStackEntry.arguments?.getString("destination") ?: "HomePage"
+            Caricamento(navController, destination)
         }
         composable("Drawers") { Drawers(navController) }
         composable("QuickFeed") { QuickFeed(navController) }
