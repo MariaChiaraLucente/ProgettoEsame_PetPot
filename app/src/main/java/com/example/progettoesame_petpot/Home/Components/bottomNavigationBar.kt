@@ -70,6 +70,7 @@ fun BottomNavBar(
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
+                .offset(y = (-30).dp)
                 .height((outerRadius / 1.5f).dp) // Riduciamo la sua altezza per renderla più compatta
         ) {
             drawArc(

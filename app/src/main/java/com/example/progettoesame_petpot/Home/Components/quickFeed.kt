@@ -1,4 +1,5 @@
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -22,14 +23,15 @@ fun QuickFeedButton(navController: NavController) {
         onClick = { navController.navigate("QuickFeed") },
         shape = CircleShape,
         modifier = Modifier
-            .size(130.dp)
+            .size(110.dp)
+            .offset(y = (-40).dp)
             .border(3.dp, Color.Black, CircleShape), // Add a black border, // Increase the button size
         colors = ButtonDefaults.buttonColors(Color(0xFF3A5EAB))
     ) {
         Text(
             text = "Quick Feed",
             color = Color.White,
-            style = MaterialTheme.typography.headlineLarge, // Use a larger text style
+            style = MaterialTheme.typography.headlineSmall, // Use a larger text style
             textAlign = TextAlign.Center
         )
     }

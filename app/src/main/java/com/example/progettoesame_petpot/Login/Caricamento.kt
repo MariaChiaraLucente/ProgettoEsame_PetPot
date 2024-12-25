@@ -20,7 +20,7 @@ import coil.request.ImageRequest
 import com.example.progettoesame_petpot.R
 
 @Composable
-fun Caricamento(navController: NavHostController) {
+fun Caricamento(navController: NavHostController, destination: String) {
 
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .components {
@@ -30,7 +30,7 @@ fun Caricamento(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         delay(2000)
-        navController.navigate("Drawers")
+        navController.navigate(destination)
     }
 
     Box(

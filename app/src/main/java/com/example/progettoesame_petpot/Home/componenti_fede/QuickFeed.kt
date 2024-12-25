@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -38,10 +40,19 @@ fun QuickFeed(navController: NavController) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("⬅", color = Color.White) },
+                    title = { Text("Quick Feed", color = Color.White) },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color(0xFF5576B4)
-                    )
+                    ),
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back",
+                                tint = Color.White
+                            )
+                        }
+                    }
                 )
             },
             containerColor = Color.Transparent
@@ -130,7 +141,7 @@ fun QuickFeed(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.height(56.dp))
                 Button(
-                    onClick = { navController.navigate("HomePage") },
+                    onClick = { navController.navigate("Drawers") },
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF2E3EB8),
