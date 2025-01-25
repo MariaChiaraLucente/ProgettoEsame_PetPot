@@ -123,11 +123,11 @@ fun BottomNavBar(
             ) {
 
                BottomNavIcon(
-                    isSelected = selectedScreen == "calendar",
+                    isSelected = selectedScreen == "calendar_screen",
                     iconResId = R.drawable.calendar,
-                    label = "Calendar",
+                    label = "calendar_screen",
                     onClick = {
-                        onScreenSelected("calendar")
+                        onScreenSelected("calendar_screen")
                         },
                     modifier = Modifier.offset(x = 22.dp),
                     verticalOffset = 10.dp // Più in basso rispetto a Home

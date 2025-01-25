@@ -55,7 +55,7 @@ fun BluetoothSearching(navController: NavHostController) {
             while (true) {
                 val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
                 if (bluetoothAdapter?.isEnabled == true) {
-                    delay(2000) // Aggiungi un ritardo di 2 secondi
+                    delay(200) // Aggiungi un ritardo di 2 secondi
                     Toast.makeText(navController.context, "Bluetooth enabled!", Toast.LENGTH_SHORT).show()
                     delay(1000) // Aggiungi un ritardo di 2 secondi
                     navController.navigate("device") // Vai alla schermata successiva

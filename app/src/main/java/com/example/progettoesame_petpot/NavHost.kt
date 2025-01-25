@@ -1,6 +1,8 @@
 package com.example.progettoesame_petpot
 
 import HomePage
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -11,8 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.progettoesame_petpot.Calendar.Components.Event
-import com.example.progettoesame_petpot.Calendar.Components.NewEventScreen
+import com.example.progettoesame_petpot.Calendar.Components.FeedCreationScreen
 import com.example.progettoesame_petpot.Home.Components.Drawers
 import com.example.progettoesame_petpot.Home.componenti_fede.QuickFeed
 import com.example.progettoesame_petpot.Login.BluetoothSearching
@@ -24,16 +25,14 @@ import com.example.progettoesame_petpot.registration_2.AnimalBio1
 import com.example.progettoesame_petpot.registration_2.AnimalBio2
 import com.example.progettoesame_petpot.registration_2.Registration
 import com.example.progettoesame_petpot.registration_2.VetContact
-import java.util.Calendar
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController() // Inizializza il NavController
-    val currentScreen = remember { mutableStateOf("Home") }
-    val navControllerCalendar = rememberNavController()
-    val events = remember { mutableStateListOf<Event>() }
 
     NavHost(
         navController = navController,
@@ -55,51 +54,38 @@ fun AppNavigation() {
         composable("An_bio1") { AnimalBio1(navController) }
         composable("An_bio2") { AnimalBio2(navController) }
         composable("VetContact") { VetContact(navController) }
-        composable("calendar") {
-            CalendarScreen(navController, events)
+        composable("calendar_screen") {
+            CalendarScreen(
+                onNavigateToFeedCreation = { startDay, endDay, startMonth, endMonth ->
+                    navController.navigate("feedCreation/$startDay/$endDay/$startMonth/$endMonth")
+                }
+            )
         }
+
         composable(
-            "newEvent/{selectedDay}/{selectedMonth}",
+            route = "feedCreation/{startDay}/{endDay}/{startMonth}/{endMonth}",
             arguments = listOf(
-                navArgument("selectedDay") { type = NavType.IntType },
-                navArgument("selectedMonth") { type = NavType.IntType }
+                navArgument("startDay") { type = NavType.IntType },
+                navArgument("endDay") { type = NavType.IntType },
+                navArgument("startMonth") { type = NavType.IntType },
+                navArgument("endMonth") { type = NavType.IntType }
             )
         ) { backStackEntry ->
-            val selectedDay = backStackEntry.arguments?.getInt("selectedDay") ?: 0
-            val selectedMonth = backStackEntry.arguments?.getInt("selectedMonth") ?: 0
-            NewEventScreen(selectedDay, selectedMonth, events, navController)
-        }
-    }
-}
+            val startDay = backStackEntry.arguments?.getInt("startDay")
+            val endDay = backStackEntry.arguments?.getInt("endDay")
+            val startMonth = backStackEntry.arguments?.getInt("startMonth")
+            val endMonth = backStackEntry.arguments?.getInt("endMonth")
 
-
-/*@Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
-
-    // Global state to manage events
-    val events = remember { mutableStateListOf<Event>() }
-
-    NavHost(
-        navController = navController,
-        startDestination = "calendar"
-    ) {
-        composable("calendar") {
-            CalendarScreen(navController, events)
-        }
-        composable(
-            "newEvent/{selectedDay}/{selectedMonth}",
-            arguments = listOf(
-                navArgument("selectedDay") { type = NavType.IntType },
-                navArgument("selectedMonth") { type = NavType.IntType }
+            FeedCreationScreen(
+                startDay = startDay ?: 0,
+                endDay = endDay ?: 0,
+                startMonth = startMonth ?: 0,
+                endMonth = endMonth ?: 0,
+                onSave = { navController.popBackStack() }
             )
-        ) { backStackEntry ->
-            val selectedDay = backStackEntry.arguments?.getInt("selectedDay") ?: 0
-            val selectedMonth = backStackEntry.arguments?.getInt("selectedMonth") ?: 0
-            NewEventScreen(selectedDay, selectedMonth, events, navController)
         }
+
     }
 }
-*/
 
 

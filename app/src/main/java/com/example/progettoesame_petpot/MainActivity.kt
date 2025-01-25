@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import com.example.progettoesame_petpot.Calendar.Components.EventViewModel
+import com.example.progettoesame_petpot.Calendar.Components.CalendarViewModel
 import com.example.progettoesame_petpot.ui.theme.ProgettoEsamePetPotTheme
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
