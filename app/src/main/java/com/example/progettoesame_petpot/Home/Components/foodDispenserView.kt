@@ -28,6 +28,8 @@ import com.example.progettoesame_petpot.R
 import android.graphics.Paint as NativePaint
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.zIndex
+import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 @Composable
 fun FoodDispenserView(
@@ -38,14 +40,14 @@ fun FoodDispenserView(
 ) {
     val bowl: Painter = painterResource(R.drawable.pet_bowl)
     val gradientColors = when {
-        foodLevel > 0.6f -> arrayOf(1f-foodLevel to Color.White, 1f-foodLevel to Color.Green)
-        foodLevel > 0.3f -> arrayOf(1f-foodLevel to Color.White, 1f-foodLevel to Color(0xFFF57C00)) // Orange
-        else -> arrayOf(1f-foodLevel to Color.White, 1f-foodLevel to Color.Red)
+        foodLevel > 0.6f -> arrayOf(1f-foodLevel to Color.Transparent, 1f-foodLevel to Color(0xFF8CD78B))
+        foodLevel > 0.3f -> arrayOf(1f-foodLevel to Color.Transparent, 1f-foodLevel to Color(0xFFD3A85F)) // Orange
+        else -> arrayOf(1f-foodLevel to Color.Transparent, 1f-foodLevel to Color(0xFFCA413F))
     }
     val gradientBowlColors = when {
-        bowlLevel > 0.6f -> arrayOf(bowlLevel to Color.Green, bowlLevel to Color.White)
-        bowlLevel > 0.3f -> arrayOf(bowlLevel to Color(0xFFF57C00), bowlLevel to Color.White) // Orange
-        else -> arrayOf(bowlLevel to Color.Red, bowlLevel to Color.White)
+        bowlLevel > 0.6f -> arrayOf(bowlLevel to Color(0xFF8CD78B), bowlLevel to Color.White)
+        bowlLevel > 0.3f -> arrayOf(bowlLevel to Color(0xFFD3A85F), bowlLevel to Color.White) // Orange
+        else -> arrayOf(bowlLevel to Color(0xFFCA413F), bowlLevel to Color.White)
     }
     Box(modifier = modifier ) {
         Column(
@@ -74,6 +76,11 @@ fun FoodDispenserView(
                 }
                 drawPath(
                     path = containerPath,
+                    color = Color.White,
+                    style = Stroke(width = 2.dp.toPx()) // Adjust the border width as needed
+                )
+                drawPath(
+                    path = containerPath,
                     brush = Brush.verticalGradient(
                         colorStops = gradientColors,
                         startY = 0f,
@@ -85,10 +92,11 @@ fun FoodDispenserView(
                     val paint = NativePaint().apply {
                         color = android.graphics.Color.BLACK
                         textSize = 40f
+                        isFakeBoldText = true
                         textAlign = android.graphics.Paint.Align.CENTER
                     }
                     canvas.nativeCanvas.drawText(
-                        "${(foodLevel * 3.0).toInt()} Kg",
+                        "${((foodLevel * 3.0)*100).roundToInt() / 100.0} / 3 Kg",
                         width / 2,
                         height / 2,
                         paint
@@ -135,6 +143,15 @@ fun FoodDispenserView(
                     )
                 )
             }
+            Text(
+                text = "${(bowlLevel * 50).toInt()} / 50 gr",
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                modifier = Modifier
+                    .offset(y = (-40).dp)
+                    .zIndex(1f)
+            )
         }
     }
 }

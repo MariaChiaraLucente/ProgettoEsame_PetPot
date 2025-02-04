@@ -17,8 +17,8 @@ import androidx.navigation.NavController
 
 @Composable
 fun HomePage(navController: NavController) {
-    var foodLevel by remember { mutableStateOf(0.2f) }
-    var bowlLevel by remember { mutableStateOf(0.7f) }
+    var foodLevel by remember { mutableStateOf(0.8f) }
+    var bowlLevel by remember { mutableStateOf(0.5f) }
     // Colonna principale per il layout verticale
     Column(
         modifier = Modifier
@@ -39,11 +39,11 @@ fun HomePage(navController: NavController) {
         FoodDispenserView(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(360.dp),
+                .height(390.dp),
             foodLevel = foodLevel,
             bowlLevel = bowlLevel
         )
-        Spacer(modifier = Modifier.height(62.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         // Pulsante centrale "Quick Feed"
         QuickFeedButton(navController)

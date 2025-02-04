@@ -18,16 +18,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import androidx.navigation.NavHostController
 import com.example.progettoesame_petpot.R
+import com.example.progettoesame_petpot.viewmodel.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Login(navController: NavHostController) {
+fun Login(navController: NavHostController, loginViewModel: LoginViewModel = viewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -58,7 +62,10 @@ fun Login(navController: NavHostController) {
         Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
             value = username,
-            onValueChange = { username = it },
+            onValueChange = {
+                username = it
+                loginViewModel.username = it
+                            },
             placeholder = { Text("Username") },
             modifier = Modifier.width(300.dp),
             shape = RoundedCornerShape(24.dp),
@@ -69,7 +76,10 @@ fun Login(navController: NavHostController) {
         Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                loginViewModel.password = it
+                            },
             placeholder = { Text("Password") },
             modifier = Modifier.width(300.dp),
             shape = RoundedCornerShape(24.dp),
@@ -80,17 +90,36 @@ fun Login(navController: NavHostController) {
         Spacer(modifier = Modifier.height(25.dp))
         Button(
             onClick = {
-                val db = Firebase.database.reference
-                val user = mapOf("username" to username, "password" to password)
-                db.child("users").push().setValue(user)
-                    .addOnSuccessListener { /* Registration successful */ }
-                    .addOnFailureListener { /* Registration failed */ }
+                isLoading = true
+                loginViewModel.login(
+                    onSuccess = {
+                        isLoading = false
+                        navController.navigate("drawers") // Naviga alla home se il login è corretto
+                    },
+                    onFailure = { error ->
+                        isLoading = false
+                        errorMessage = error
+                    }
+                )
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
             modifier = Modifier.width(180.dp).height(45.dp),
             border = BorderStroke(2.dp, Color.Black)
-        ) {
-            Text("Login" , color = Color.White, fontSize = 16.sp)
+        )
+        {
+            if (isLoading) {
+                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
+            } else {
+                Text("Login", color = Color.White, fontSize = 16.sp)
+            }
+        }
+
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage!!,
+                color = Color.Red,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
         Spacer(modifier = Modifier.height(15.dp))
         Text(

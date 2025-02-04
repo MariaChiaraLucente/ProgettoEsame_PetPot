@@ -20,11 +20,10 @@ import com.example.progettoesame_petpot.Login.Caricamento
 import com.example.progettoesame_petpot.Login.Device
 import com.example.progettoesame_petpot.Login.DeviceConnected
 import com.example.progettoesame_petpot.Login.Login
-import com.example.progettoesame_petpot.registration_2.AnimalBio1
-import com.example.progettoesame_petpot.registration_2.AnimalBio2
-import com.example.progettoesame_petpot.registration_2.Registration
-import com.example.progettoesame_petpot.registration_2.VetContact
-import java.util.Calendar
+import com.example.progettoesame_petpot.Registration.AnimalBio1
+import com.example.progettoesame_petpot.Registration.AnimalBio2
+import com.example.progettoesame_petpot.Registration.Registration
+import com.example.progettoesame_petpot.Registration.VetContact
 
 @OptIn(ExperimentalMaterial3Api::class)
 
@@ -37,7 +36,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "drawers" // Schermata iniziale
+        startDestination = "login" // Schermata iniziale
     ) {
         // Ogni composable riceve il parametro `navController`
         composable("bluetooth") { BluetoothSearching(navController) }

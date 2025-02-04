@@ -1,4 +1,4 @@
-package com.example.progettoesame_petpot.registration_2
+package com.example.progettoesame_petpot.Registration
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -29,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.progettoesame_petpot.Login.Caricamento
 
 
 @OptIn(ExperimentalMaterial3Api::class)
