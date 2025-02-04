@@ -37,7 +37,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "bluetooth" // Schermata iniziale
+        startDestination = "drawers" // Schermata iniziale
     ) {
         // Ogni composable riceve il parametro `navController`
         composable("bluetooth") { BluetoothSearching(navController) }
