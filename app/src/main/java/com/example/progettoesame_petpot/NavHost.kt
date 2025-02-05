@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,15 +16,16 @@ import com.example.progettoesame_petpot.Calendar.Components.Event
 import com.example.progettoesame_petpot.Calendar.Components.NewEventScreen
 import com.example.progettoesame_petpot.Home.Components.Drawers
 import com.example.progettoesame_petpot.Home.componenti_fede.QuickFeed
-import com.example.progettoesame_petpot.Login.BluetoothSearching
 import com.example.progettoesame_petpot.Login.Caricamento
-import com.example.progettoesame_petpot.Login.Device
-import com.example.progettoesame_petpot.Login.DeviceConnected
 import com.example.progettoesame_petpot.Login.Login
 import com.example.progettoesame_petpot.Registration.AnimalBio1
 import com.example.progettoesame_petpot.Registration.AnimalBio2
+import com.example.progettoesame_petpot.Registration.BluetoothSearching
+import com.example.progettoesame_petpot.Registration.Device
+import com.example.progettoesame_petpot.Registration.DeviceConnected
 import com.example.progettoesame_petpot.Registration.Registration
 import com.example.progettoesame_petpot.Registration.VetContact
+import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 
@@ -33,6 +35,7 @@ fun AppNavigation() {
     val currentScreen = remember { mutableStateOf("Home") }
     val navControllerCalendar = rememberNavController()
     val events = remember { mutableStateListOf<Event>() }
+    val registrationViewModel: RegistrationViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -43,7 +46,7 @@ fun AppNavigation() {
         composable("device_connected") { DeviceConnected(navController) }
         composable("device") { Device(navController) }
         composable("login") { Login(navController) }
-        composable("registration") { Registration(navController) }
+        composable("registration") { Registration(navController, registrationViewModel) }
         composable("caricamento/{destination}", arguments = listOf(navArgument("destination") { type = NavType.StringType })) { backStackEntry ->
             val destination = backStackEntry.arguments?.getString("destination") ?: "HomePage"
             Caricamento(navController, destination)
@@ -51,9 +54,9 @@ fun AppNavigation() {
         composable("Drawers") { Drawers(navController) }
         composable("QuickFeed") { QuickFeed(navController) }
         composable("HomePage") { HomePage(navController) }
-        composable("An_bio1") { AnimalBio1(navController) }
-        composable("An_bio2") { AnimalBio2(navController) }
-        composable("VetContact") { VetContact(navController) }
+        composable("An_bio1") { AnimalBio1(navController, registrationViewModel) }
+        composable("An_bio2") { AnimalBio2(navController, registrationViewModel) }
+        composable("VetContact") { VetContact(navController, registrationViewModel) }
         composable("calendar") {
             CalendarScreen(navController, events)
         }

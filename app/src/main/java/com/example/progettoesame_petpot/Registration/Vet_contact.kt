@@ -1,5 +1,6 @@
 package com.example.progettoesame_petpot.Registration
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,23 +29,16 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalMaterial3Api
 
 @Composable
-fun VetContact(navController: NavHostController) {
-    var chosenPage by remember { mutableStateOf("") }
-    var breed by remember { mutableStateOf("") }
-    var favorite_food by remember { mutableStateOf("") }
-    var favorite_toy by remember { mutableStateOf("") }
-    var state_of_health by remember { mutableStateOf("") }
-    var allergies_or_intolerances by remember { mutableStateOf("") }
-    var vet_name by remember { mutableStateOf("") }
-    var vet_phone by remember { mutableStateOf("") }
-    var other_information by remember { mutableStateOf("") }
+fun VetContact(navController: NavHostController, registrationViewModel: RegistrationViewModel = viewModel()) {
 
     LazyColumn(
         modifier = Modifier
@@ -66,8 +60,8 @@ fun VetContact(navController: NavHostController) {
         }
         item {
             OutlinedTextField(
-                value = vet_name,
-                onValueChange = { vet_name = it },
+                value = registrationViewModel.user.vetName,
+                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(vetName = it) },
                 placeholder = { Text("Vet's name") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -79,8 +73,8 @@ fun VetContact(navController: NavHostController) {
         item { Spacer(modifier = Modifier.height(12.dp)) }
         item {
             OutlinedTextField(
-                value = vet_phone,
-                onValueChange = { vet_phone = it },
+                value = registrationViewModel.user.vetPhone,
+                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(vetPhone = it) },
                 placeholder = { Text("Vet's phone") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -91,14 +85,10 @@ fun VetContact(navController: NavHostController) {
             Spacer(modifier = Modifier.height(12.dp))
             Button(
                 onClick = {
-                    //val db = Firebase.database.reference
-                    //val user = mapOf("username" to username, "password" to password)
-                    //db.child("users").push().setValue(user)
-                    //.addOnSuccessListener { /* Registration successful */ }
-                    //.addOnFailureListener { /* Registration failed */ }
-
-
-                    navController.navigate("caricamento/drawers")
+                    registrationViewModel.completeRegistration(
+                        onSuccess = { navController.navigate("caricamento/drawers") },
+                        onFailure = { error -> Log.e("Button", "Error: $error") }
+                    )
                 },
                 colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
                 modifier = Modifier.width(180.dp).height(45.dp),

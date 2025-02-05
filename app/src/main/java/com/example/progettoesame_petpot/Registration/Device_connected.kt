@@ -1,4 +1,4 @@
-package com.example.progettoesame_petpot.Login
+package com.example.progettoesame_petpot.Registration
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

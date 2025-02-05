@@ -18,16 +18,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.progettoesame_petpot.R
+import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Registration(navController: NavHostController) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun Registration(navController: NavHostController, registrationViewModel: RegistrationViewModel = viewModel()) {
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -57,8 +59,10 @@ fun Registration(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
+            value = registrationViewModel.user.username,
+            onValueChange = {
+                registrationViewModel.user = registrationViewModel.user.copy(username = it)
+            },
             placeholder = { Text("Username") },
             modifier = Modifier.width(300.dp),
             shape = RoundedCornerShape(24.dp),
@@ -68,8 +72,10 @@ fun Registration(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = registrationViewModel.user.password,
+            onValueChange = {
+                registrationViewModel.user = registrationViewModel.user.copy(password = it)
+            },
             placeholder = { Text("Password") },
             modifier = Modifier.width(300.dp),
             shape = RoundedCornerShape(24.dp),
@@ -80,18 +86,25 @@ fun Registration(navController: NavHostController) {
         Spacer(modifier = Modifier.height(25.dp))
         Button(
             onClick = {
-                val db = Firebase.database.reference
-                val user = mapOf("username" to username, "password" to password)
-                db.child("users").push().setValue(user)
-                    .addOnSuccessListener { /* Registration successful */ }
-                    .addOnFailureListener { /* Registration failed */ }
-                navController.navigate("An_bio1")
-            },
+                        navController.navigate("An_bio1") // Vai alla prossima schermata
+                    },
             colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
             modifier = Modifier.width(180.dp).height(45.dp),
             border = BorderStroke(2.dp, Color.Black)
         ) {
-            Text("Submit" , color = Color.White, fontSize = 16.sp)
+            if (isLoading) {
+                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
+            } else {
+                Text("Submit", color = Color.White, fontSize = 16.sp)
+            }
+        }
+
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage!!,
+                color = Color(0xFFCA413F),
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
         Spacer(modifier = Modifier.height(15.dp))
         Text(
