@@ -11,6 +11,9 @@ import com.example.progettoesame_petpot.model.User
 import kotlinx.coroutines.launch
 
 class RegistrationViewModel(private val userRepository: PetPotModel = PetPotModel()) : ViewModel() {
+
+    var userId by mutableStateOf("")
+
     var user by mutableStateOf(User())
 
     var registrationMessage: String? = null

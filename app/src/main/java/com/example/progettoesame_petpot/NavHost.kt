@@ -27,6 +27,11 @@ import com.example.progettoesame_petpot.Registration.DeviceConnected
 import com.example.progettoesame_petpot.Registration.Registration
 import com.example.progettoesame_petpot.Registration.VetContact
 import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
+import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -39,6 +44,8 @@ fun AppNavigation() {
     val navControllerCalendar = rememberNavController()
     val events = remember { mutableStateListOf<Event>() }
     val registrationViewModel: RegistrationViewModel = viewModel()
+    val homeViewModel: ProfileViewModel = viewModel()
+
 
     NavHost(
         navController = navController,
@@ -54,7 +61,7 @@ fun AppNavigation() {
             val destination = backStackEntry.arguments?.getString("destination") ?: "HomePage"
             Caricamento(navController, destination)
         }
-        composable("Drawers") { Drawers(navController) }
+        composable("Drawers") { Drawers(navController, homeViewModel.getProfile().userId, homeViewModel) }
         composable("QuickFeed") { QuickFeed(navController) }
         composable("HomePage") { HomePage(navController) }
         composable("An_bio1") { AnimalBio1(navController, registrationViewModel) }

@@ -33,24 +33,33 @@ import coil.request.ImageRequest
 import com.example.progettoesame_petpot.R
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.ui.res.colorResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Drawers(navController: NavController) {
+fun Drawers(navController: NavController, userId: String, profileViewModel: ProfileViewModel = viewModel()) {
     var showLeftDrawer by remember { mutableStateOf(false) }
     var showRightDrawer by remember { mutableStateOf(false) }
     var isDarkMode by remember { mutableStateOf(false) }
     var isDeafMode by remember { mutableStateOf(false) }
     var isNotificationsActive by remember { mutableStateOf(false) }
     var showGif by remember { mutableStateOf(false) }
-    var isEditMode by remember { mutableStateOf(false) }
     var breed by remember { mutableStateOf("Golden Retriever") }
     var favoriteFood by remember { mutableStateOf("Meat") }
     var allergies by remember { mutableStateOf("Cats") }
     var vetName by remember { mutableStateOf("Mario Rossi") }
     var vetPhone by remember { mutableStateOf("0123456789") }
+
+    var isEditMode by remember { mutableStateOf(false) }
+
+    LaunchedEffect(userId) {
+        profileViewModel.loadProfile(userId)
+    }
+
+    val dogProfile = profileViewModel.getProfile()
 
     Box(
         modifier = Modifier
@@ -270,96 +279,24 @@ fun Drawers(navController: NavController) {
                         }
                         Spacer(modifier = Modifier.height(36.dp))
                         if (isEditMode) {
-                            Text("Breed:", fontWeight = FontWeight.Bold, color = Color.White)
-                            OutlinedTextField(
-                                value = breed,
-                                onValueChange = { breed = it },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    containerColor = Color.White
-                                )
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text("Favorite Food:", fontWeight = FontWeight.Bold, color = Color.White)
-                            OutlinedTextField(
-                                value = favoriteFood,
-                                onValueChange = { favoriteFood = it },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    containerColor = Color.White
-                                )
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text("Allergies:", fontWeight = FontWeight.Bold, color = Color.White)
-                            OutlinedTextField(
-                                value = allergies,
-                                onValueChange = { allergies = it },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    containerColor = Color.White
-                                )
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text("Vet Name:", fontWeight = FontWeight.Bold, color = Color.White)
-                            OutlinedTextField(
-                                value = vetName,
-                                onValueChange = { vetName = it },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    containerColor = Color.White
-                                )
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text("Vet Phone:", fontWeight = FontWeight.Bold, color = Color.White)
-                            OutlinedTextField(
-                                value = vetPhone,
-                                onValueChange = { vetPhone = it },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    containerColor = Color.White
-                                )
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Button(
-                                onClick = { isEditMode = false },
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            ) {
+                            EditableTextField("Breed:", dogProfile.breed) { profileViewModel.updateProfile(userId, dogProfile.copy(breed = it)) }
+                            EditableTextField("Favorite Food:", dogProfile.favoriteFood) { profileViewModel.updateProfile(userId, dogProfile.copy(favoriteFood = it)) }
+                            EditableTextField("Allergies:", dogProfile.allergies) { profileViewModel.updateProfile(userId, dogProfile.copy(allergies = it)) }
+                            EditableTextField("Vet Name:", dogProfile.vetName) { profileViewModel.updateProfile(userId, dogProfile.copy(vetName = it)) }
+                            EditableTextField("Vet Phone:", dogProfile.vetPhone) { profileViewModel.updateProfile(userId, dogProfile.copy(vetPhone = it)) }
+
+                            Button(onClick = { isEditMode = false }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
                                 Text("Save")
                             }
                         } else {
-                            Row {
-                                Text("Breed: ", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                                Text(breed, fontSize = 24.sp, fontWeight = FontWeight.Light, color = Color.White)
-                            }
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Row {
-                                Text("Favorite Food: ", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                                Text(favoriteFood, fontSize = 24.sp, fontWeight = FontWeight.Light, color = Color.White)
-                            }
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Row {
-                                Text("Allergies: ", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                                Text(allergies, fontSize = 24.sp, fontWeight = FontWeight.Light, color = Color.White)
-                            }
-                            Spacer(modifier = Modifier.height(20.dp))
+                            ProfileInfoRow("Breed:", dogProfile.breed)
+                            ProfileInfoRow("Favorite Food:", dogProfile.favoriteFood)
+                            ProfileInfoRow("Allergies:", dogProfile.allergies)
                             Divider(color = Color.White, thickness = 1.dp, modifier = Modifier.padding(vertical = 16.dp))
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Row {
-                                Text("Vet Name: ", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                                Text(vetName, fontSize = 24.sp, fontWeight = FontWeight.Light, color = Color.White)
-                            }
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Row {
-                                Text("Vet Phone: ", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                                Text(vetPhone, fontSize = 24.sp, fontWeight = FontWeight.Light, color = Color.White)
-                            }
+                            ProfileInfoRow("Vet Name:", dogProfile.vetName)
+                            ProfileInfoRow("Vet Phone:", dogProfile.vetPhone)
                             Spacer(modifier = Modifier.weight(1f))
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            ) {
-                                Text("Logout", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                            }
+                            Text("Logout", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.align(Alignment.CenterHorizontally))
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -367,5 +304,30 @@ fun Drawers(navController: NavController) {
                 }
             }
         }
+    }
+}
+
+// ✅ Componente per visualizzare le informazioni
+@Composable
+fun ProfileInfoRow(label: String, value: String) {
+    Row {
+        Text("$label ", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        Text(value, fontSize = 24.sp, fontWeight = FontWeight.Light, color = Color.White)
+    }
+}
+
+// ✅ Componente per campi editabili
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditableTextField(label: String, value: String, onValueChange: (String) -> Unit) {
+    Column {
+        Text(label, fontWeight = FontWeight.Bold, color = Color.White)
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(containerColor = Color.White)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
