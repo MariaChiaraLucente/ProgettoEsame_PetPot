@@ -1,4 +1,4 @@
-package com.example.progettoesame_petpot.registration_2
+package com.example.progettoesame_petpot.Registration
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -35,13 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.progettoesame_petpot.R
+import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 
 //@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnimalBio1(navController: NavHostController) { //tra parentesi c'era navController: NavHostController
-    var size by remember { mutableStateOf("") }
-    var age by remember { mutableStateOf("") }
-
+fun AnimalBio1(navController: NavHostController, registrationViewModel: RegistrationViewModel = RegistrationViewModel()) { //tra parentesi c'era navController: NavHostController
     val image1: Painter = painterResource(R.drawable.dog1)
     val image2: Painter = painterResource(R.drawable.dog2)
     val image3: Painter = painterResource(R.drawable.dog3)
@@ -87,7 +85,7 @@ fun AnimalBio1(navController: NavHostController) { //tra parentesi c'era navCont
                     .height(92.dp)
                     .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
                     .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { size = "Small" }
+                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(size = "Small") }
                     .padding(8.dp)
             ) {
                 Image(
@@ -107,7 +105,7 @@ fun AnimalBio1(navController: NavHostController) { //tra parentesi c'era navCont
                     .height(104.dp)
                     .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
                     .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { size = "Small" }
+                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(size = "Medium") }
                     .padding(8.dp)
             ) {
                 Image(
@@ -127,7 +125,7 @@ fun AnimalBio1(navController: NavHostController) { //tra parentesi c'era navCont
                     .height(117.dp)
                     .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
                     .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { size = "Small" }
+                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(size = "Large") }
                     .padding(8.dp)
             ) {
                 Image(
@@ -162,7 +160,7 @@ fun AnimalBio1(navController: NavHostController) { //tra parentesi c'era navCont
                     .height(92.dp)
                     .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
                     .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { age = "0-3 years" }
+                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(age = "0-3 years") }
                     .padding(8.dp)
             ) {
                 Image(
@@ -182,7 +180,7 @@ fun AnimalBio1(navController: NavHostController) { //tra parentesi c'era navCont
                     .height(104.dp)
                     .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
                     .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { age = "4-9 years" }
+                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(age = "4-9 years") }
                     .padding(8.dp)
             ) {
                 Image(
@@ -202,7 +200,7 @@ fun AnimalBio1(navController: NavHostController) { //tra parentesi c'era navCont
                     .height(117.dp)
                     .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
                     .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { age = "over 10 years" }
+                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(age = "over 10 years") }
                     .padding(8.dp)
             ) {
                 Image(
@@ -221,11 +219,6 @@ fun AnimalBio1(navController: NavHostController) { //tra parentesi c'era navCont
         Spacer(modifier = Modifier.height(55.dp))
         Button(
             onClick = {
-                //val db = Firebase.database.reference
-                //val user = mapOf("username" to username, "password" to password)
-                //db.child("users").push().setValue(user)
-                //.addOnSuccessListener { /* Registration successful */ }
-                //.addOnFailureListener { /* Registration failed */ }
                 navController.navigate("An_bio2")
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),

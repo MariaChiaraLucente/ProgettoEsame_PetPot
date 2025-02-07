@@ -2,8 +2,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -12,6 +17,8 @@ import androidx.navigation.NavController
 
 @Composable
 fun HomePage(navController: NavController) {
+    var foodLevel by remember { mutableStateOf(0.8f) }
+    var bowlLevel by remember { mutableStateOf(0.5f) }
     // Colonna principale per il layout verticale
     Column(
         modifier = Modifier
@@ -28,7 +35,15 @@ fun HomePage(navController: NavController) {
         Spacer(modifier = Modifier.height(32.dp))
 
         // Indicatore di cibo
-        FoodIndicators()
+        //FoodIndicators()
+        FoodDispenserView(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(390.dp),
+            foodLevel = foodLevel,
+            bowlLevel = bowlLevel
+        )
+        Spacer(modifier = Modifier.height(32.dp))
 
         // Pulsante centrale "Quick Feed"
         QuickFeedButton(navController)

@@ -1,4 +1,4 @@
-package com.example.progettoesame_petpot.registration_2
+package com.example.progettoesame_petpot.Registration
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -29,20 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalMaterial3Api
 @Composable
-fun AnimalBio2(navController: NavHostController) {
-    var breed by remember { mutableStateOf("") }
-    var favorite_food by remember { mutableStateOf("") }
-    var favorite_toy by remember { mutableStateOf("") }
-    var state_of_health by remember { mutableStateOf("") }
-    var allergies_or_intolerances by remember { mutableStateOf("") }
-    var vet_name by remember { mutableStateOf("") }
-    var vet_phone by remember { mutableStateOf("") }
-    var other_information by remember { mutableStateOf("") }
+fun AnimalBio2(navController: NavHostController, registrationViewModel: RegistrationViewModel = viewModel()) {
 
     LazyColumn(
         modifier = Modifier
@@ -65,8 +59,8 @@ fun AnimalBio2(navController: NavHostController) {
         item { Spacer(modifier = Modifier.height(12.dp)) }
         item {
             OutlinedTextField(
-                value = breed,
-                onValueChange = { breed = it },
+                value = registrationViewModel.user.breed,
+                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(breed = it) },
                 placeholder = { Text("Breed") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -78,8 +72,8 @@ fun AnimalBio2(navController: NavHostController) {
         item { Spacer(modifier = Modifier.height(12.dp)) }
         item {
             OutlinedTextField(
-                value = favorite_food,
-                onValueChange = { favorite_food = it },
+                value = registrationViewModel.user.favoriteFood,
+                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(favoriteFood = it) },
                 placeholder = { Text("Favorite food") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -92,8 +86,8 @@ fun AnimalBio2(navController: NavHostController) {
 
         item {
             OutlinedTextField(
-                value = allergies_or_intolerances,
-                onValueChange = { allergies_or_intolerances = it },
+                value = registrationViewModel.user.allergies,
+                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(allergies = it) },
                 placeholder = { Text("Allergies or intolerances") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -106,8 +100,8 @@ fun AnimalBio2(navController: NavHostController) {
 
         item {
             OutlinedTextField(
-                value = other_information,
-                onValueChange = { other_information = it },
+                value = registrationViewModel.user.others,
+                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(others = it) },
                 placeholder = { Text("Other information") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -120,11 +114,6 @@ fun AnimalBio2(navController: NavHostController) {
         item {
             Button(
                 onClick = {
-                    //val db = Firebase.database.reference
-                    //val user = mapOf("username" to username, "password" to password)
-                    //db.child("users").push().setValue(user)
-                    //.addOnSuccessListener { /* Registration successful */ }
-                    //.addOnFailureListener { /* Registration failed */ }
                     navController.navigate("VetContact")
                 },
                 colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
