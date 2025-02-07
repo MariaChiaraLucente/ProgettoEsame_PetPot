@@ -7,9 +7,11 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.getValue
 
 data class User(
     val username: String = "",
+    var userId: String = "",
     val password: String = "",
     val size: String = "",
     val age: String = "",
@@ -22,7 +24,16 @@ data class User(
 )
 
 class PetPotModel {
+
+    companion object {
+        var  currentUser: User? = null;
+    }
+
     private val db: DatabaseReference = Firebase.database.reference
+
+    fun getCurrentUser(): User? {
+        return currentUser
+    }
 
     // ✅ LOGIN UTENTE
     fun loginUser(username: String, password: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
@@ -34,8 +45,8 @@ class PetPotModel {
                             val storedPassword = userSnapshot.child("password").getValue(String::class.java)
                             if (storedPassword == password) {
                                 Log.d("Firebase", "Login riuscito!")
+                                currentUser = userSnapshot.getValue(User::class.java);
                                 onSuccess()
-                                return
                             }
                         }
                         Log.e("Firebase", "Password errata!")
@@ -62,9 +73,12 @@ class PetPotModel {
                         Log.e("Firebase", "Username già esistente!")
                         onFailure("Username già esistente!")
                     } else {
-                        db.child("users").push().setValue(user)
+                        val ref = db.child("users").push();
+                        user.userId = ref.key.toString();
+                        ref.setValue(user)
                             .addOnSuccessListener {
-                                Log.d("Firebase", "Registrazione completata!")
+                                Log.d("Aiuto", db.child("users").key.toString() + "AHHHHHHHHHHH")
+                                currentUser = user;
                                 onSuccess()
                             }
                             .addOnFailureListener {
@@ -79,5 +93,28 @@ class PetPotModel {
                     onFailure("Errore di connessione!")
                 }
             })
+    }
+
+    fun getDogProfile(userId: String, onSuccess: (User) -> Unit, onFailure: (String) -> Unit) {
+        db.child("users").child(userId).child("dogProfile")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.getValue(User::class.java)?.let { profile ->
+                        onSuccess(profile)
+                    } ?: onFailure("Nessun profilo trovato")
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Firebase", "Errore nel recupero dati", error.toException())
+                    onFailure("Errore di connessione!")
+                }
+            })
+    }
+
+    // ✅ Aggiorna il profilo nel database
+    fun updateDogProfile(userId: String, profile: User, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        db.child("users").child(userId).child("dogProfile").setValue(profile)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { onFailure("Errore nel salvataggio!") }
     }
 }

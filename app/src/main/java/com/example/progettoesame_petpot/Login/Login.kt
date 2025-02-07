@@ -94,7 +94,7 @@ fun Login(navController: NavHostController, loginViewModel: LoginViewModel = vie
                 loginViewModel.login(
                     onSuccess = {
                         isLoading = false
-                        navController.navigate("drawers") // Naviga alla home se il login è corretto
+                        navController.navigate("Drawers") // Naviga alla home se il login è corretto
                     },
                     onFailure = { error ->
                         isLoading = false
