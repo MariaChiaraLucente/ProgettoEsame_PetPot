@@ -1,162 +1,163 @@
-package com.example.progettoesame_petpot.Calendar.Components
+package com.example.progettoesame_petpot.viewmodel
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.google.firebase.database.FirebaseDatabase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import java.time.LocalDate
-import java.time.Month
-import java.time.format.DateTimeFormatter
-
-
-data class Feed(
-    val id: String? = null,
-    val titolo: String = "",
-    val descrizione: String = "",
-    val orarioFisso: String = "",
-    val dataFine: String = "",
-    val dataInizio: String = "",
-    val quantità: Float = 0f
-) {
-    fun toMap(): Map<String, Any?> {
-        return mapOf(
-            "id" to id,
-            "titolo" to titolo,
-            "descrizione" to descrizione,
-            "orarioFisso" to orarioFisso,
-            "dataFine" to dataFine,
-            "dataInizio" to dataInizio,
-            "grammi" to quantità
-        )
-    }
-}
-
+import com.example.progettoesame_petpot.model.Feed
+import com.example.progettoesame_petpot.model.PetPotModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CalendarViewModel : ViewModel() {
 
-    // Firebase Database Reference
-    private val database = FirebaseDatabase.getInstance().getReference("feeds")
-
-    private val _selectedStartDay = MutableStateFlow<Int?>(null)
-    val selectedStartDay: StateFlow<Int?> get() = _selectedStartDay
-
-    private val _selectedEndDay = MutableStateFlow<Int?>(null)
-    val selectedEndDay: StateFlow<Int?> get() = _selectedEndDay
+    private val petPotModel = PetPotModel()
 
 
-    var currentMonth = mutableStateOf(0) // Gennaio come mese iniziale
+    private val calendar = Calendar.getInstance()
+
+    // Usa mutableStateOf per il recompose immediato
+    val _selectedStartDate = mutableStateOf<Date?>(null)
+    val selectedStartDate: Date? get() = _selectedStartDate.value
+
+    val _selectedEndDate = mutableStateOf<Date?>(null)
+    val selectedEndDate: Date? get() = _selectedEndDate.value
+
+    private val _currentMonth = mutableStateOf(calendar.get(Calendar.MONTH))
+    val currentMonth: Int get() = _currentMonth.value
+
+    private val _currentYear = mutableStateOf(calendar.get(Calendar.YEAR))
+    val currentYear: Int get() = _currentYear.value
 
 
-    // Funzione per aggiornare il giorno selezionato
-    fun selectDay(day: Int) {
-        if (_selectedStartDay.value == null) {
+    // Attributi del feed
+    val feedTitle = mutableStateOf("")
+    val feedDescription = mutableStateOf("")
+    val feedOrarioFisso = mutableStateOf("12:00")
+    val feedQuantita = mutableStateOf(100f)
 
-            _selectedStartDay.value = day
+    private val daysInMonths = listOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 
-        } else if (_selectedEndDay.value == null) {
-
-            if (day >= _selectedStartDay.value!!) {
-
-                _selectedEndDay.value = day
-
+    fun changeMonth(forward: Boolean) {
+        if (forward) {
+            if (_currentMonth.value == 11) { // Dec → Jan
+                _currentMonth.value = 0
+                _currentYear.value += 1
             } else {
-
-                // Se il giorno selezionato è prima del giorno di inizio, aggiorna il giorno di inizio
-
-                _selectedStartDay.value = day
-
+                _currentMonth.value += 1
             }
-
         } else {
+            if (_currentMonth.value == 0) { // Jan → Dec
+                _currentMonth.value = 11
+                _currentYear.value -= 1
+            } else {
+                _currentMonth.value -= 1
+            }
+        }
+    }
 
-            // Resetta la selezione se entrambi i giorni sono già selezionati
 
-            _selectedStartDay.value = day
+    fun selectDay(day: Int) {
+        calendar.set(Calendar.YEAR, _currentYear.value)
+        calendar.set(Calendar.MONTH, _currentMonth.value)
+        calendar.set(Calendar.DAY_OF_MONTH, day)
+        val selectedDate = calendar.time
 
-            _selectedEndDay.value = null
-
+        if (_selectedStartDate.value == null) {
+            _selectedStartDate.value = selectedDate
+            _selectedEndDate.value = null
+        } else if (_selectedEndDate.value == null) {
+            if (selectedDate.after(_selectedStartDate.value)) {
+                _selectedEndDate.value = selectedDate
+            } else {
+                _selectedStartDate.value = selectedDate
+                _selectedEndDate.value = null
+            }
+        } else {
+            _selectedStartDate.value = selectedDate
+            _selectedEndDate.value = null
         }
 
+        Log.d("Feed", "Selected Start Date: ${_selectedStartDate.value}")
+        Log.d("Feed", "Selected End Date: ${_selectedEndDate.value}")
     }
 
-    // Stati per i dati del feed
-    var feedTitle = mutableStateOf("")
-        private set
-    var feedDescription = mutableStateOf("")
-        private set
-    var feedOrarioFisso = mutableStateOf("12:00") // Default: 12:00
-        private set
-    var feedQuantita = mutableStateOf(0f)
-        private set
 
-
-    // Metodo per aggiornare il mese corrente
-    fun changeMonth(offset: Int) {
-        currentMonth.value = (currentMonth.value + offset).coerceIn(0, 11)
+    fun getDaysInCurrentMonth(): Int {
+        return if (_currentMonth.value == 1 && isLeapYear(_currentYear.value)) 29 else daysInMonths[_currentMonth.value]
     }
 
-    // Metodi per aggiornare gli attributi del feed
-    fun updateFeedTitle(title: String) {
-        feedTitle.value = title
+    private fun isLeapYear(year: Int): Boolean {
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
     }
 
-    fun updateFeedDescription(description: String) {
-        feedDescription.value = description
-    }
+    fun isDateSelected(date: Date, startDate: Date?, endDate: Date?): Boolean {
+        if (startDate == null) return false
 
-    fun updateFeedOrarioFisso(orario: String) {
-        feedOrarioFisso.value = orario
-    }
-
-    fun updateFeedQuantita(quantita: Float) {
-        feedQuantita.value = quantita
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun createFeedInDatabase(
-        startDay: Int?,
-        endDay: Int?,
-        startMonth : Int?,
-        endMonth: Int?,
-        onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
-    ) {
-        if (startDay == null || endDay == null) {
-            onError(IllegalArgumentException("Start day or end day is not selected"))
-            return
+        // Normalizziamo la data eliminando ore, minuti e secondi, cosi non si confonda quale giorno viene selezionato
+        fun normalize(date: Date): Calendar {
+            return Calendar.getInstance().apply {
+                time = date
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
         }
 
-        val currentYear = 2025
-        val month = currentMonth.value + 1
-        val startDate = LocalDate.of(currentYear, month, startDay)
-        val endDate = LocalDate.of(currentYear, month, endDay)
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val normalizedDate = normalize(date)
+        val normalizedStart = normalize(startDate)
+        val normalizedEnd = if (endDate != null) normalize(endDate) else normalizedStart
 
+        return !normalizedDate.before(normalizedStart) && !normalizedDate.after(normalizedEnd)
+    }
+
+    fun getStartAndEndDate(): Pair<Date?, Date?> {
+        return Pair(_selectedStartDate.value, _selectedEndDate.value)
+    }
+
+    // Funzione per aggiornare l'orario fisso del feed
+    fun updateFeedOrarioFisso(time: String) {
+        feedOrarioFisso.value = time
+    }
+
+    // Funzione per aggiornare la quantità del feed
+    fun updateFeedQuantita(quantity: Float) {
+        feedQuantita.value = quantity
+    }
+
+
+    // Funzione per salvare il feed
+    fun saveFeed() {
+
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+
+        val formattedStartDate = dateFormat.format( selectedStartDate?.time)
+        val formattedEndDate = dateFormat.format(selectedEndDate?.time )
+
+
+        // Crea il nuovo feed con i dati correnti
         val feed = Feed(
-            id = database.push().key,
-            titolo = feedTitle.value,
-            descrizione = feedDescription.value,
-            orarioFisso = feedOrarioFisso.value,
-            dataInizio = startDate.format(formatter),
-            dataFine = endDate.format(formatter),
-            quantità = feedQuantita.value
+            timeFix = feedOrarioFisso.value,
+            dateStart = formattedStartDate ?: "",
+            dateEnd = formattedEndDate ?: "",
+            quantity = feedQuantita.value,
         )
 
-        feed.id?.let { id ->
-            database.child(id).setValue(feed.toMap())
-                .addOnSuccessListener { onSuccess() }
-                .addOnFailureListener { onError(it) }
-        } ?: run {
-            onError(IllegalArgumentException("Feed ID non generato"))
-        }
+        petPotModel.saveFeed(feed)
+        Log.d("Feed", "Feed: $feed")
     }
+
+
+    // Funzione per ripristinare i dati salvati (se necessario)
+    fun restoreData(feed: Feed) {
+        feedOrarioFisso.value = feed.timeFix
+        feedQuantita.value = feed.quantity
+        _selectedStartDate.value = Date(feed.dateStart)
+        _selectedEndDate.value = if (feed.dateEnd > 0.toString()) Date(feed.dateEnd) else null
+    }
+
 }
-
-
 
 
 

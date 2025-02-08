@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -31,9 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -48,33 +46,31 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.progettoesame_petpot.CalendarGrid
+import com.example.progettoesame_petpot.ui.CalendarGrid
+import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 
 fun FeedCreationScreen(
-    viewModel: CalendarViewModel = viewModel(),
-    startDay: Int?, // Giorno di inizio passato dal calendario
-    endDay: Int?,   // Giorno di fine passato dal calendario
-    startMonth: Int?, // Mese di inizio passato dal calendario
-    endMonth: Int?,
-    onSave: () -> Unit
+    viewModel: CalendarViewModel
 ) {
-    var selectedStartDay by remember { mutableStateOf(startDay) }
-    var selectedEndDay by remember { mutableStateOf(endDay) }
-    var selectedStartMonth by remember { mutableStateOf<Int?>(null) }
-    var selectedEndMonth by remember { mutableStateOf<Int?>(null) }
     var selectedHour by remember { mutableStateOf(12) }
     var selectedMinute by remember { mutableStateOf(0) }
     var selectedQuantity by remember { mutableStateOf(100f) }
     var isCalendarExpanded by remember { mutableStateOf(false) }
-    var currentMonth by remember { mutableStateOf(1) }
 
-    val monthNames = listOf("January", "February", "March")
-    val daysInMonths = listOf(31, 28, 31)
+    val dateFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+    val currentDate = Calendar.getInstance().apply {
+        set(Calendar.MONTH, viewModel.currentMonth)
+        set(Calendar.YEAR, viewModel.currentYear)
+    }.time
+    val formattedDate = dateFormat.format(currentDate)
 
     Box(
         modifier = Modifier
@@ -84,7 +80,7 @@ fun FeedCreationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Programma i prossimi pasti", color = Color.White) },
+                title = { Text("Next Feed", color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF1F2B85)
                 ),
@@ -109,179 +105,184 @@ fun FeedCreationScreen(
 
             ) {
                 item {
-                    Box(
+                    // Card cliccabile per selezionare i giorni
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color (0xFF1F2B85))
-                            .clip(RoundedCornerShape(16.dp)) // Apply rounded corners
-
-                    ){      Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp)) // Apply rounded corners
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(16.dp)
+                            .clickable { isCalendarExpanded = !isCalendarExpanded }, // Espandi o chiudi il calendario
+                        elevation = CardDefaults.cardElevation(8.dp),
+                        shape = RoundedCornerShape(16.dp)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(8.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(Color.White)// Apply rounded corners
-
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalArrangement = Arrangement.Center,
                         ) {
-                            OutlinedTextField(
-                                value = viewModel.feedTitle.value,
-                                onValueChange = { viewModel.updateFeedTitle(it) },
-                                label = { Text("Titolo") },
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(8.dp)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(Color.White)// Apply rounded corners
-                        ) {
-                            OutlinedTextField(
-                                value = viewModel.feedDescription.value,
-                                onValueChange = { viewModel.updateFeedDescription(it) },
-                                label = { Text("Descrizione") },
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-                    } }}
+                            val (startDate, endDate) = viewModel.getStartAndEndDate()
 
+                            val startDateFormatted = startDate?.let { dateFormat.format(it) } ?: "Non selezionato"
+                            val endDateFormatted = endDate?.let { dateFormat.format(it) } ?: "Non selezionato"
 
-
-                item {
-                        // Card cliccabile per selezionare i giorni
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .clickable { isCalendarExpanded = !isCalendarExpanded }, // Espandi o chiudi il calendario
-                            elevation = CardDefaults.cardElevation(8.dp),
-                            shape = RoundedCornerShape(16.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(16.dp),
-                                horizontalArrangement = Arrangement.Center,
-                                ) {
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 8.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color.White)
+                                    .padding(16.dp)
+                            ) {
                                 Text(
-                                    text = "${selectedStartDay ?: "Non selezionato"}(Mese: ${startMonth})",
+                                    text = "${startDate?.date ?: ""} $startDateFormatted",
                                     fontSize = 16.sp,
                                     color = Color(0xFF2F34BE),
                                     fontWeight = FontWeight.Bold
                                 )
-                                Spacer(modifier = Modifier.width(60.dp))
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 8.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color.White)
+                                    .padding(16.dp)
+                            ) {
                                 Text(
-                                    text = "${selectedEndDay ?: "Non selezionato"}(Mese: ${endMonth})",
+                                    text = "${endDate?.date ?: ""} $endDateFormatted",
                                     fontSize = 16.sp,
                                     color = Color(0xFF2F34BE),
                                     fontWeight = FontWeight.Bold
                                 )
                             }
                         }
-                    // Animazione smooth per la CalendarGrid
-                    AnimatedVisibility(
-                        visible = isCalendarExpanded,
-                        enter = androidx.compose.animation.expandVertically(
-                            animationSpec = tween(durationMillis = 300)
-                        ),
-                        exit = androidx.compose.animation.shrinkVertically(
-                            animationSpec = tween(durationMillis = 300)
-                        )
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            elevation = CardDefaults.cardElevation(8.dp),
-                            shape = RoundedCornerShape(16.dp)
+                        // Animazione smooth per la CalendarGrid
+
+                        AnimatedVisibility(
+
+                            visible = isCalendarExpanded,
+
+                            enter = androidx.compose.animation.expandVertically(
+
+                                animationSpec = tween(durationMillis = 300)
+
+                            ),
+
+                            exit = androidx.compose.animation.shrinkVertically(
+
+                                animationSpec = tween(durationMillis = 300)
+
+                            )
+
                         ) {
-                            Column(
+
+                            Card(
+
                                 modifier = Modifier
-                                    .padding(16.dp)
-                                    .fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
+
+                                    .fillMaxWidth()
+
+                                    .padding(horizontal = 16.dp),
+
+                                elevation = CardDefaults.cardElevation(8.dp),
+
+                                shape = RoundedCornerShape(16.dp)
+
                             ) {
-                                // Selezione del mese
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
+
+                                Column(
+
+                                    modifier = Modifier
+
+                                        .padding(16.dp)
+
+                                        .fillMaxWidth(),
+
+                                    horizontalAlignment = Alignment.CenterHorizontally
+
                                 ) {
-                                    IconButton(onClick = {
-                                        if (currentMonth > 1) currentMonth -= 1
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Default.ArrowBack,
-                                            contentDescription = "Mese precedente",
-                                            tint = Color(0xFF2F34BE)
-                                        )
-                                    }
-                                    Text(
-                                        text = "Mese corrente: $currentMonth",
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF2F34BE)
-                                    )
-                                    IconButton(onClick = {
-                                        if (currentMonth < 12) currentMonth += 1
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Default.ArrowBack,
-                                            contentDescription = "Mese successivo",
-                                            tint = Color(0xFF2F34BE)
-                                        )
-                                    }
-                                }
-                                CalendarGrid(
-                                    daysInMonth = daysInMonths[currentMonth],
-                                    selectedStartDay = selectedStartDay,
-                                    selectedEndDay = selectedEndDay,
-                                    selectedStartMonth = startMonth,
-                                    selectedEndMonth =endMonth,
-                                    currentMonth = currentMonth,
-                                    onDayClick = { day ->
-                                        if (selectedStartDay == null) {
-                                            // Se non è selezionato alcun giorno di inizio
-                                            selectedStartDay = day
-                                            selectedStartMonth = currentMonth
-                                        } else if (selectedEndDay == null) {
-                                            // Se il giorno di fine non è ancora selezionato
-                                            if (selectedStartMonth == currentMonth && day >= selectedStartDay!!) {
-                                                // Caso: stesso mese e giorno selezionato dopo il giorno di inizio
-                                                selectedEndDay = day
-                                                selectedEndMonth = currentMonth
-                                            } else if (currentMonth > selectedStartMonth!!) {
-                                                // Caso: mese successivo a quello di inizio
-                                                selectedEndDay = day
-                                                selectedEndMonth = currentMonth
-                                            } else {
-                                                // Se il giorno selezionato è prima del giorno di inizio, resettiamo
-                                                selectedStartDay = day
-                                                selectedStartMonth = currentMonth
-                                                selectedEndDay = null
-                                                selectedEndMonth = null
-                                            }
-                                        } else {
-                                            // Se entrambi i giorni sono già selezionati, resettiamo
-                                            selectedStartDay = day
-                                            selectedStartMonth = currentMonth
-                                            selectedEndDay = null
-                                            selectedEndMonth = null
+
+                                    // Selezione del mese
+
+                                    Row(
+
+                                        modifier = Modifier.fillMaxWidth(),
+
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+
+                                        verticalAlignment = Alignment.CenterVertically
+
+                                    ) {
+
+                                        IconButton(onClick = {
+
+                                            viewModel.changeMonth(false)
+
+                                        }) {
+
+                                            Icon(
+
+                                                imageVector = Icons.Default.ArrowBack,
+
+                                                contentDescription = "Mese precedente",
+
+                                                tint = Color(0xFF2F34BE)
+
+                                            )
+
                                         }
+
+
+                                        Text(
+                                            text = "$formattedDate",
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color(0xFF2F34BE)
+                                        )
+
+                                        IconButton(onClick = {
+
+                                            viewModel.changeMonth(true)
+
+                                        }) {
+
+                                            Icon(
+
+                                                imageVector = Icons.Default.ArrowForward,
+
+                                                contentDescription = "Mese successivo",
+
+                                                tint = Color(0xFF2F34BE)
+
+                                            )
+
+                                        }
+
                                     }
-                                )
+
+
+                                    // CalendarGrid composable
+
+                                    CalendarGrid(
+
+                                        calendarViewModel = viewModel,
+                                        daysInMonth = viewModel.getDaysInCurrentMonth(),
+                                        currentMonth = viewModel.currentMonth,
+                                        currentYear = viewModel.currentYear,
+                                        selectedStartDate = viewModel.selectedStartDate,
+                                        selectedEndDate = viewModel.selectedEndDate,
+                                        onDayClick = { day ->
+                                            viewModel.selectDay(day)
+                                        }
+                                    )
 
                                     // Bottone per confermare e chiudere il calendario
                                     Button(
                                         onClick = { isCalendarExpanded = false },
-                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2B85)),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(
+                                                0xFF1F2B85
+                                            )
+                                        ),
                                         modifier = Modifier.padding(top = 16.dp)
                                     ) {
                                         Text("Conferma", color = Color.White)
@@ -290,7 +291,7 @@ fun FeedCreationScreen(
                             }
                         }
                     }
-
+                }
                 item {
                     // Resto del codice per l'orario e la quantità
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -456,14 +457,7 @@ fun FeedCreationScreen(
                 item {
                     Button(
                         onClick = {
-                            viewModel.createFeedInDatabase(
-                                startDay = selectedStartDay,
-                                startMonth = selectedStartMonth,
-                                endMonth = selectedEndMonth,
-                                endDay = selectedEndDay,
-                                onSuccess = { onSave() },
-                                onError = { exception -> println("Errore: ${exception.message}") }
-                            )
+                             viewModel.saveFeed()
                         },
                         shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2B85)),

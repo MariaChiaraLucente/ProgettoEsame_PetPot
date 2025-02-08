@@ -7,7 +7,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.getValue
 
 data class User(
     val username: String = "",
@@ -21,6 +20,14 @@ data class User(
     var others: String = "",
     var vetName: String = "",
     var vetPhone: String = "",
+)
+
+data class Feed(
+    var id: String? = null,
+    val timeFix: String = "",
+    val dateStart: String, // Uses Date
+    val dateEnd: String,   // Uses Date
+    val quantity: Float = 0f
 )
 
 class PetPotModel {
@@ -116,5 +123,12 @@ class PetPotModel {
         db.child("users").child(userId).child("dogProfile").setValue(profile)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { onFailure("Errore nel salvataggio!") }
+    }
+
+    // ✅ SALVATAGGIO FEED NEL DATABASE
+    fun saveFeed(feed: Feed) {
+        val ref = db.child("feeds").push()
+        feed.id = ref.key
+        ref.setValue(feed)
     }
 }

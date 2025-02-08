@@ -26,12 +26,11 @@ import com.example.progettoesame_petpot.Registration.Device
 import com.example.progettoesame_petpot.Registration.DeviceConnected
 import com.example.progettoesame_petpot.Registration.Registration
 import com.example.progettoesame_petpot.Registration.VetContact
+import com.example.progettoesame_petpot.model.Feed
+import com.example.progettoesame_petpot.ui.CalendarScreen
+import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
 import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -42,9 +41,10 @@ fun AppNavigation() {
     val navController = rememberNavController() // Inizializza il NavController
     val currentScreen = remember { mutableStateOf("Home") }
     val navControllerCalendar = rememberNavController()
-    val events = remember { mutableStateListOf<Event>() }
+    val events = remember { mutableStateListOf<Feed>() }
     val registrationViewModel: RegistrationViewModel = viewModel()
     val homeViewModel: ProfileViewModel = viewModel()
+    val calendarViewModel = viewModel<CalendarViewModel>()
 
 
     NavHost(
@@ -67,38 +67,49 @@ fun AppNavigation() {
         composable("An_bio1") { AnimalBio1(navController, registrationViewModel) }
         composable("An_bio2") { AnimalBio2(navController, registrationViewModel) }
         composable("VetContact") { VetContact(navController, registrationViewModel) }
+
+
         composable("calendar") {
-            CalendarScreen(navController, events)
+
+            CalendarScreen(calendarViewModel, onNavigateToFeedCreation = {
+
+                val (startDate, endDate) = calendarViewModel.getStartAndEndDate()
+
+                val startDateString = startDate?.let { it.time.toString() } ?: "null"
+
+                val endDateString = endDate?.let { it.time.toString() } ?: "null"
+
+                navController.navigate("feedCreation/$startDateString/$endDateString")
+
+            })
+
         }
-        composable(
-            "newEvent/{selectedDay}/{selectedMonth}",
-            arguments = listOf(
-                navArgument("selectedDay") { type = NavType.IntType },
-                navArgument("selectedMonth") { type = NavType.IntType }
-            )
+//        composable(
+//            "newEvent/{selectedDay}/{selectedMonth}",
+//            arguments = listOf(
+//                navArgument("selectedDay") { type = NavType.IntType },
+//                navArgument("selectedMonth") { type = NavType.IntType }
+//            )
+//        ) {}
+
+
+        composable("calendar") {
+
+            CalendarScreen(calendarViewModel, onNavigateToFeedCreation = {
+
+                navController.navigate("feedCreation")
+
+            })
+
         }
 
-        composable(
-            route = "feedCreation/{startDay}/{endDay}/{startMonth}/{endMonth}",
-            arguments = listOf(
-                navArgument("startDay") { type = NavType.IntType },
-                navArgument("endDay") { type = NavType.IntType },
-                navArgument("startMonth") { type = NavType.IntType },
-                navArgument("endMonth") { type = NavType.IntType }
-            )
-        ) { backStackEntry ->
-            val startDay = backStackEntry.arguments?.getInt("startDay")
-            val endDay = backStackEntry.arguments?.getInt("endDay")
-            val startMonth = backStackEntry.arguments?.getInt("startMonth")
-            val endMonth = backStackEntry.arguments?.getInt("endMonth")
+
+        composable("feedCreation") {
 
             FeedCreationScreen(
-                startDay = startDay ?: 0,
-                endDay = endDay ?: 0,
-                startMonth = startMonth ?: 0,
-                endMonth = endMonth ?: 0,
-                onSave = { navController.popBackStack() }
+                viewModel = calendarViewModel // Pass the ViewModel directly
             )
+
         }
 
     }
