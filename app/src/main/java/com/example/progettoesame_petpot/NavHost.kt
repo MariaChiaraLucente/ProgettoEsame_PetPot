@@ -15,9 +15,10 @@ import androidx.navigation.navArgument
 import com.example.progettoesame_petpot.Calendar.Components.Event
 import com.example.progettoesame_petpot.Calendar.Components.NewEventScreen
 import com.example.progettoesame_petpot.Home.Components.Drawers
-import com.example.progettoesame_petpot.Home.componenti_fede.QuickFeed
+import com.example.progettoesame_petpot.QuickFeed.QuickFeed
 import com.example.progettoesame_petpot.Login.Caricamento
 import com.example.progettoesame_petpot.Login.Login
+import com.example.progettoesame_petpot.Recent.RecentFeedsScreen
 import com.example.progettoesame_petpot.Registration.AnimalBio1
 import com.example.progettoesame_petpot.Registration.AnimalBio2
 import com.example.progettoesame_petpot.Registration.BluetoothSearching
@@ -27,9 +28,6 @@ import com.example.progettoesame_petpot.Registration.Registration
 import com.example.progettoesame_petpot.Registration.VetContact
 import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +56,8 @@ fun AppNavigation() {
             val destination = backStackEntry.arguments?.getString("destination") ?: "HomePage"
             Caricamento(navController, destination)
         }
-        composable("Drawers") { Drawers(navController, homeViewModel.getProfile().userId, homeViewModel) }
+        composable("Drawers") { Drawers(navController, homeViewModel.getProfile()?.userId ?: "", homeViewModel) }
+        composable("Recent") { RecentFeedsScreen(navController) }
         composable("QuickFeed") { QuickFeed(navController) }
         composable("HomePage") { HomePage(navController) }
         composable("An_bio1") { AnimalBio1(navController, registrationViewModel) }

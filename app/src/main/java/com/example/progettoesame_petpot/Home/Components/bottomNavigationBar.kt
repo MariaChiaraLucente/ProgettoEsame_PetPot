@@ -44,7 +44,6 @@ import com.example.progettoesame_petpot.R
 fun BottomNavBar(
     selectedScreen: String,
     onScreenSelected: (String) -> Unit
-
 ) {
     val screens = listOf("calendar", "HomePage", "Recent")
     val icons = listOf(
@@ -146,17 +145,16 @@ fun BottomNavBar(
 
             // Icona centrale (Home)
             BottomNavIcon(
-                isSelected = selectedScreen == "HomePage",
+                isSelected = selectedScreen == "Drawers",
                 iconResId = R.drawable.home,
                 label = "Home",
-                onClick = { onScreenSelected("HomePage") },
+                onClick = { onScreenSelected("Drawers") },
                 modifier = Modifier
                     .align(Alignment.BottomCenter) // Allinea al centro della ciambella
                     .offset(y = (-150).dp), // Posizione più alta
                 verticalOffset = 10.dp // Offset specifico per Home
             )
         }
-
     }
 }
 
@@ -177,13 +175,16 @@ fun BottomNavIcon(
         targetValue = if (isSelected) 50.dp else 40.dp,
         animationSpec = tween(durationMillis = 300)
     )
+    val iconTint by animateColorAsState(
+        targetValue = if (isSelected) Color.White else Color.Gray,
+        animationSpec = tween(durationMillis = 300)
+    )
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .size(90.dp)
             .clip(CircleShape)
-            .background(backgroundColor)
             .clickable { onClick() }
             .offset(y = verticalOffset) // Applica l'offset verticale
     ) {
@@ -191,7 +192,7 @@ fun BottomNavIcon(
             painter = painterResource(id = iconResId),
             contentDescription = null,
             modifier = Modifier.size(iconSize),
-            tint = Color.White
+            tint = iconTint
         )
         Text(
             text = label,

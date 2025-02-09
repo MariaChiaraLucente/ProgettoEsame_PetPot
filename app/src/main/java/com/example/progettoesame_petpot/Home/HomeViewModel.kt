@@ -39,13 +39,11 @@ class ProfileViewModel(private val profileRepository: PetPotModel = PetPotModel(
         )
     }
 
-    fun getProfile(): User {
-        val user = profileRepository.getCurrentUser()
+    fun getProfile(): User? {
+        return profileRepository.getCurrentUser()
+    }
 
-        if (user != null) {
-            return user
-        }
-
-        throw IllegalStateException("User not found")
+    fun logout() {
+        profileRepository.clear()
     }
 }

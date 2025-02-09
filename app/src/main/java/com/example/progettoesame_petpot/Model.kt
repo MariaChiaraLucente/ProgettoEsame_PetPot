@@ -7,7 +7,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.getValue
+import java.util.Date
 
 data class User(
     val username: String = "",
@@ -23,16 +23,36 @@ data class User(
     var vetPhone: String = "",
 )
 
+data class Meal(
+    val id: String? = null,
+    val description: String = "",
+    val timeFix: String = "",
+    val dateStart: Date? = null, // Uses Date
+    val dateEnd: Date? = null,   // Uses Date
+    val quantity: Float = 0f,
+    val timestamp: Long = System.currentTimeMillis()
+)
+
 class PetPotModel {
 
     companion object {
-        var  currentUser: User? = null;
+        var currentUser: User? = null;
+        var meals: Array<Meal>? = null;
     }
 
     private val db: DatabaseReference = Firebase.database.reference
 
     fun getCurrentUser(): User? {
         return currentUser
+    }
+
+    fun getMeals(): Array<Meal>? {
+        return meals
+    }
+
+    fun clear() {
+        currentUser = null
+        meals = null
     }
 
     // ✅ LOGIN UTENTE
@@ -47,19 +67,20 @@ class PetPotModel {
                                 Log.d("Firebase", "Login riuscito!")
                                 currentUser = userSnapshot.getValue(User::class.java);
                                 onSuccess()
+                                return
                             }
                         }
                         Log.e("Firebase", "Password errata!")
-                        onFailure("Password errata!")
+                        onFailure("Wrong Password!")
                     } else {
-                        Log.e("Firebase", "Utente non trovato!")
-                        onFailure("Utente non trovato!")
+                        Log.e("Firebase", "User not found!")
+                        onFailure("User not found!")
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("Firebase", "Errore nel database", error.toException())
-                    onFailure("Errore di connessione!")
+                    onFailure("Connection Error!")
                 }
             })
     }
@@ -70,8 +91,8 @@ class PetPotModel {
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
-                        Log.e("Firebase", "Username già esistente!")
-                        onFailure("Username già esistente!")
+                        Log.e("Firebase", "Already existing User!")
+                        onFailure("Already existing User!")
                     } else {
                         val ref = db.child("users").push();
                         user.userId = ref.key.toString();
@@ -82,39 +103,64 @@ class PetPotModel {
                                 onSuccess()
                             }
                             .addOnFailureListener {
-                                Log.e("Firebase", "Errore nella registrazione", it)
-                                onFailure("Errore durante la registrazione!")
+                                Log.e("Firebase", "Registration Error", it)
+                                onFailure("Registration Error")
                             }
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("Firebase", "Errore nel database", error.toException())
-                    onFailure("Errore di connessione!")
+                    onFailure("Connection Error")
                 }
             })
     }
 
     fun getDogProfile(userId: String, onSuccess: (User) -> Unit, onFailure: (String) -> Unit) {
-        db.child("users").child(userId).child("dogProfile")
+        db.child("users").child(userId)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.getValue(User::class.java)?.let { profile ->
                         onSuccess(profile)
-                    } ?: onFailure("Nessun profilo trovato")
+                    } ?: onFailure("No profile found")
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("Firebase", "Errore nel recupero dati", error.toException())
-                    onFailure("Errore di connessione!")
+                    onFailure("Connection Error")
                 }
             })
     }
 
     // ✅ Aggiorna il profilo nel database
     fun updateDogProfile(userId: String, profile: User, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-        db.child("users").child(userId).child("dogProfile").setValue(profile)
+        db.child("users").child(userId).setValue(profile)
             .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { onFailure("Errore nel salvataggio!") }
+            .addOnFailureListener { onFailure("An error occurred during the saving") }
     }
+
+    fun saveMeal(feed: Meal, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        val ref = db.child("meals/${currentUser?.userId}").push()
+        val mealWithId = feed.copy(id = ref.key)
+
+        ref.setValue(mealWithId)
+            .addOnSuccessListener {
+                Log.d("Firebase", "Pasto salvato correttamente!")
+                onSuccess()
+            }
+            .addOnFailureListener { error ->
+                Log.e("Firebase", "Errore nel salvataggio del pasto", error)
+                onFailure("Errore nel salvataggio del pasto")
+            }
+    }
+
+    fun getRecentFeeds(callback: (List<Meal>) -> Unit) {
+        db.child("meals/${currentUser?.userId}").get().addOnSuccessListener { snapshot ->
+            val feeds = snapshot.children.mapNotNull { it.getValue(Meal::class.java) }
+            callback(feeds)
+        }.addOnFailureListener {
+            Log.e("Firebase", "Errore nel recupero dei feed", it)
+        }
+    }
+
 }
