@@ -80,19 +80,19 @@ class CalendarViewModel : ViewModel() {
             return // Blocca la selezione di date passate
         }
 
-        if (_selectedStartDate.value == null) {
+        if (_selectedStartDate.value == null || (_selectedStartDate.value != null && _selectedEndDate.value != null)) {
+            // Se startDate è nullo o entrambi sono settati, resettiamo e impostiamo solo startDate
             _selectedStartDate.value = selectedDate
-            _selectedEndDate.value = null
+            _selectedEndDate.value = selectedDate // Selezione singola → startDate = endDate
         } else if (_selectedEndDate.value == null) {
             if (selectedDate.after(_selectedStartDate.value)) {
                 _selectedEndDate.value = selectedDate
+            } else if (selectedDate == _selectedStartDate.value) {
+                _selectedEndDate.value = selectedDate // Se è lo stesso giorno, assegniamo entrambi
             } else {
                 _selectedStartDate.value = selectedDate
-                _selectedEndDate.value = null
+                _selectedEndDate.value = selectedDate // Se selezioniamo un altro giorno, resettiamo con entrambi uguali
             }
-        } else {
-            _selectedStartDate.value = selectedDate
-            _selectedEndDate.value = null
         }
 
         Log.d("Feed", "Selected Start Date: ${_selectedStartDate.value}")

@@ -65,7 +65,7 @@ fun FeedCreationScreen(
     var selectedQuantity by remember { mutableStateOf(100f) }
     var isCalendarExpanded by remember { mutableStateOf(false) }
 
-    val dateFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
     val currentDate = Calendar.getInstance().apply {
         set(Calendar.MONTH, viewModel.currentMonth)
         set(Calendar.YEAR, viewModel.currentYear)
@@ -121,7 +121,12 @@ fun FeedCreationScreen(
                             val (startDate, endDate) = viewModel.getStartAndEndDate()
 
                             val startDateFormatted = startDate?.let { dateFormat.format(it) } ?: "Non selezionato"
-                            val endDateFormatted = endDate?.let { dateFormat.format(it) } ?: "Non selezionato"
+                            val endDateFormatted = if (endDate != null) {
+                                dateFormat.format(endDate)
+                            } else {
+                                startDateFormatted // Se endDate è null, mostra startDate
+                            }
+
 
                             Box(
                                 modifier = Modifier
@@ -132,7 +137,7 @@ fun FeedCreationScreen(
                                     .padding(16.dp)
                             ) {
                                 Text(
-                                    text = "${startDate?.date ?: ""} $startDateFormatted",
+                                    text = "$startDateFormatted",
                                     fontSize = 16.sp,
                                     color = Color(0xFF2F34BE),
                                     fontWeight = FontWeight.Bold
@@ -148,7 +153,7 @@ fun FeedCreationScreen(
                                     .padding(16.dp)
                             ) {
                                 Text(
-                                    text = "${endDate?.date ?: ""} $endDateFormatted",
+                                    text = "$endDateFormatted",
                                     fontSize = 16.sp,
                                     color = Color(0xFF2F34BE),
                                     fontWeight = FontWeight.Bold
@@ -471,22 +476,6 @@ fun FeedCreationScreen(
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
-                    // Mostra il messaggio di errore se presente
-
-                    viewModel.errorMessage.value?.let { errorMessage ->
-
-                        Text(
-
-                            text = errorMessage,
-
-                            color = Color.Red,
-
-                            modifier = Modifier.padding(16.dp)
-
-                        )
-
-                    }
-
                 }
             }
         }
