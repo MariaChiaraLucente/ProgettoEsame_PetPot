@@ -471,6 +471,22 @@ fun FeedCreationScreen(
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
+                    // Mostra il messaggio di errore se presente
+
+                    viewModel.errorMessage.value?.let { errorMessage ->
+
+                        Text(
+
+                            text = errorMessage,
+
+                            color = Color.Red,
+
+                            modifier = Modifier.padding(16.dp)
+
+                        )
+
+                    }
+
                 }
             }
         }

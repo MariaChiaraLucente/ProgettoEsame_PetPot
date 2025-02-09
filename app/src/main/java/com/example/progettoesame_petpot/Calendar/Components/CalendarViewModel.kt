@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.progettoesame_petpot.model.Feed
 import com.example.progettoesame_petpot.model.PetPotModel
+
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -14,7 +15,7 @@ class CalendarViewModel : ViewModel() {
 
 
     private val calendar = Calendar.getInstance()
-
+    val errorMessage = mutableStateOf<String?>(null)
     // Usa mutableStateOf per il recompose immediato
     val _selectedStartDate = mutableStateOf<Date?>(null)
     val selectedStartDate: Date? get() = _selectedStartDate.value
@@ -28,10 +29,18 @@ class CalendarViewModel : ViewModel() {
     private val _currentYear = mutableStateOf(calendar.get(Calendar.YEAR))
     val currentYear: Int get() = _currentYear.value
 
+    val today = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+
+
+    }.time
+
+
 
     // Attributi del feed
-    val feedTitle = mutableStateOf("")
-    val feedDescription = mutableStateOf("")
     val feedOrarioFisso = mutableStateOf("12:00")
     val feedQuantita = mutableStateOf(100f)
 
@@ -57,10 +66,19 @@ class CalendarViewModel : ViewModel() {
 
 
     fun selectDay(day: Int) {
+
         calendar.set(Calendar.YEAR, _currentYear.value)
         calendar.set(Calendar.MONTH, _currentMonth.value)
         calendar.set(Calendar.DAY_OF_MONTH, day)
         val selectedDate = calendar.time
+
+
+// controllo che il giorno che sto selezionando non sia oggi
+        Log.d("CalendarViewModel", "Today: $today")
+        if (selectedDate.before(today)) {
+            Log.d("Feed", "Data non valida, non puoi selezionare il passato")
+            return // Blocca la selezione di date passate
+        }
 
         if (_selectedStartDate.value == null) {
             _selectedStartDate.value = selectedDate
@@ -128,26 +146,34 @@ class CalendarViewModel : ViewModel() {
 
     // Funzione per salvare il feed
     fun saveFeed() {
-
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val formattedStartDate = dateFormat.format(selectedStartDate?.time)
+        val formattedEndDate = dateFormat.format(selectedEndDate?.time)
 
+        petPotModel.getFeeds { existingFeeds ->
+            val alreadyExists = existingFeeds.any {
+                it.dateStart == formattedStartDate && it.timeFix == feedOrarioFisso.value
+            }
 
-        val formattedStartDate = dateFormat.format( selectedStartDate?.time)
-        val formattedEndDate = dateFormat.format(selectedEndDate?.time )
+            if (alreadyExists) {
+                errorMessage.value = "A feed already exists for this date and time!"
+                Log.d("Feed", "Esiste già un feed per questa data e ora!")
+                return@getFeeds
+            }
 
+            // Creazione del feed
+            val feed = Feed(
+                timeFix = feedOrarioFisso.value,
+                dateStart = formattedStartDate ?: "",
+                dateEnd = formattedEndDate ?: "",
+                quantity = feedQuantita.value,
+            )
 
-        // Crea il nuovo feed con i dati correnti
-        val feed = Feed(
-            timeFix = feedOrarioFisso.value,
-            dateStart = formattedStartDate ?: "",
-            dateEnd = formattedEndDate ?: "",
-            quantity = feedQuantita.value,
-        )
-
-        petPotModel.saveFeed(feed)
-        Log.d("Feed", "Feed: $feed")
+            petPotModel.saveFeed(feed)
+            Log.d("Feed", "Feed salvato con successo: $feed")
+            errorMessage.value = null
+        }
     }
-
 
     // Funzione per ripristinare i dati salvati (se necessario)
     fun restoreData(feed: Feed) {
@@ -156,6 +182,9 @@ class CalendarViewModel : ViewModel() {
         _selectedStartDate.value = Date(feed.dateStart)
         _selectedEndDate.value = if (feed.dateEnd > 0.toString()) Date(feed.dateEnd) else null
     }
+
+
+
 
 }
 

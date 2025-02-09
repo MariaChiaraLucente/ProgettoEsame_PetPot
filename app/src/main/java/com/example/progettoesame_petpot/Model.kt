@@ -25,10 +25,13 @@ data class User(
 data class Feed(
     var id: String? = null,
     val timeFix: String = "",
-    val dateStart: String, // Uses Date
-    val dateEnd: String,   // Uses Date
+    val dateStart: String= "", // Uses Date
+    val dateEnd: String= "",   // Uses Date
     val quantity: Float = 0f
-)
+){
+    // Costruttore senza argomenti richiesto da Firebase
+    constructor() : this(null, "", "", "", 0f)
+}
 
 class PetPotModel {
 
@@ -124,6 +127,26 @@ class PetPotModel {
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { onFailure("Errore nel salvataggio!") }
     }
+
+    fun getFeeds(callback: (List<Feed>) -> Unit) {
+        db.child("feeds").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val feedList = mutableListOf<Feed>()
+                for (child in snapshot.children) {
+                    val feed = child.getValue(Feed::class.java)
+                    feed?.let { feedList.add(it) }
+                }
+                callback(feedList)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("PetPotModel", "Errore nel recupero dei feed: ${error.message}")
+                callback(emptyList()) // Ritorna una lista vuota in caso di errore
+            }
+        })
+    }
+
+
 
     // ✅ SALVATAGGIO FEED NEL DATABASE
     fun saveFeed(feed: Feed) {
