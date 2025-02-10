@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -33,6 +34,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -49,7 +51,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.progettoesame_petpot.ui.CalendarGridFeed
-import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -61,11 +62,11 @@ import java.util.Locale
 
 fun FeedCreationScreen(
     navController: NavController,
-    viewModel: CalendarViewModel
+    viewModel: EventViewModel
 ) {
     val errorMessage by viewModel.errorCreationFeed.observeAsState()
 
-
+    var showDialog by remember { mutableStateOf(false) }
     var selectedHour by remember { mutableStateOf(12) }
     var selectedMinute by remember { mutableStateOf(0) }
     var selectedQuantity by remember { mutableStateOf(100f) }
@@ -93,7 +94,11 @@ fun FeedCreationScreen(
 
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White
+                        )
                     }
                 }
             )
@@ -103,8 +108,7 @@ fun FeedCreationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                ,
+                .padding(paddingValues),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -115,14 +119,16 @@ fun FeedCreationScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
 
-            ) {
+                ) {
                 item {
                     // Card cliccabile per selezionare i giorni
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
-                            .clickable { isCalendarExpanded = !isCalendarExpanded }, // Espandi o chiudi il calendario
+                            .clickable {
+                                isCalendarExpanded = !isCalendarExpanded
+                            }, // Espandi o chiudi il calendario
                         elevation = CardDefaults.cardElevation(8.dp),
                         shape = RoundedCornerShape(16.dp)
                     ) {
@@ -132,7 +138,8 @@ fun FeedCreationScreen(
                         ) {
                             val (startDate, endDate) = viewModel.getStartAndEndDate()
 
-                            val startDateFormatted = startDate?.let { dateFormat.format(it) } ?: "Non selezionato"
+                            val startDateFormatted =
+                                startDate?.let { dateFormat.format(it) } ?: "Non selezionato"
                             val endDateFormatted = if (endDate != null) {
                                 dateFormat.format(endDate)
                             } else {
@@ -294,8 +301,10 @@ fun FeedCreationScreen(
 
                                     // Bottone per confermare e chiudere il calendario
                                     Button(
-                                        onClick = { isCalendarExpanded = false
-                                           viewModel.completeSelection()},
+                                        onClick = {
+                                            isCalendarExpanded = false
+                                            viewModel.completeSelection()
+                                        },
                                         colors = ButtonDefaults.buttonColors(
                                             containerColor = Color(
                                                 0xFF1F2B85
@@ -484,8 +493,7 @@ fun FeedCreationScreen(
                     }
                     Button(
                         onClick = {
-                            viewModel.validateAndSaveFeed()
-                            viewModel.completeSelection()
+                            showDialog = true
                         },
                         shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2B85)),
@@ -503,5 +511,30 @@ fun FeedCreationScreen(
             }
         }
     }
-}
 
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "Confirm Save") },
+            text = { Text(text = "Are you sure you want to save this feed?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.validateAndSaveFeed()
+                        viewModel.completeSelection()
+                        showDialog = false
+                    }
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDialog = false }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+}

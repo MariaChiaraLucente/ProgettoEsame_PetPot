@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.progettoesame_petpot.Calendar.Components.EventViewModel
 import com.example.progettoesame_petpot.Calendar.Components.FeedCreationScreen
 import com.example.progettoesame_petpot.Calendar.Components.FeedDetailScreen
 import com.example.progettoesame_petpot.Home.Components.Drawers
@@ -31,6 +32,7 @@ import com.example.progettoesame_petpot.Registration.VetContact
 import com.example.progettoesame_petpot.model.Feed
 import com.example.progettoesame_petpot.ui.CalendarScreen
 import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
+
 import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
 import java.text.SimpleDateFormat
@@ -98,7 +100,7 @@ fun AppNavigation() {
         // Schermata di creazione del feed
         composable("feedCreation") {
             FeedCreationScreen(
-                viewModel = calendarViewModel,
+                viewModel = EventViewModel(),
                 navController = navController
             )
         }

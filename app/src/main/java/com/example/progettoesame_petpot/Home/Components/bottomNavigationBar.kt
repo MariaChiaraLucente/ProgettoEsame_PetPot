@@ -129,7 +129,7 @@ fun BottomNavBar(
                         onScreenSelected("calendar")
                         },
                     modifier = Modifier.offset(x = 22.dp),
-                    verticalOffset = 10.dp // Più in basso rispetto a Home
+                    verticalOffset = 1.dp // Più in basso rispetto a Home
                 )
 
                 // Recent
@@ -141,6 +141,7 @@ fun BottomNavBar(
                     modifier = Modifier.offset(x = (-22).dp),
                     verticalOffset = 10.dp // Più in basso rispetto a Home
                 )
+
             }
 
             // Icona centrale (Home)

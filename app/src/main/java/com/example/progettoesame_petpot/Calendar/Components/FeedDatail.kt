@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -102,7 +103,7 @@ fun FeedDetailScreen(
 }
 
 @Composable
-fun FeedCard(feed: Feed) {
+fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewModel()) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -115,6 +116,16 @@ fun FeedCard(feed: Feed) {
         ) {
             Text(text = "Time: ${feed.timeFix}", style = MaterialTheme.typography.bodyLarge)
             Text(text = "Quantity: ${feed.quantity}g", style = MaterialTheme.typography.bodyLarge)
+            IconButton(
+                onClick = {  calendarViewModel.deleteFeed(feed) },
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete Feed",
+                    tint = Color.Red
+                )
+            }
         }
     }
 }

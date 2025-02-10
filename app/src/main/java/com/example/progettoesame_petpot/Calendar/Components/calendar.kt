@@ -1,5 +1,6 @@
 package com.example.progettoesame_petpot.ui
 
+import BottomNavBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.progettoesame_petpot.Calendar.Components.EventViewModel
 import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -138,6 +140,11 @@ fun CalendarScreen(
             ) {
                 Text(text = "New Event")
             }
+
+            BottomNavBar(
+                selectedScreen = "Calendar",
+                onScreenSelected = { navController.navigate(it) }
+            )
         }
     }
 }
@@ -253,7 +260,7 @@ fun CalendarGrid(
 
 @Composable
 fun CalendarGridFeed(
-    calendarViewModel: CalendarViewModel,
+    calendarViewModel: EventViewModel,
     daysInMonth: Int,
     currentMonth: Int,
     currentYear: Int,

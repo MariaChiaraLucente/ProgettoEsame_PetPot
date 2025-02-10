@@ -7,7 +7,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DatabaseError
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 data class User(
     val username: String = "",
@@ -34,14 +36,15 @@ data class Meal(
 )
 
 data class Feed(
-    var id: String? = null,
+    val id: String? = null,
     val timeFix: String = "",
-    val dateStart: String= "", // Uses Date
-    val dateEnd: String= "",   // Uses Date
-    val quantity: Float = 0f
-){
+    val dateStart: Date? = null, // Uses Date
+    val dateEnd: Date? = null,   // Uses Date
+    val quantity: Float = 0f,
+    val timestamp: Long = System.currentTimeMillis()
+) {
     // Costruttore senza argomenti richiesto da Firebase
-    constructor() : this(null, "", "", "", 0f)
+    constructor() : this(null, "", null, null, 0f, System.currentTimeMillis())
 }
 
 class PetPotModel {
@@ -175,16 +178,47 @@ class PetPotModel {
     }
 
 
+    fun deleteFeed(feed: Feed) {
+        val userId = currentUser?.userId ?: return
+        val ref = db.child("feeds/$userId/${feed.id}")
+
+        ref.removeValue().addOnSuccessListener {
+            Log.d("CalendarViewModel", "Feed eliminato con successo")
+        }.addOnFailureListener { e ->
+            Log.e("CalendarViewModel", "Errore nell'eliminazione del feed: ${e.message}")
+        }
+    }
+
+
     fun getFeeds(callback: (List<Feed>) -> Unit) {
-        db.child("feeds").addListenerForSingleValueEvent(object : ValueEventListener {
+       db.child("feeds/${currentUser?.userId}").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val feedList = mutableListOf<Feed>()
-                for (child in snapshot.children) {
-                    val feed = child.getValue(Feed::class.java)
-                    feed?.let { feedList.add(it) }
-                }
-                callback(feedList)
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+            for (child in snapshot.children) {
+                val id = child.child("id").getValue(String::class.java)
+                val timeFix = child.child("timeFix").getValue(String::class.java) ?: ""
+                val dateStartStr = child.child("dateStart").getValue(String::class.java) ?: ""
+                val dateEndStr = child.child("dateEnd").getValue(String::class.java) ?: ""
+                val quantity = child.child("quantity").getValue(Float::class.java) ?: 0f
+                val timestamp = child.child("timestamp").getValue(Long::class.java) ?: System.currentTimeMillis()
+
+                val dateStart = if (dateStartStr.isNotEmpty()) dateFormat.parse(dateStartStr) else null
+                val dateEnd = if (dateEndStr.isNotEmpty()) dateFormat.parse(dateEndStr) else null
+
+                val feed = Feed(
+                    id = id,
+                    timeFix = timeFix,
+                    dateStart = dateStart,
+                    dateEnd = dateEnd,
+                    quantity = quantity,
+                    timestamp = timestamp
+                )
+                feedList.add(feed)
             }
+            callback(feedList)
+        }
 
             override fun onCancelled(error: DatabaseError) {
                 Log.e("PetPotModel", "Errore nel recupero dei feed: ${error.message}")
@@ -195,10 +229,21 @@ class PetPotModel {
 
 
 
+
     // ✅ SALVATAGGIO FEED NEL DATABASE
     fun saveFeed(feed: Feed) {
-        val ref = db.child("feeds").push()
-        feed.id = ref.key
+        val ref = db.child("feeds/${currentUser?.userId}").push()
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+        val feed = mapOf(
+            "id" to ref.key,
+            "timeFix" to feed.timeFix,
+            "dateStart" to (feed.dateStart?.let { dateFormat.format(it) } ?: ""),
+            "dateEnd" to (feed.dateEnd?.let { dateFormat.format(it) } ?: ""),
+            "quantity" to feed.quantity,
+            "timestamp" to feed.timestamp
+        )
+
         ref.setValue(feed)
     }
 }
