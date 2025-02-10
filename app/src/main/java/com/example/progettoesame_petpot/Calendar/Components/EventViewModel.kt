@@ -6,8 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.progettoesame_petpot.model.Feed
+import com.example.progettoesame_petpot.model.Meal
 import com.example.progettoesame_petpot.model.PetPotModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -32,6 +37,9 @@ class EventViewModel : ViewModel() {
     val feedQuantita = mutableStateOf(100f)
     val today: Date = normalizeDate(Date())
     private val daysInMonths = listOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+
+    private val _recentFeedsMari = MutableStateFlow<List<Feed>>(emptyList())
+    val recentFeedsMari: StateFlow<List<Feed>> = _recentFeedsMari
 
 
     fun normalizeDate(date: Date): Date {
@@ -200,6 +208,14 @@ class EventViewModel : ViewModel() {
         } else {
             saveFeed()
             _errorCreationFeed.value = null
+        }
+    }
+
+    private fun fetchRecentFeedsMari() {
+        viewModelScope.launch {
+            petPotModel.getFeeds { feeds ->
+                _recentFeedsMari.value = feeds.sortedByDescending { it.timestamp } // 🆕 Ordina per data
+            }
         }
     }
 }

@@ -90,59 +90,66 @@ fun CalendarScreen(
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+            Column(
+                modifier = Modifier.fillMaxWidth().height(630.dp).padding(16.dp),
             ) {
-                IconButton(
-                    onClick = { calendarViewModel.changeMonth(forward = false) },
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Previous Month",
-                        tint = Color.White
+                    IconButton(
+                        onClick = { calendarViewModel.changeMonth(forward = false) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Previous Month",
+                            tint = Color.White
+                        )
+                    }
+
+                    Text(
+                        text = "${monthNames[currentMonth]} $currentYear",
+                        style = MaterialTheme.typography.headlineSmall
+
                     )
+
+                    IconButton(
+                        onClick = { calendarViewModel.changeMonth(forward = true) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowForward,
+                            contentDescription = "Next Month",
+                            tint = Color.White
+                        )
+                    }
                 }
 
-                Text(
-                    text = "${monthNames[currentMonth]} $currentYear",
-                    style = MaterialTheme.typography.headlineSmall
-
+                CalendarGrid(
+                    navController = navController,
+                    calendarViewModel = calendarViewModel,
+                    daysInMonth = calendarViewModel.getDaysInCurrentMonth(),
+                    currentMonth = currentMonth,
+                    currentYear = currentYear,
                 )
 
-                IconButton(
-                    onClick = { calendarViewModel.changeMonth(forward = true) },
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {
+                        onNavigateToFeedCreation()
+//                    calendarViewModel.completeSelection()
+                    },
+                    shape = CircleShape
                 ) {
-                    Icon(imageVector = Icons.Filled.ArrowForward, contentDescription = "Next Month", tint = Color.White)
+                    Text(text = "New Event")
                 }
             }
-
-            CalendarGrid(
-                navController = navController,
-                calendarViewModel = calendarViewModel,
-                daysInMonth = calendarViewModel.getDaysInCurrentMonth(),
-                currentMonth = currentMonth,
-                currentYear = currentYear,
-            )
-
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = {
-                    onNavigateToFeedCreation()
-//                    calendarViewModel.completeSelection()
-                },
-                shape = CircleShape
-            ) {
-                Text(text = "New Event")
-            }
-
             BottomNavBar(
-                selectedScreen = "Calendar",
+                selectedScreen = "calendar",
                 onScreenSelected = { navController.navigate(it) }
             )
         }

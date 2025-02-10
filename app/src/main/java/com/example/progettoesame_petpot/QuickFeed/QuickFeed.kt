@@ -21,12 +21,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.progettoesame_petpot.AutoDismissPopup
 import com.example.progettoesame_petpot.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = viewModel()) {
     var showMessage by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize().background(Color(0xFF5576B4))
@@ -83,7 +85,9 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
                 Button(
                     onClick = {
                         viewModel.saveMeal(
-                            onSuccess = { navController.navigate("Drawers") },
+                            onSuccess = {
+                                showDialog = true
+                                        },
                             onFailure = { showMessage = it }
                         )
                     },
@@ -97,6 +101,17 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
                 if (showMessage.isNotEmpty()) {
                     Text(showMessage, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
                 }
+                if (showDialog) {
+                    AutoDismissPopup(
+                        message = "Feeded successfully!",
+                        onDismiss = {
+                            showDialog = false
+                            navController.navigate("Drawers")
+                        }
+                    )
+                }
+
+
             }
         }
     }
