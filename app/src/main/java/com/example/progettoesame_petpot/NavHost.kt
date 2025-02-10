@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.progettoesame_petpot.Calendar.Components.FeedCreationScreen
+import com.example.progettoesame_petpot.Calendar.Components.FeedDetailScreen
 import com.example.progettoesame_petpot.Home.Components.Drawers
 import com.example.progettoesame_petpot.Home.componenti_fede.QuickFeed
 import com.example.progettoesame_petpot.Login.Caricamento
@@ -31,6 +32,9 @@ import com.example.progettoesame_petpot.ui.CalendarScreen
 import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
 import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -57,11 +61,20 @@ fun AppNavigation() {
         composable("device") { Device(navController) }
         composable("login") { Login(navController) }
         composable("registration") { Registration(navController, registrationViewModel) }
-        composable("caricamento/{destination}", arguments = listOf(navArgument("destination") { type = NavType.StringType })) { backStackEntry ->
+        composable(
+            "caricamento/{destination}",
+            arguments = listOf(navArgument("destination") { type = NavType.StringType })
+        ) { backStackEntry ->
             val destination = backStackEntry.arguments?.getString("destination") ?: "HomePage"
             Caricamento(navController, destination)
         }
-        composable("Drawers") { Drawers(navController, homeViewModel.getProfile().userId, homeViewModel) }
+        composable("Drawers") {
+            Drawers(
+                navController,
+                homeViewModel.getProfile().userId,
+                homeViewModel
+            )
+        }
         composable("QuickFeed") { QuickFeed(navController) }
         composable("HomePage") { HomePage(navController) }
         composable("An_bio1") { AnimalBio1(navController, registrationViewModel) }
@@ -70,49 +83,32 @@ fun AppNavigation() {
 
 
         composable("calendar") {
-
-            CalendarScreen(calendarViewModel, onNavigateToFeedCreation = {
-
-                val (startDate, endDate) = calendarViewModel.getStartAndEndDate()
-
-                val startDateString = startDate?.let { it.time.toString() } ?: "null"
-
-                val endDateString = endDate?.let { it.time.toString() } ?: "null"
-
-                navController.navigate("feedCreation/$startDateString/$endDateString")
-
-            })
-
-        }
-//        composable(
-//            "newEvent/{selectedDay}/{selectedMonth}",
-//            arguments = listOf(
-//                navArgument("selectedDay") { type = NavType.IntType },
-//                navArgument("selectedMonth") { type = NavType.IntType }
-//            )
-//        ) {}
-
-
-        composable("calendar") {
-
-            CalendarScreen(calendarViewModel, onNavigateToFeedCreation = {
-
-                navController.navigate("feedCreation")
-
-            })
-
-        }
-
-
-        composable("feedCreation") {
-
-            FeedCreationScreen(
-                viewModel = calendarViewModel // Pass the ViewModel directly
+            CalendarScreen(
+                navController = navController,
+                calendarViewModel = calendarViewModel,
+                onNavigateToFeedCreation = {
+                    // Navigazione verso la creazione del feed senza parametri specifici (se non richiesto)
+                    navController.navigate("feedCreation")
+                }
             )
-
         }
-
+        composable("feedDetail/{selectedDate}") { backStackEntry ->
+            val selectedDateString = backStackEntry.arguments?.getString("selectedDate")
+            val selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(selectedDateString ?: "")
+            if (selectedDate != null) {
+                FeedDetailScreen(navController = navController, calendarViewModel = CalendarViewModel(), selectedDate = selectedDate)
+            }
+        }
+        // Schermata di creazione del feed
+        composable("feedCreation") {
+            FeedCreationScreen(
+                viewModel = calendarViewModel,
+                navController = navController
+            )
+        }
     }
 }
+
+
 
 

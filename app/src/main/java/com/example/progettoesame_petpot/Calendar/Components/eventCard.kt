@@ -43,10 +43,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.progettoesame_petpot.ui.CalendarGrid
+import androidx.navigation.NavController
+import com.example.progettoesame_petpot.ui.CalendarGridFeed
 import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -58,8 +60,12 @@ import java.util.Locale
 @Composable
 
 fun FeedCreationScreen(
+    navController: NavController,
     viewModel: CalendarViewModel
 ) {
+    val errorMessage by viewModel.errorCreationFeed.observeAsState()
+
+
     var selectedHour by remember { mutableStateOf(12) }
     var selectedMinute by remember { mutableStateOf(0) }
     var selectedQuantity by remember { mutableStateOf(100f) }
@@ -84,6 +90,12 @@ fun FeedCreationScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF1F2B85)
                 ),
+
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                    }
+                }
             )
         },
         containerColor = Color.Transparent
@@ -267,7 +279,7 @@ fun FeedCreationScreen(
 
                                     // CalendarGrid composable
 
-                                    CalendarGrid(
+                                    CalendarGridFeed(
 
                                         calendarViewModel = viewModel,
                                         daysInMonth = viewModel.getDaysInCurrentMonth(),
@@ -282,7 +294,8 @@ fun FeedCreationScreen(
 
                                     // Bottone per confermare e chiudere il calendario
                                     Button(
-                                        onClick = { isCalendarExpanded = false },
+                                        onClick = { isCalendarExpanded = false
+                                           viewModel.completeSelection()},
                                         colors = ButtonDefaults.buttonColors(
                                             containerColor = Color(
                                                 0xFF1F2B85
@@ -460,9 +473,19 @@ fun FeedCreationScreen(
                 }
 
                 item {
+
+
+                    if (errorMessage != null) {
+                        Text(
+                            text = errorMessage!!,
+                            color = Color.Red,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
                     Button(
                         onClick = {
-                             viewModel.saveFeed()
+                            viewModel.validateAndSaveFeed()
+                            viewModel.completeSelection()
                         },
                         shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2B85)),

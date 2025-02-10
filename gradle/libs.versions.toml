@@ -14,6 +14,7 @@ firebaseBom = "32.5.0"
 firebaseDatabaseVersion = "21.0.0"
 navigationRuntimeKtx = "2.8.4"
 navigationCompose = "2.8.4"
+runtimeLivedata = "1.7.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,6 +36,7 @@ firebase-database-ktx = { group = "com.google.firebase", name = "firebase-databa
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabaseVersion" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
