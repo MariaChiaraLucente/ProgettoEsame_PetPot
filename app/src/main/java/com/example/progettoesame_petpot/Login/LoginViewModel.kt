@@ -18,7 +18,7 @@ class LoginViewModel(private val userRepository: PetPotModel = PetPotModel()) : 
             viewModelScope.launch {
                 userRepository.loginUser(username, password,
                     onSuccess = {
-                        loginMessage = "Login riuscito!"
+                        loginMessage = "Login successful!"
                         onSuccess()
                     },
                     onFailure = { error ->
@@ -28,8 +28,8 @@ class LoginViewModel(private val userRepository: PetPotModel = PetPotModel()) : 
                 )
             }
         } else {
-            loginMessage = "Username o password vuoti!"
-            onFailure("Username o password vuoti!")
+            loginMessage = "Username or password cannot be empty!"
+            onFailure("Username or password cannot be empty!")
         }
     }
 }

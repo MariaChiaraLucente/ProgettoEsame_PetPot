@@ -17,9 +17,10 @@ import androidx.navigation.navArgument
 import com.example.progettoesame_petpot.Calendar.Components.FeedCreationScreen
 import com.example.progettoesame_petpot.Calendar.Components.FeedDetailScreen
 import com.example.progettoesame_petpot.Home.Components.Drawers
-import com.example.progettoesame_petpot.Home.componenti_fede.QuickFeed
+import com.example.progettoesame_petpot.QuickFeed.QuickFeed
 import com.example.progettoesame_petpot.Login.Caricamento
 import com.example.progettoesame_petpot.Login.Login
+import com.example.progettoesame_petpot.Recent.RecentFeedsScreen
 import com.example.progettoesame_petpot.Registration.AnimalBio1
 import com.example.progettoesame_petpot.Registration.AnimalBio2
 import com.example.progettoesame_petpot.Registration.BluetoothSearching
@@ -68,13 +69,8 @@ fun AppNavigation() {
             val destination = backStackEntry.arguments?.getString("destination") ?: "HomePage"
             Caricamento(navController, destination)
         }
-        composable("Drawers") {
-            Drawers(
-                navController,
-                homeViewModel.getProfile().userId,
-                homeViewModel
-            )
-        }
+        composable("Drawers") { Drawers(navController, homeViewModel.getProfile()?.userId ?: "", homeViewModel) }
+        composable("Recent") { RecentFeedsScreen(navController) }
         composable("QuickFeed") { QuickFeed(navController) }
         composable("HomePage") { HomePage(navController) }
         composable("An_bio1") { AnimalBio1(navController, registrationViewModel) }

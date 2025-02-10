@@ -28,6 +28,7 @@ import com.example.progettoesame_petpot.R
 import android.graphics.Paint as NativePaint
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.zIndex
+import com.example.progettoesame_petpot.Home.Components.FoodSelector
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
@@ -49,6 +50,7 @@ fun FoodDispenserView(
         bowlLevel > 0.3f -> arrayOf(bowlLevel to Color(0xFFD3A85F), bowlLevel to Color.White) // Orange
         else -> arrayOf(bowlLevel to Color(0xFFCA413F), bowlLevel to Color.White)
     }
+    var selectedFood by remember { mutableStateOf("Meat") }
     Box(modifier = modifier ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -152,6 +154,14 @@ fun FoodDispenserView(
                     .offset(y = (-40).dp)
                     .zIndex(1f)
             )
+        }
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp).offset(x = (50).dp, y = (270).dp)
+        ) {
+            // ✅ Aggiungiamo il selettore del cibo
+            FoodSelector(selectedFood = selectedFood) { newFood ->
+                selectedFood = newFood
+            }
         }
     }
 }

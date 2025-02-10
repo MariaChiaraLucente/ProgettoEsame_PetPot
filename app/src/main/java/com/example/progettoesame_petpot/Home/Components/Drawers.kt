@@ -46,12 +46,11 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
     var isDarkMode by remember { mutableStateOf(false) }
     var isDeafMode by remember { mutableStateOf(false) }
     var isNotificationsActive by remember { mutableStateOf(false) }
-    var showGif by remember { mutableStateOf(false) }
-    var breed by remember { mutableStateOf("Golden Retriever") }
-    var favoriteFood by remember { mutableStateOf("Meat") }
-    var allergies by remember { mutableStateOf("Cats") }
-    var vetName by remember { mutableStateOf("Mario Rossi") }
-    var vetPhone by remember { mutableStateOf("0123456789") }
+    var breed by remember { mutableStateOf("") }
+    var favoriteFood by remember { mutableStateOf("") }
+    var allergies by remember { mutableStateOf("") }
+    var vetName by remember { mutableStateOf("") }
+    var vetPhone by remember { mutableStateOf("") }
 
     var isEditMode by remember { mutableStateOf(false) }
 
@@ -59,7 +58,21 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
         profileViewModel.loadProfile(userId)
     }
 
-    val dogProfile = profileViewModel.getProfile()
+    val dogProfile = profileViewModel.dogProfile
+
+    LaunchedEffect(dogProfile) {
+        breed = dogProfile.breed
+        favoriteFood = dogProfile.favoriteFood
+        allergies = dogProfile.allergies
+        vetName = dogProfile.vetName
+        vetPhone = dogProfile.vetPhone
+    }
+
+    LaunchedEffect(showRightDrawer) {
+        if (!showRightDrawer) {
+            isEditMode = false
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -253,15 +266,6 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                                 .size(50.dp)
                                 .align(Alignment.End)
                         )
-                        /*
-                        Image(
-                            painter = painterResource(R.drawable.user),
-                            contentDescription = "Profile Picture",
-                            modifier = Modifier
-                                .size(100.dp)
-                                .align(Alignment.CenterHorizontally)
-                        )
-                         */
                         Spacer(modifier = Modifier.height(16.dp))
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -275,17 +279,29 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                                 )
                             }
                             Spacer(modifier = Modifier.weight(1f))
-                            Text("Edit", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
                         }
                         Spacer(modifier = Modifier.height(36.dp))
                         if (isEditMode) {
-                            EditableTextField("Breed:", dogProfile.breed) { profileViewModel.updateProfile(userId, dogProfile.copy(breed = it)) }
-                            EditableTextField("Favorite Food:", dogProfile.favoriteFood) { profileViewModel.updateProfile(userId, dogProfile.copy(favoriteFood = it)) }
-                            EditableTextField("Allergies:", dogProfile.allergies) { profileViewModel.updateProfile(userId, dogProfile.copy(allergies = it)) }
-                            EditableTextField("Vet Name:", dogProfile.vetName) { profileViewModel.updateProfile(userId, dogProfile.copy(vetName = it)) }
-                            EditableTextField("Vet Phone:", dogProfile.vetPhone) { profileViewModel.updateProfile(userId, dogProfile.copy(vetPhone = it)) }
+                            EditableTextField("Breed:", breed) { breed = it }
+                            EditableTextField("Favorite Food:", favoriteFood) { favoriteFood = it }
+                            EditableTextField("Allergies:", allergies) { allergies = it }
+                            EditableTextField("Vet Name:", vetName) { vetName = it }
+                            EditableTextField("Vet Phone:", vetPhone) { vetPhone = it }
 
-                            Button(onClick = { isEditMode = false }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                            Button(
+                                onClick = {
+                                    isEditMode = false
+                                    val updatedProfile = dogProfile.copy(
+                                        breed = breed,
+                                        favoriteFood = favoriteFood,
+                                        allergies = allergies,
+                                        vetName = vetName,
+                                        vetPhone = vetPhone
+                                    )
+                                    profileViewModel.updateProfile(userId, updatedProfile)
+                                },
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            ) {
                                 Text("Save")
                             }
                         } else {
@@ -296,8 +312,15 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                             ProfileInfoRow("Vet Name:", dogProfile.vetName)
                             ProfileInfoRow("Vet Phone:", dogProfile.vetPhone)
                             Spacer(modifier = Modifier.weight(1f))
-                            Text("Logout", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.align(Alignment.CenterHorizontally))
-                        }
+                            Button(
+                                onClick = {
+                                    navController.navigate("login")
+                                    profileViewModel.logout()
+                                },
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            ) {
+                                Text("Logout")
+                            }                        }
 
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -314,6 +337,7 @@ fun ProfileInfoRow(label: String, value: String) {
         Text("$label ", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
         Text(value, fontSize = 24.sp, fontWeight = FontWeight.Light, color = Color.White)
     }
+    Spacer( modifier = Modifier.height(16.dp) )
 }
 
 // ✅ Componente per campi editabili

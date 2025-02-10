@@ -39,7 +39,7 @@ import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 
 //@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnimalBio1(navController: NavHostController, registrationViewModel: RegistrationViewModel = RegistrationViewModel()) { //tra parentesi c'era navController: NavHostController
+fun AnimalBio1(navController: NavHostController, registrationViewModel: RegistrationViewModel = RegistrationViewModel()) {
     val image1: Painter = painterResource(R.drawable.dog1)
     val image2: Painter = painterResource(R.drawable.dog2)
     val image3: Painter = painterResource(R.drawable.dog3)
@@ -47,6 +47,9 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
     val imagebaby: Painter = painterResource(R.drawable.baby_dog)
     val imageyoung: Painter = painterResource(R.drawable.young_dog)
     val imageold: Painter = painterResource(R.drawable.old_dog)
+
+    var selectedSize by remember { mutableStateOf("") }
+    var selectedAge by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -77,67 +80,9 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .width(92.dp)
-                    .height(92.dp)
-                    .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
-                    .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(size = "Small") }
-                    .padding(8.dp)
-            ) {
-                Image(
-                    painter = image1,
-                    contentDescription = "Small",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(39.dp)
-                        .height(39.dp)
-                )
-                Text(text = "S", color = Color.White, fontWeight = FontWeight.Bold)
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .width(104.dp)
-                    .height(104.dp)
-                    .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
-                    .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(size = "Medium") }
-                    .padding(8.dp)
-            ) {
-                Image(
-                    painter = image2,
-                    contentDescription = "Medium",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(55.dp)
-                        .height(55.dp)
-                )
-                Text(text = "M", color = Color.White, fontWeight = FontWeight.Bold)
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .width(117.dp)
-                    .height(117.dp)
-                    .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
-                    .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(size = "Large") }
-                    .padding(8.dp)
-            ) {
-                Image(
-                    painter = image3,
-                    contentDescription = "Large",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(70.dp)
-                        .height(70.dp)
-                )
-                Text(text = "L", color = Color.White, fontWeight = FontWeight.Bold)
-            }
+            SizeOption(image1, 92, 39, "Small", selectedSize) { selectedSize = "Small"; registrationViewModel.user = registrationViewModel.user.copy(size = "Small") }
+            SizeOption(image2, 104, 55, "Medium", selectedSize) { selectedSize = "Medium"; registrationViewModel.user = registrationViewModel.user.copy(size = "Medium") }
+            SizeOption(image3, 117, 70, "Large", selectedSize) { selectedSize = "Large"; registrationViewModel.user = registrationViewModel.user.copy(size = "Large") }
         }
         Spacer(modifier = Modifier.height(20.dp))
         Text(
@@ -153,68 +98,10 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .width(92.dp)
-                    .height(92.dp)
-                    .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
-                    .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(age = "0-3 years") }
-                    .padding(8.dp)
-            ) {
-                Image(
-                    painter = imagebaby,
-                    contentDescription = "baby",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(47.dp)
-                        .height(47.dp)
-                )
-                Text(text = "0-3 years", color = Color.White, fontSize = 14.sp)
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .width(104.dp)
-                    .height(104.dp)
-                    .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
-                    .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(age = "4-9 years") }
-                    .padding(8.dp)
-            ) {
-                Image(
-                    painter = imageyoung,
-                    contentDescription = "young",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(57.dp)
-                        .height(57.dp)
-                )
-                Text(text = "4-9 years", color = Color.White, fontSize = 14.sp)
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .width(117.dp)
-                    .height(117.dp)
-                    .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
-                    .border(BorderStroke(2.dp, Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
-                    .clickable { registrationViewModel.user = registrationViewModel.user.copy(age = "over 10 years") }
-                    .padding(8.dp)
-            ) {
-                Image(
-                    painter = imageold,
-                    contentDescription = "old",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(64.dp)
-                        .height(64.dp)
-                )
-                Text(text = "over 10 years", color = Color.White, fontSize = 14.sp)
-            }
+            AgeOption(imagebaby, 92, 39, "0-3 years", selectedAge) { selectedAge = "0-3 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "0-3 years") }
+            AgeOption(imageyoung, 104, 55, "4-9 years", selectedAge) { selectedAge = "4-9 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "4-9 years") }
+            AgeOption(imageold, 117, 70, "> 10 years", selectedAge) { selectedAge = "over 10 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "over 10 years") }
         }
-
 
         Spacer(modifier = Modifier.height(55.dp))
         Button(
@@ -225,7 +112,57 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
             modifier = Modifier.width(180.dp).height(45.dp),
             border = BorderStroke(2.dp, Color.Black)
         ) {
-            Text("Next" , color = Color.White, fontSize = 16.sp)
+            Text("Next", color = Color.White, fontSize = 16.sp)
         }
+    }
+}
+
+@Composable
+fun SizeOption(image: Painter, width: Int, imgWidth: Int, size: String, selectedSize: String, onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .width(width.dp)
+            .height(width.dp)
+            .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
+            .border(BorderStroke(2.dp, if (selectedSize == size) Color.Yellow else Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
+            .clickable { onClick() }
+            .padding(8.dp)
+    ) {
+        Image(
+            painter = image,
+            contentDescription = size,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .width(imgWidth.dp)
+                .height(imgWidth.dp)
+        )
+        Text(text = size.first().toString(), color = Color.White, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+fun AgeOption(image: Painter, width: Int, imgWidth: Int, age: String, selectedAge: String, onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .width(width.dp)
+            .height(width.dp)
+            .background(Color(0xFF456883), shape = RoundedCornerShape(20.dp))
+            .border(BorderStroke(2.dp, if (selectedAge == age) Color.Yellow else Color(0xFF2E3EB8)), shape = RoundedCornerShape(20))
+            .clickable { onClick() }
+            .padding(8.dp)
+    ) {
+        Image(
+            painter = image,
+            contentDescription = age,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .width(imgWidth.dp)
+                .height(imgWidth.dp)
+        )
+        Text(text = age, color = Color.White, fontSize = 14.sp, modifier = Modifier.align(Alignment.CenterHorizontally))
     }
 }

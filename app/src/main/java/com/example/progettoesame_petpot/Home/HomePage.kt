@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,7 +52,7 @@ fun HomePage(navController: NavController) {
 
         // Barra inferiore con icone
         BottomNavBar(
-            selectedScreen = "Home",
+            selectedScreen = "Drawers",
             onScreenSelected = { navController.navigate(it) }
         )
     }
