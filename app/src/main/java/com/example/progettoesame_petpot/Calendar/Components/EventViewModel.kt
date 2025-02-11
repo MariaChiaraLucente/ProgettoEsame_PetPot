@@ -38,8 +38,8 @@ class EventViewModel : ViewModel() {
     val today: Date = normalizeDate(Date())
     private val daysInMonths = listOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 
-    private val _recentFeedsMari = MutableStateFlow<List<Feed>>(emptyList())
-    val recentFeedsMari: StateFlow<List<Feed>> = _recentFeedsMari
+    private val _recentFeedsCalendar = MutableStateFlow<List<Feed>>(emptyList())
+    val recentFeedsCalendar: StateFlow<List<Feed>> = _recentFeedsCalendar
 
 
     fun normalizeDate(date: Date): Date {
@@ -240,4 +240,5 @@ class EventViewModel : ViewModel() {
             }
         )
     }
+
 }

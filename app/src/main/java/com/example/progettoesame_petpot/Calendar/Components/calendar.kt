@@ -143,7 +143,8 @@ fun CalendarScreen(
                         onNavigateToFeedCreation()
 //                    calendarViewModel.completeSelection()
                     },
-                    shape = CircleShape
+                    shape = CircleShape,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text(text = "New Event")
                 }
