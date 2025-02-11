@@ -317,6 +317,7 @@ class PetPotModel {
     }
 
 
+
     //nel caso si volesse gestire la comparsa o meno delle feed nel calendario uso questa che prende le feed quando sono programmed
 //fun getProgrammedFeeds(callback: (List<Feed>) -> Unit) {
 //    val userId = currentUser?.userId ?: return
@@ -411,7 +412,36 @@ fun getCompletedFeeds(callback: (List<Feed>) -> Unit) {
                 callback(emptyList())
             }
         })
-}
+    }
+
+    fun updateFeed(feed: Feed, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        val userId = currentUser ?.userId ?: return // Assicurati che l'utente sia loggato
+        val feedId = feed.id ?: return // Assicurati che il feed abbia un ID
+
+        // Crea un riferimento al feed nel database
+        val feedRef = db.child("feeds/$userId/$feedId")
+
+        // Crea un oggetto mappa con i dati aggiornati
+        val updatedFeedData = mapOf(
+            "timeFix" to feed.timeFix,
+            "dateStart" to SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(feed.dateStart ?: Date()),
+            "dateEnd" to SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(feed.dateEnd ?: Date()),
+            "quantity" to feed.quantity,
+            "timestamp" to feed.timestamp,
+            "status" to feed.status
+        )
+
+        // Aggiorna il feed nel database
+        feedRef.updateChildren(updatedFeedData)
+            .addOnSuccessListener {
+                Log.d("Firebase", "Feed aggiornato con successo!")
+                onSuccess()
+            }
+            .addOnFailureListener { error ->
+                Log.e("Firebase", "Errore nell'aggiornamento del feed: ${error.message}")
+                onFailure("Errore nell'aggiornamento del feed")
+            }
+    }
 
 
 }

@@ -67,11 +67,20 @@ import java.util.Locale
 fun FeedCreationScreen(
     navController: NavController,
     viewModel: EventViewModel,
- 
+
 ) {
     val errorMessage by viewModel.errorCreationFeed.observeAsState()
 
+// Controlla se il feed è nullo
 
+    // Controlla se il feed è nullo
+
+    val feedToEdit = viewModel.selectedFeed
+    // Se il feed non è nullo, carica i dati nel ViewModel
+
+    if (feedToEdit != null) {
+        viewModel.setFeed(feedToEdit)
+    }
 
     var showDialog by remember { mutableStateOf(false) }
     var selectedHour by remember { mutableStateOf(12) }
@@ -527,8 +536,12 @@ fun FeedCreationScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.validateAndSaveFeed()
-                        viewModel.completeSelection()
+                        if (feedToEdit == null) {
+                            viewModel.validateAndSaveFeed()
+                            viewModel.completeSelection()
+                        } else {
+                            viewModel.updateFeed() // Chiama la funzione per aggiornare il feed
+                        }
                         showDialog = false
                     }
                 ) {

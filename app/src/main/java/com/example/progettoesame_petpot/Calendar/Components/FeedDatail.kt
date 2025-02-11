@@ -53,7 +53,6 @@ import java.util.Locale
 fun FeedDetailScreen(
     navController: NavController,
     calendarViewModel: CalendarViewModel,
-    eventViewModel: EventViewModel,
     selectedDate: Date
 ) {
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -133,17 +132,27 @@ fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewMode
 
             Spacer(modifier = Modifier.height(8.dp))
 
+
             // Bottone per modificare il feed
+
             Button(
+
                 onClick = {
-                    // Passa i dati del feed alla schermata di modifica
-//                    eventViewModel.setFeedData(feed)
-                    navController.navigate("feed_creation_screen")
+
+                    eventViewModel.setFeed(feed) // Imposta i dati del feed nel ViewModel
+
+                    navController.navigate("feedCreation")
+
                 },
+
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2B85)),
+
                 modifier = Modifier.fillMaxWidth()
+
             ) {
+
                 Text("Modifica Feed", color = Color.White)
+
             }
         }
     }
