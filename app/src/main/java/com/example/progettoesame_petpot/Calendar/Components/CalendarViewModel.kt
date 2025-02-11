@@ -42,8 +42,10 @@ class CalendarViewModel : ViewModel() {
         petPotModel.getFeeds { feeds ->
 //            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             val markedDays = mutableSetOf<Date>()
+// Filtra i feed con stato "Programmed"
+            val programmedFeeds = feeds.filter { it.status == "Programmed" }
 
-            feeds.forEach { feed ->
+            programmedFeeds.forEach { feed ->
                 val startDate = feed.dateStart
                 val endDate = feed.dateEnd
 
