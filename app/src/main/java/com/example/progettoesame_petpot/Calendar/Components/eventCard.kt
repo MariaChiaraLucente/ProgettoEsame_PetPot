@@ -52,6 +52,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.progettoesame_petpot.model.Feed
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -65,9 +66,12 @@ import java.util.Locale
 
 fun FeedCreationScreen(
     navController: NavController,
-    viewModel: EventViewModel
+    viewModel: EventViewModel,
+ 
 ) {
     val errorMessage by viewModel.errorCreationFeed.observeAsState()
+
+
 
     var showDialog by remember { mutableStateOf(false) }
     var selectedHour by remember { mutableStateOf(12) }

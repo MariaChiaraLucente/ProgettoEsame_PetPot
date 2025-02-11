@@ -211,11 +211,5 @@ class EventViewModel : ViewModel() {
         }
     }
 
-    private fun fetchRecentFeedsMari() {
-        viewModelScope.launch {
-            petPotModel.getFeeds { feeds ->
-                _recentFeedsMari.value = feeds.sortedByDescending { it.timestamp } // 🆕 Ordina per data
-            }
-        }
-    }
+
 }

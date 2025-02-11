@@ -9,6 +9,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DatabaseError
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -221,77 +222,88 @@ class PetPotModel {
         val ref = db.child("feeds/$userId/${feed.id}")
 
         ref.removeValue().addOnSuccessListener {
-            Log.d("CalendarViewModel", "Feed eliminato con successo")
+            Log.d("Firebase", "Feed eliminato con successo")
         }.addOnFailureListener { e ->
-            Log.e("CalendarViewModel", "Errore nell'eliminazione del feed: ${e.message}")
+            Log.e("Firebase", "Errore nell'eliminazione del feed: ${e.message}")
         }
     }
 
     fun getFeeds(callback: (List<Feed>) -> Unit) {
-       db.child("feeds/${currentUser?.userId}").addListenerForSingleValueEvent(object : ValueEventListener {
+        val userId = currentUser?.userId ?: return
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+        db.child("feeds/$userId").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val feedList = mutableListOf<Feed>()
-                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-            for (child in snapshot.children) {
-                val id = child.child("id").getValue(String::class.java)
-                val timeFix = child.child("timeFix").getValue(String::class.java) ?: ""
-                val dateStartStr = child.child("dateStart").getValue(String::class.java) ?: ""
-                val dateEndStr = child.child("dateEnd").getValue(String::class.java) ?: ""
-                val quantity = child.child("quantity").getValue(Float::class.java) ?: 0f
-                val timestamp = child.child("timestamp").getValue(Long::class.java) ?: System.currentTimeMillis()
-                val status = child.child("status").getValue(String::class.java) ?: "Programmed" // Leggi lo stato
+                for (child in snapshot.children) {
+                    val id = child.child("id").getValue(String::class.java)
+                    val timeFix = child.child("timeFix").getValue(String::class.java) ?: ""
+                    val dateStartStr = child.child("dateStart").getValue(String::class.java) ?: ""
+                    val quantity = child.child("quantity").getValue(Float::class.java) ?: 0f
+                    val timestamp = child.child("timestamp").getValue(Long::class.java) ?: System.currentTimeMillis()
+                    val status = child.child("status").getValue(String::class.java) ?: "Programmed"
 
-                val dateStart = if (dateStartStr.isNotEmpty()) dateFormat.parse(dateStartStr) else null
-                val dateEnd = if (dateEndStr.isNotEmpty()) dateFormat.parse(dateEndStr) else null
+                    val dateStart = if (dateStartStr.isNotEmpty()) dateFormat.parse(dateStartStr) else null
 
-                val feed = Feed(
-                    id = id,
-                    timeFix = timeFix,
-                    dateStart = dateStart,
-                    dateEnd = dateEnd,
-                    quantity = quantity,
-                    timestamp = timestamp,
-                    status = status // Imposta lo stato
-                )
-                feedList.add(feed)
+                    val feed = Feed(
+                        id = id,
+                        timeFix = timeFix,
+                        dateStart = dateStart,
+                        dateEnd = dateStart, // Ora ogni feed è per un singolo giorno
+                        quantity = quantity,
+                        timestamp = timestamp,
+                        status = status
+                    )
+                    feedList.add(feed)
+                }
+                callback(feedList)
             }
-            callback(feedList)
-        }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("PetPotModel", "Errore nel recupero dei feed: ${error.message}")
-                callback(emptyList()) // Ritorna una lista vuota in caso di errore
+                Log.e("Firebase", "Errore nel recupero dei feed: ${error.message}")
+                callback(emptyList())
             }
         })
     }
 
 
-// fare il set user quando faccio il login
-
-
-    // ✅ SALVATAGGIO FEED NEL DATABASE
     fun saveFeed(feed: Feed) {
-        val ref = db.child("feeds/${currentUser?.userId}").push()
+        val userId = currentUser?.userId ?: return
+        val ref = db.child("feeds/$userId")
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        // aggiungo una variabile status che mi dice se il pasto è stato dato o meno
-        val feedWithId = feed.copy(id = ref.key, status = "Programmed") // Imposta lo stato iniziale
 
+        // Genera la lista di date tra dateStart e dateEnd
+        val calendar = Calendar.getInstance()
+        calendar.time = feed.dateStart ?: return  // Se la data di inizio è nulla, esci
 
-        val feed = mapOf(
-            "id" to ref.key,
-            "timeFix" to feed.timeFix,
-            "dateStart" to (feed.dateStart?.let { dateFormat.format(it) } ?: ""),
-            "dateEnd" to (feed.dateEnd?.let { dateFormat.format(it) } ?: ""),
-            "quantity" to feed.quantity,
-            "timestamp" to feed.timestamp,
-            "status" to feedWithId.status
-        )
+        while (calendar.time <= (feed.dateEnd ?: feed.dateStart)) {
+            val currentDate = calendar.time
+            val newRef = ref.push()  // Crea un nuovo ID per ogni feed giornaliero
 
-        ref.setValue(feed)
+            val dailyFeed = feed.copy(
+                id = newRef.key,
+                dateStart = currentDate, // Ogni feed avrà la data corrente
+                dateEnd = currentDate,   // Si intende come singolo giorno
+                status = "Programmed"    // Stato iniziale
+            )
+
+            val feedData = mapOf(
+                "id" to dailyFeed.id,
+                "timeFix" to dailyFeed.timeFix,
+                "dateStart" to dateFormat.format(dailyFeed.dateStart!!),
+                "dateEnd" to dateFormat.format(dailyFeed.dateEnd!!),
+                "quantity" to dailyFeed.quantity,
+                "timestamp" to dailyFeed.timestamp,
+                "status" to dailyFeed.status
+            )
+
+            newRef.setValue(feedData)  // Salva nel database
+
+            calendar.add(Calendar.DAY_OF_YEAR, 1)  // Passa al giorno successivo
+        }
     }
 
-    //funzioni di gestione dello stato di feed
     fun updateFeedStatus(userId: String, feedId: String, newStatus: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
         db.child("feeds/$userId/$feedId/status").setValue(newStatus)
             .addOnSuccessListener {
@@ -303,6 +315,7 @@ class PetPotModel {
                 onFailure("Errore nell'aggiornamento dello stato del feed")
             }
     }
+
 
     //nel caso si volesse gestire la comparsa o meno delle feed nel calendario uso questa che prende le feed quando sono programmed
 //fun getProgrammedFeeds(callback: (List<Feed>) -> Unit) {

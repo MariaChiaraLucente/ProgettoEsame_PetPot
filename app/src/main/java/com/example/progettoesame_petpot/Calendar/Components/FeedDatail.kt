@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,6 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -49,6 +53,7 @@ import java.util.Locale
 fun FeedDetailScreen(
     navController: NavController,
     calendarViewModel: CalendarViewModel,
+    eventViewModel: EventViewModel,
     selectedDate: Date
 ) {
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -93,7 +98,7 @@ fun FeedDetailScreen(
                     contentPadding = PaddingValues(16.dp)
                 ) {
                     items(feedsForDate) { feed ->
-                        FeedCard(feed)
+                        FeedCard(feed, navController = navController)
                     }
                 }
             }
@@ -102,7 +107,7 @@ fun FeedDetailScreen(
 }
 
 @Composable
-fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewModel()) {
+fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewModel(), eventViewModel: EventViewModel = EventViewModel(), navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,6 +129,21 @@ fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewMode
                     contentDescription = "Delete Feed",
                     tint = Color.Red
                 )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Bottone per modificare il feed
+            Button(
+                onClick = {
+                    // Passa i dati del feed alla schermata di modifica
+//                    eventViewModel.setFeedData(feed)
+                    navController.navigate("feed_creation_screen")
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2B85)),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Modifica Feed", color = Color.White)
             }
         }
     }
