@@ -38,6 +38,10 @@ import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 @Composable
 fun AnimalBio2(navController: NavHostController, registrationViewModel: RegistrationViewModel = viewModel()) {
 
+    var breedError by remember { mutableStateOf<String?>(null) }
+    var favoriteFoodError by remember { mutableStateOf<String?>(null) }
+    var allergiesError by remember { mutableStateOf<String?>(null) }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -60,7 +64,10 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
         item {
             OutlinedTextField(
                 value = registrationViewModel.user.breed,
-                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(breed = it) },
+                onValueChange = {
+                    registrationViewModel.user = registrationViewModel.user.copy(breed = it)
+                    breedError = if (it.isBlank()) "Please choose a breed" else null
+                                },
                 placeholder = { Text("Breed") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -68,12 +75,18 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                     containerColor = Color.White
                 )
             )
+            if (breedError != null) {
+                Text(breedError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+            }
         }
         item { Spacer(modifier = Modifier.height(12.dp)) }
         item {
             OutlinedTextField(
                 value = registrationViewModel.user.favoriteFood,
-                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(favoriteFood = it) },
+                onValueChange = {
+                    registrationViewModel.user = registrationViewModel.user.copy(favoriteFood = it)
+                    favoriteFoodError = if (it.isBlank()) "Please choose a favorite food" else null
+                                },
                 placeholder = { Text("Favorite food") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -81,13 +94,19 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                     containerColor = Color.White
                 )
             )
+            if (favoriteFoodError != null) {
+                Text(favoriteFoodError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+            }
         }
         item { Spacer(modifier = Modifier.height(12.dp)) }
 
         item {
             OutlinedTextField(
                 value = registrationViewModel.user.allergies,
-                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(allergies = it) },
+                onValueChange = {
+                    registrationViewModel.user = registrationViewModel.user.copy(allergies = it)
+                    allergiesError = if (it.isBlank()) "Please choose allergies or intolerances" else null
+                                },
                 placeholder = { Text("Allergies or intolerances") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -95,13 +114,18 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                     containerColor = Color.White
                 )
             )
+            if (allergiesError != null) {
+                Text(allergiesError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+            }
         }
         item { Spacer(modifier = Modifier.height(12.dp)) }
 
         item {
             OutlinedTextField(
                 value = registrationViewModel.user.others,
-                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(others = it) },
+                onValueChange = {
+                    registrationViewModel.user = registrationViewModel.user.copy(others = it)
+                                },
                 placeholder = { Text("Other information") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -114,7 +138,19 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
         item {
             Button(
                 onClick = {
-                    navController.navigate("VetContact")
+                    if (registrationViewModel.user.breed.isBlank()) {
+                        breedError = "Please choose a breed"
+                    }
+                    if (registrationViewModel.user.favoriteFood.isBlank()) {
+                        favoriteFoodError = "Please choose a favorite food"
+                    }
+                    if (registrationViewModel.user.allergies.isBlank()) {
+                        allergiesError = "Please choose allergies or intolerances"
+                    }
+
+                    if (allergiesError == null && favoriteFoodError == null && breedError == null) {
+                        navController.navigate("VetContact") // ✅ Solo se non ci sono errori
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
                 modifier = Modifier.width(180.dp).height(45.dp),

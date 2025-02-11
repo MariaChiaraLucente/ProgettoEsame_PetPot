@@ -34,9 +34,7 @@ import java.util.Date
 @Composable
 fun RecentFeedsScreen(navController: NavController, viewModel: RecentFeedsViewModel = viewModel()) {
 
-    var selectedSection by remember { mutableStateOf(0) } // 0 per la prima sezione, 1 per la seconda
-    var previousSection by remember { mutableStateOf(0) }
-    var swipeDirection by remember { mutableStateOf(0) } // -1 per swipe a sinistra, 1
+    var selectedTabIndex by remember { mutableStateOf(0) } // 0: Completed Feeds, 1: Quick Feeds
     val meals by viewModel.recentMeals.collectAsState()
     val feeds by viewModel.completedFeeds.collectAsState()
 
@@ -45,205 +43,149 @@ fun RecentFeedsScreen(navController: NavController, viewModel: RecentFeedsViewMo
             .fillMaxSize()
             .background(Color(0xFF5576B4))
     ) {
+        Spacer(modifier = Modifier.height(26.dp))
         Column(
             modifier = Modifier
-                .height(700.dp)
+                .height(670.dp)
                 .padding(16.dp)
                 .fillMaxWidth(),
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            // 🔹 Titolo
             Text(
                 text = "Recent Feeds",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .align(Alignment.CenterHorizontally),
+                color = Color.White,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 🔹 TAB BAR
+            TabRow(
+                selectedTabIndex = selectedTabIndex,
+                containerColor = Color(0xFF5576B4),
+                contentColor = Color.White
+            ) {
+                Tab(
+                    selected = selectedTabIndex == 0,
+                    onClick = { selectedTabIndex = 0 },
+                    text = { Text("Completed Feeds") }
+                )
+                Tab(
+                    selected = selectedTabIndex == 1,
+                    onClick = { selectedTabIndex = 1 },
+                    text = { Text("Quick Feeds") }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // 🔹 CONTENUTO DELLA TAB SELEZIONATA
+            when (selectedTabIndex) {
+                0 -> CompletedFeedsSection(feeds)
+                1 -> QuickFeedsSection(meals)
+            }
+        }
+        BottomNavBar(
+            selectedScreen = "Recent",
+            onScreenSelected = { navController.navigate(it) }
+        )
+    }
+}
+
+// 🔹 SEZIONE COMPLETED FEEDS
+@Composable
+fun CompletedFeedsSection(feeds: List<Feed>) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        LazyColumn(modifier = Modifier.padding(16.dp)) {
+            items(feeds) { feed ->
+                FeedCard(feed)
+            }
+        }
+    }
+}
+
+// 🔹 SEZIONE QUICK FEEDS
+@Composable
+fun QuickFeedsSection(meals: List<Meal>) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        LazyColumn(modifier = Modifier.padding(16.dp)) {
+            items(meals) { meal ->
+                MealCard(meal)
+            }
+        }
+    }
+}
+
+
+@Composable
+fun MealCard(feed: Meal) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.elevatedCardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column(
+            modifier = Modifier
+                .background(Color(0xFF8099C9))
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "${SimpleDateFormat("dd/MM/yyyy - HH:mm").format(Date(feed.timestamp))}", // 🆕 Mostra la data e ora formattata
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
                 color = Color.White
             )
-            Box(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxSize()
-                    .pointerInput(Unit) {
-                        var sectionChanged = false
-
-                        detectHorizontalDragGestures(
-                            onDragEnd = {
-                                sectionChanged = false
-                            }
-                        ) { change, dragAmount ->
-                            change.consume()
-
-                            val swipeThreshold = 0
-
-                            if (!sectionChanged) {
-                                if (dragAmount > swipeThreshold && selectedSection > 0) {
-                                    swipeDirection = -1
-                                    selectedSection--
-                                    sectionChanged = true
-                                } else if (dragAmount < -swipeThreshold && selectedSection < 1) {
-                                    swipeDirection = 1
-                                    selectedSection++
-                                    sectionChanged = true
-                                }
-                            }
-                        }
-                    }
-            ) {
-                LaunchedEffect(selectedSection) {
-                    previousSection = selectedSection // Aggiorna solo dopo il cambio di sezione
-                }
-
-                AnimatedContent(
-                    targetState = selectedSection,
-                    transitionSpec = {
-                        when {
-                            selectedSection > previousSection ->
-                                slideInHorizontally { width -> width } with slideOutHorizontally { width -> -width }
-
-                            selectedSection < previousSection ->
-                                slideInHorizontally { width -> -width } with slideOutHorizontally { width -> width }
-
-                            else -> fadeIn() with fadeOut()
-                        }
-                    }
-                ) { section ->
-                    when (section) {
-                        0 -> Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFFDFCF8))
-                        ) {
-                            Column {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-//                                Image(
-//                                    painter = painterResource(id = R.drawable.ic_feed), // Icona per i feed
-//                                    contentDescription = null,
-//                                    modifier = Modifier
-//                                        .size(55.dp)
-//                                        .padding(start = 16.dp, top = 8.dp, end = 8.dp)
-//                                )
-                                    Text(
-                                        text = "Completed Feeds",
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 25.sp,
-                                        color = Color(0xFF346E60),
-                                        modifier = Modifier.padding(top = 8.dp)
-                                    )
-                                }
-                                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                                    items(feeds) { feed ->
-                                        FeedCard(feed)
-                                    }
-                                }
-                            }
-                        }
-
-                        1 -> Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFFDFCF8))
-                        ) {
-                            Column {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-//                                Image(
-//                                    painter = painterResource(id = R.drawable.ic_completed), // Icona per i feed completati
-//                                    contentDescription = null,
-//                                    modifier = Modifier
-//                                        .size(55.dp)
-//                                        .padding(start = 16.dp, top = 8.dp, end = 8.dp)
-//                                )
-                                    Text(
-                                        text = "QuickFeeds",
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 25.sp,
-                                        color = Color(0xFF346E60),
-                                        modifier = Modifier.padding(top = 8.dp)
-                                    )
-                                }
-                                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                                    items(meals) { meal ->
-                                        MealCard(meal)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            BottomNavBar(
-                selectedScreen = "Recent",
-                onScreenSelected = { navController.navigate(it) }
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "${feed.quantity} g - ${feed.description}",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF4246BD)
             )
         }
     }
 }
 
-    @Composable
-    fun MealCard(feed: Meal) {
-        Card(
+@Composable
+fun FeedCard(feed: Feed) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.elevatedCardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column(
             modifier = Modifier
+                .background(Color(0xFF8099C9))
                 .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            shape = RoundedCornerShape(12.dp),
-            elevation = CardDefaults.elevatedCardElevation(4.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
+                .padding(16.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .background(Color(0xFF8099C9))
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Date: ${SimpleDateFormat("dd/MM/yyyy HH:mm").format(Date(feed.timestamp))}", // 🆕 Mostra la data e ora formattata
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Text(
-                    text = "Quantity: ${feed.quantity}g",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF4246BD)
-                )
-            }
+            Text(
+                text = "Date: ${SimpleDateFormat("dd/MM/yyyy HH:mm").format(Date(feed.timestamp))}", // 🆕 Mostra la data e ora formattata
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+            Text(
+                text = "Quantity: ${feed.quantity}g",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color(0xFF4246BD)
+            )
         }
     }
-
-    @Composable
-    fun FeedCard(feed: Feed) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            shape = RoundedCornerShape(12.dp),
-            elevation = CardDefaults.elevatedCardElevation(4.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
-        ) {
-            Column(
-                modifier = Modifier
-                    .background(Color(0xFF8099C9))
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Date: ${SimpleDateFormat("dd/MM/yyyy HH:mm").format(Date(feed.timestamp))}", // 🆕 Mostra la data e ora formattata
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Text(
-                    text = "Quantity: ${feed.quantity}g",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF4246BD)
-                )
-            }
-        }
-    }
+}

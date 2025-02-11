@@ -25,7 +25,7 @@ fun AutoDismissPopup(
 
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        title = { Text("Messaggio") },
+        title = { Text("Message") },
         text = { Text(message) },
         confirmButton = {
             if (showButtons && onConfirm != null) {

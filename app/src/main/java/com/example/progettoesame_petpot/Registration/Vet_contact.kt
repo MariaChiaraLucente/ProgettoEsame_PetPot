@@ -39,6 +39,8 @@ import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 
 @Composable
 fun VetContact(navController: NavHostController, registrationViewModel: RegistrationViewModel = viewModel()) {
+    var vetNameError by remember { mutableStateOf<String?>(null) }
+    var vetPhoneError by remember { mutableStateOf<String?>(null) }
 
     LazyColumn(
         modifier = Modifier
@@ -61,7 +63,10 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
         item {
             OutlinedTextField(
                 value = registrationViewModel.user.vetName,
-                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(vetName = it) },
+                onValueChange = {
+                    registrationViewModel.user = registrationViewModel.user.copy(vetName = it)
+                    vetNameError = if (it.isBlank()) "Please choose a vet name" else null
+                },
                 placeholder = { Text("Vet's name") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -69,12 +74,18 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
                     containerColor = Color.White
                 )
             )
+            if (vetNameError != null) {
+                Text(vetNameError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+            }
         }
         item { Spacer(modifier = Modifier.height(12.dp)) }
         item {
             OutlinedTextField(
                 value = registrationViewModel.user.vetPhone,
-                onValueChange = { registrationViewModel.user = registrationViewModel.user.copy(vetPhone = it) },
+                onValueChange = {
+                    registrationViewModel.user = registrationViewModel.user.copy(vetPhone = it)
+                    vetPhoneError = if (it.isBlank()) "Please choose a vet phone number" else null
+                },
                 placeholder = { Text("Vet's phone") },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
@@ -82,6 +93,9 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
                     containerColor = Color.White
                 )
             )
+            if (vetPhoneError != null) {
+                Text(vetPhoneError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+            }
             Spacer(modifier = Modifier.height(12.dp))
             Button(
                 onClick = {
@@ -90,6 +104,9 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
                         onFailure = { error -> Log.e("Button", "Error: $error") }
                     )
                 },
+                enabled = vetNameError == null && vetPhoneError == null &&  // 🔴 Disabilita se ci sono errori
+                        registrationViewModel.user.vetName.isNotBlank() &&
+                        registrationViewModel.user.vetPhone.isNotBlank(),
                 colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
                 modifier = Modifier.width(180.dp).height(45.dp),
                 border = BorderStroke(2.dp, Color.Black)

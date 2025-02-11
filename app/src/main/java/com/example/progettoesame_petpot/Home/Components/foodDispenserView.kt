@@ -159,9 +159,7 @@ fun FoodDispenserView(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp).offset(x = (50).dp, y = (270).dp)
         ) {
             // ✅ Aggiungiamo il selettore del cibo
-            FoodSelector(selectedFood = selectedFood) { newFood ->
-                selectedFood = newFood
-            }
+            FoodSelector(selectedFood = selectedFood, onFoodSelected = { newFood -> selectedFood = newFood })
         }
     }
 }
