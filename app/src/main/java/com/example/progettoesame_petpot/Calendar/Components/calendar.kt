@@ -4,12 +4,14 @@ import BottomNavBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.FlowColumnScopeInstance.align
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -62,21 +65,21 @@ fun CalendarScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF8099C9))
+            .background(Color(0xFF5576B4))
     )
     Scaffold(
         topBar = {
+
             TopAppBar(
-                title = { Text("Calendar", color = Color.White) },
+                title = { Text( text = "Calendar",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 20.dp),
+                    color = Color.White )},
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF1F2B85)
+                    containerColor = Color(0xFF5576B4)
                 ),
 
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
             )
         },
         containerColor = Color.Transparent
@@ -137,16 +140,32 @@ fun CalendarScreen(
 
 
                 Spacer(modifier = Modifier.height(16.dp))
+                Column (
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
 
-                Button(
-                    onClick = {
-                        onNavigateToFeedCreation()
+                ){
+                    Button(
+                        onClick = {
+                            onNavigateToFeedCreation()
 //                    calendarViewModel.completeSelection()
-                    },
-                    shape = CircleShape,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    Text(text = "New Event")
+                        },
+                        shape = CircleShape
+                    ) {
+                        Text(text = "New Event")
+                    }
+                    Button(
+                        onClick = {
+
+                        },
+                        shape = CircleShape,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                    ) {
+                        Text(text = "Clear all events")
+                    }
                 }
             }
             BottomNavBar(
@@ -176,7 +195,7 @@ fun CalendarGrid(
             .fillMaxWidth()
             .height(330.dp)
             .padding(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF5576B4))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF8099C9))
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
