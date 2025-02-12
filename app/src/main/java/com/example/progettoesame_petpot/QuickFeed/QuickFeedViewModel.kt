@@ -32,7 +32,7 @@ class QuickFeedViewModel : ViewModel() {
         }
 
         val meal = Meal(
-            description = "Pasto veloce",
+            description = foodType,
             timeFix = Date(currentTime).toString(),
             dateStart = Date(currentTime),
             dateEnd = Date(currentTime),

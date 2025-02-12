@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -22,6 +23,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.progettoesame_petpot.AutoDismissPopup
+import com.example.progettoesame_petpot.Home.Components.FoodSelector
+import com.example.progettoesame_petpot.Home.Components.FoodSelectorOrientation
 import com.example.progettoesame_petpot.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +32,8 @@ import com.example.progettoesame_petpot.R
 fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = viewModel()) {
     var showMessage by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
+    var selectedFood by remember { mutableStateOf("Meat") }
+
 
     Box(
         modifier = Modifier.fillMaxSize().background(Color(0xFF5576B4))
@@ -55,6 +60,7 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
                 Text(
                     text = "Choose the quantity and the type of food",
                     fontSize = 32.sp,
+                    lineHeight = 38.sp,
                     color = Color.White,
                     fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier.padding(16.dp),
@@ -66,28 +72,25 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
                     contentAlignment = Alignment.Center
                 ) {
                     FoodQuantitySelector(viewModel)
-                    SemicircleLeft(
-                        painter = painterResource(id = R.drawable.chicken),
-                        modifier = Modifier.align(Alignment.CenterStart).offset(x = (-235).dp),
-                        onClick = { viewModel.setFoodType("Chicken") },
-                        foodType = viewModel.foodType,
-                        type = "Chicken"
-                    )
-                    SemicircleRight(
-                        painter = painterResource(id = R.drawable.beef),
-                        modifier = Modifier.align(Alignment.CenterEnd).offset(x = (235).dp),
-                        onClick = { viewModel.setFoodType("Beef") },
-                        foodType = viewModel.foodType,
-                        type = "Beef"
-                    )
                 }
-                Spacer(modifier = Modifier.height(56.dp))
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                FoodSelector(
+                    //selectedFood = viewModel.foodType,
+                    selectedFood = selectedFood,
+                    onFoodSelected = { viewModel.setFoodType(it) },
+                    orientation = FoodSelectorOrientation.HORIZONTAL
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
                 Button(
                     onClick = {
                         viewModel.saveMeal(
                             onSuccess = {
                                 showDialog = true
-                                        },
+                            },
                             onFailure = { showMessage = it }
                         )
                     },
@@ -98,6 +101,9 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
                 ) {
                     Text("Feed", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 }
+            }
+
+
                 if (showMessage.isNotEmpty()) {
                     Text(showMessage, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
                 }
@@ -115,10 +121,15 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
             }
         }
     }
-}
 
 @Composable
 fun FoodQuantitySelector(viewModel: QuickFeedViewModel) {
+    var selectedQuantity by remember { mutableStateOf(viewModel.foodQuantity) }
+
+    LaunchedEffect(viewModel.foodQuantity) {
+        selectedQuantity = viewModel.foodQuantity
+    }
+
     Card(
         modifier = Modifier.width(195.dp).height(300.dp),
         elevation = CardDefaults.cardElevation(8.dp),
@@ -126,20 +137,30 @@ fun FoodQuantitySelector(viewModel: QuickFeedViewModel) {
         LazyColumn(modifier = Modifier.fillMaxWidth().background(Color(0xFFA2B0CA))) {
             items(50) { index ->
                 val grams = (index + 1) * 5
+                val isSelected = grams == selectedQuantity
                 Row(
-                    modifier = Modifier.fillMaxWidth().clickable { viewModel.setFoodQuantity(grams) }
-                        .background(if (grams == viewModel.foodQuantity) Color(0xFF7F96C1) else Color.Transparent),
+                    modifier = Modifier.fillMaxWidth().clickable {
+                        viewModel.setFoodQuantity(grams)
+                        selectedQuantity = grams
+                    }
+                        .background(if (isSelected) Color(0xFF7F96C1) else Color.Transparent),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text("$grams g", modifier = Modifier.padding(16.dp), fontSize = 24.sp, color = Color(0xFF2F34BE), fontWeight = FontWeight.Bold)
+                    Text(
+                        "$grams g",
+                        modifier = Modifier.padding(16.dp),
+                        fontSize = 24.sp,
+                        color = Color(0xFF2F34BE),
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
     }
 }
 
-
+/*
 @Composable
 fun SemicircleRight(
     painter: Painter,
@@ -207,3 +228,5 @@ fun SemicircleLeft(
         )
     }
 }
+
+ */

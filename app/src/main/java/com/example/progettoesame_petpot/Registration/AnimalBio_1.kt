@@ -100,7 +100,7 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
         ) {
             AgeOption(imagebaby, 92, 39, "0-3 years", selectedAge) { selectedAge = "0-3 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "0-3 years") }
             AgeOption(imageyoung, 104, 55, "4-9 years", selectedAge) { selectedAge = "4-9 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "4-9 years") }
-            AgeOption(imageold, 117, 70, "> 10 years", selectedAge) { selectedAge = "over 10 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "over 10 years") }
+            AgeOption(imageold, 117, 70, "> 10 years", selectedAge) { selectedAge = "> 10 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "> 10 years") }
         }
 
         Spacer(modifier = Modifier.height(55.dp))

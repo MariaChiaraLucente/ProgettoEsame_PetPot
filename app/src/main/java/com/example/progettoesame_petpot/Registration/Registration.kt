@@ -31,6 +31,8 @@ import com.google.firebase.ktx.Firebase
 fun Registration(navController: NavHostController, registrationViewModel: RegistrationViewModel = viewModel()) {
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
+    var usernameError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -63,6 +65,7 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
             value = registrationViewModel.user.username,
             onValueChange = {
                 registrationViewModel.user = registrationViewModel.user.copy(username = it)
+                usernameError = if (it.isBlank()) "Please choose a username" else null
             },
             placeholder = { Text("Username") },
             modifier = Modifier.width(300.dp),
@@ -71,11 +74,15 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
                 containerColor = Color.White
             )
         )
+        if (usernameError != null) {
+            Text(usernameError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+        }
         Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
             value = registrationViewModel.user.password,
             onValueChange = {
                 registrationViewModel.user = registrationViewModel.user.copy(password = it)
+                passwordError = if (it.isBlank()) "Please choose a password" else null
             },
             placeholder = { Text("Password") },
             modifier = Modifier.width(300.dp),
@@ -85,11 +92,24 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
             ),
             visualTransformation = PasswordVisualTransformation(),
         )
+        if (passwordError != null) {
+            Text(passwordError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+        }
         Spacer(modifier = Modifier.height(25.dp))
         Button(
-            onClick = {
-                        navController.navigate("An_bio1") // Vai alla prossima schermata
-                    },
+            onClick =
+            {
+                if (registrationViewModel.user.username.isBlank()) {
+                    usernameError = "Choose a username"
+                }
+                if (registrationViewModel.user.password.isBlank()) {
+                    passwordError = "Choose a password"
+                }
+
+                if (usernameError == null && passwordError == null) {
+                    navController.navigate("An_bio1") // ✅ Solo se non ci sono errori
+                }
+            },
             colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
             modifier = Modifier.width(180.dp).height(45.dp),
             border = BorderStroke(2.dp, Color.Black)
