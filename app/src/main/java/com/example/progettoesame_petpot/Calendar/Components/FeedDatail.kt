@@ -138,11 +138,7 @@ fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewMode
             Button(
 
                 onClick = {
-
-                    eventViewModel.setFeed(feed) // Imposta i dati del feed nel ViewModel
-
-                    navController.navigate("feedCreation")
-
+                    navController.navigate("EditFeed/${feed.id}")
                 },
 
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2B85)),

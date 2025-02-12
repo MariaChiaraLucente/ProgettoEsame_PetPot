@@ -219,26 +219,4 @@ class EventViewModel : ViewModel() {
         selectedFeed = feed
 
     }
-
-    fun updateFeed() {
-        val feedToUpdate = selectedFeed ?: return // Assicurati che ci sia un feed da aggiornare
-
-        // Crea un nuovo feed con i dati aggiornati
-        val updatedFeed = feedToUpdate.copy(
-            timeFix = feedOrarioFisso.value,
-            quantity = feedQuantita.value,
-            dateStart = selectedStartDate,
-            dateEnd = selectedEndDate
-        )
-
-        petPotModel.updateFeed(updatedFeed,
-            onSuccess = {
-                Log.d("Feed", "Feed aggiornato con successo!")
-            },
-            onFailure = { errorMessage ->
-                Log.e("Feed", "Errore nell'aggiornamento del feed: $errorMessage")
-            }
-        )
-    }
-
 }

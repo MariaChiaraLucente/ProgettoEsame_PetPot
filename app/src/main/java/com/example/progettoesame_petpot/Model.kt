@@ -414,34 +414,74 @@ fun getCompletedFeeds(callback: (List<Feed>) -> Unit) {
         })
     }
 
-    fun updateFeed(feed: Feed, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-        val userId = currentUser ?.userId ?: return // Assicurati che l'utente sia loggato
-        val feedId = feed.id ?: return // Assicurati che il feed abbia un ID
+    fun getFeedById(feedId: String, callback: (Feed?) -> Unit) {
+        val userId = currentUser?.userId ?: return
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-        // Crea un riferimento al feed nel database
-        val feedRef = db.child("feeds/$userId/$feedId")
+        db.child("feeds/$userId/$feedId").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val id = snapshot.child("id").getValue(String::class.java)
+                val timeFix = snapshot.child("timeFix").getValue(String::class.java) ?: ""
+                val dateStartStr = snapshot.child("dateStart").getValue(String::class.java) ?: ""
+                val dateEndStr = snapshot.child("dateEnd").getValue(String::class.java) ?: ""
+                val quantity = snapshot.child("quantity").getValue(Float::class.java) ?: 0f
+                val timestamp = snapshot.child("timestamp").getValue(Long::class.java) ?: System.currentTimeMillis()
+                val status = snapshot.child("status").getValue(String::class.java) ?: "Programmed"
 
-        // Crea un oggetto mappa con i dati aggiornati
-        val updatedFeedData = mapOf(
-            "timeFix" to feed.timeFix,
-            "dateStart" to SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(feed.dateStart ?: Date()),
-            "dateEnd" to SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(feed.dateEnd ?: Date()),
-            "quantity" to feed.quantity,
-            "timestamp" to feed.timestamp,
-            "status" to feed.status
+                val dateStart = try {
+                    if (dateStartStr.isNotEmpty()) dateFormat.parse(dateStartStr) else null
+                } catch (e: ParseException) {
+                    Log.e("Firebase", "Errore nel parsing della data di inizio: $dateStartStr", e)
+                    null
+                }
+
+                val dateEnd = try {
+                    if (dateEndStr.isNotEmpty()) dateFormat.parse(dateEndStr) else null
+                } catch (e: ParseException) {
+                    Log.e("Firebase", "Errore nel parsing della data di fine: $dateEndStr", e)
+                    null
+                }
+
+                val feed = Feed(
+                    id = id,
+                    timeFix = timeFix,
+                    dateStart = dateStart,
+                    dateEnd = dateEnd,
+                    quantity = quantity,
+                    timestamp = timestamp,
+                    status = status
+                )
+                callback(feed)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Errore nel recupero del feed: ${error.message}")
+                callback(null)
+            }
+        })
+    }
+
+
+    fun updateProgrammedFeed(userId: String, feedId: String, newQuantity: Float, newTimeFix: String, newDate: Date, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val ref = db.child("feeds/$userId/$feedId")
+
+        val updatedData = mapOf(
+            "quantity" to newQuantity,
+            "timeFix" to newTimeFix,
+            "dateStart" to dateFormat.format(newDate),
+            "dateEnd" to dateFormat.format(newDate) // Deve coincidere con dateStart
         )
 
-        // Aggiorna il feed nel database
-        feedRef.updateChildren(updatedFeedData)
-            .addOnSuccessListener {
-                Log.d("Firebase", "Feed aggiornato con successo!")
-                onSuccess()
-            }
-            .addOnFailureListener { error ->
-                Log.e("Firebase", "Errore nell'aggiornamento del feed: ${error.message}")
-                onFailure("Errore nell'aggiornamento del feed")
-            }
+        ref.updateChildren(updatedData).addOnSuccessListener {
+            Log.d("Firebase", "Feed aggiornato con successo")
+            onSuccess()
+        }.addOnFailureListener { error ->
+            Log.e("Firebase", "Errore nell'aggiornamento del feed", error)
+            onFailure("Errore nell'aggiornamento del feed")
+        }
     }
+
 
 
 }

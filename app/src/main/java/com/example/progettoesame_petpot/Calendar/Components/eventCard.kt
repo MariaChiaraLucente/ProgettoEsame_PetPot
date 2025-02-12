@@ -536,13 +536,10 @@ fun FeedCreationScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        if (feedToEdit == null) {
+                        showDialog = false
                             viewModel.validateAndSaveFeed()
                             viewModel.completeSelection()
-                        } else {
-                            viewModel.updateFeed() // Chiama la funzione per aggiornare il feed
-                        }
-                        showDialog = false
+
                     }
                 ) {
                     Text("Confirm")
