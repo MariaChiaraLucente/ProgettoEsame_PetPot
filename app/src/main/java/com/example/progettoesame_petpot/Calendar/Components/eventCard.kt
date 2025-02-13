@@ -1,6 +1,7 @@
 package com.example.progettoesame_petpot.Calendar.Components
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -20,6 +21,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -49,10 +52,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.progettoesame_petpot.model.Feed
+import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
+
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -68,12 +74,15 @@ fun FeedCreationScreen(
     navController: NavController,
     viewModel: EventViewModel,
 
-) {
+
+    ) {
+    val errorMessageTime = viewModel.errorMessage.value
     val errorMessage by viewModel.errorCreationFeed.observeAsState()
+    var showSaveDialog by remember { mutableStateOf(false) }
 
-// Controlla se il feed è nullo
 
-    // Controlla se il feed è nullo
+// Inside your composable function
+    val context = LocalContext.current
 
     val feedToEdit = viewModel.selectedFeed
     // Se il feed non è nullo, carica i dati nel ViewModel
@@ -82,7 +91,13 @@ fun FeedCreationScreen(
         viewModel.setFeed(feedToEdit)
     }
 
-    var showDialog by remember { mutableStateOf(false) }
+    if (errorMessage != null) {
+        Text(
+            text = errorMessage!!,
+            color = Color.Red,
+            modifier = Modifier.padding(16.dp)
+        )
+    }
     var selectedHour by remember { mutableStateOf(12) }
     var selectedMinute by remember { mutableStateOf(0) }
     var selectedQuantity by remember { mutableStateOf(100f) }
@@ -336,7 +351,6 @@ fun FeedCreationScreen(
                     }
                 }
                 item {
-                    // Resto del codice per l'orario e la quantità
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "Orario: ${viewModel.feedOrarioFisso.value}",
@@ -345,109 +359,21 @@ fun FeedCreationScreen(
                             color = Color(0xFF2F34BE),
                             fontWeight = FontWeight.Bold
                         )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Card(
-                                modifier = Modifier
-                                    .width(280.dp)
-                                    // Imposta una larghezza maggiore per contenere entrambe le colonne
-                                    .height(210.dp), // Imposta l'altezza per la card
-                                elevation = CardDefaults.cardElevation(8.dp),
 
-                                ) {
-                                // Row per affiancare le due LazyColumn
-                                Row(
-                                    modifier = Modifier.fillMaxSize(),
-                                    horizontalArrangement = Arrangement.SpaceEvenly,  // Spazio equo tra le due colonne
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    // Colonna per le ore
-                                    LazyColumn(
-                                        modifier = Modifier
-                                            .width(130.dp)  // Imposta larghezza per la colonna delle ore
-                                            .fillMaxHeight()
-                                            .background(Color(0xFFA2B0CA)),
-                                    ) {
-                                        items(24) { index1 ->
-                                            Row(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .clickable {
-                                                        selectedHour = index1
-                                                        viewModel.updateFeedOrarioFisso(
-                                                            "%02d:%02d".format(
-                                                                selectedHour,
-                                                                selectedMinute
-                                                            )
-                                                        )
-                                                    }
-                                                    .background(
-                                                        color = if ("%02d".format(index1) == "%02d".format(
-                                                                selectedHour
-                                                            )
-                                                        ) Color(0xFF7F96C1) else Color.Transparent
-                                                    ),
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(
-                                                    text = "${"%02d".format(index1)}",
-                                                    modifier = Modifier.padding(16.dp),
-                                                    fontSize = 24.sp,
-                                                    color = Color(0xFF2F34BE),
-                                                    fontWeight = FontWeight.Bold
-                                                )
-                                            }
-                                        }
-                                    }
-
-                                    // Colonna per i minuti
-                                    LazyColumn(
-                                        modifier = Modifier
-                                            .width(130.dp)  // Imposta larghezza per la colonna dei minuti
-                                            .fillMaxHeight()
-                                            .background(Color(0xFFA2B0CA)),
-                                    ) {
-                                        items(60) { index ->
-                                            Row(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .clickable {
-                                                        selectedMinute = index
-                                                        viewModel.updateFeedOrarioFisso(
-                                                            "%02d:%02d".format(
-                                                                selectedHour,
-                                                                selectedMinute
-                                                            )
-                                                        )
-                                                    }
-                                                    .background(
-                                                        color = if ("%02d".format(index) == "%02d".format(
-                                                                selectedMinute
-                                                            )
-                                                        ) Color(0xFF7F96C1) else Color.Transparent
-                                                    ),
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(
-                                                    text = "${"%02d".format(index)}",
-                                                    modifier = Modifier.padding(16.dp),
-                                                    fontSize = 24.sp,
-                                                    color = Color(0xFF2F34BE),
-                                                    fontWeight = FontWeight.Bold
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
+                        // 🔹 Sostituzione della Card con TimePickerComponent
+                        TimePickerComponent(
+                            selectedHour = selectedHour,
+                            selectedMinute = selectedMinute,
+                            onTimeSelected = { hour, minute ->
+                                selectedHour = hour
+                                selectedMinute = minute
+                                viewModel.updateFeedOrarioFisso("%02d:%02d".format(hour, minute))
                             }
-                        }
+                        )
 
                     }
+                }
+                item {
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "Grammi a pasto: ${viewModel.feedQuantita.value}g",
@@ -498,8 +424,6 @@ fun FeedCreationScreen(
                 }
 
                 item {
-
-
                     if (errorMessage != null) {
                         Text(
                             text = errorMessage!!,
@@ -509,7 +433,8 @@ fun FeedCreationScreen(
                     }
                     Button(
                         onClick = {
-                            showDialog = true
+                            showSaveDialog = true
+
                         },
                         shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2B85)),
@@ -528,36 +453,44 @@ fun FeedCreationScreen(
         }
     }
 
+    ConfirmSave(
+        showDialog = showSaveDialog,
+        onDismiss = { showSaveDialog = false },
+        onConfirm = {
+            showSaveDialog = false
+            viewModel.validateAndSaveFeed()
+            viewModel.completeSelection()
+            Toast.makeText(context, "Feed created successfully!", Toast.LENGTH_SHORT).show()
+            navController.navigate("Drawers")
+        }
+    )
+}
+
+@Composable
+fun ConfirmSave(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
     if (showDialog) {
         AlertDialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { onDismiss() },
             title = { Text(text = "Confirm Save") },
             text = { Text(text = "Are you sure you want to save this feed?") },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        if (feedToEdit == null) {
-                            viewModel.validateAndSaveFeed()
-                            viewModel.completeSelection()
-                        } else {
-                            viewModel.updateFeed() // Chiama la funzione per aggiornare il feed
-                        }
-                        showDialog = false
-                    }
-                ) {
-                    Text("Confirm")
+                TextButton(onClick = { onConfirm() }) {
+                    Text("Yes")
                 }
             },
             dismissButton = {
-                TextButton(
-                    onClick = { showDialog = false }
-                ) {
-                    Text("Cancel")
+                TextButton(onClick = { onDismiss() }) {
+                    Text("No")
                 }
             }
         )
     }
 }
+
 
 @Composable
 fun CalendarGridFeed(
@@ -667,3 +600,73 @@ fun CalendarGridFeed(
         }
     }
 }
+
+@Composable
+fun TimePickerComponent(
+    selectedHour: Int,
+    selectedMinute: Int,
+    onTimeSelected: (Int, Int) -> Unit
+) {
+    val hours = (0..23).toList()
+    val minutes = (0..59).toList()
+
+    var currentHour by remember { mutableStateOf(selectedHour) }
+    var currentMinute by remember { mutableStateOf(selectedMinute) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        elevation = CardDefaults.cardElevation(8.dp),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Header
+            Text(
+                "Seleziona l'ora",
+                color = Color(0xFF333333), // Testo scuro
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Scrollable pickers per ore e minuti
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Picker per le ore (0-23)
+                NumberPickerOrario(
+                    value = currentHour,
+                    range = hours,
+                    displayValues = hours.map { "%02d".format(it) },
+                    onValueChange = { newHour ->
+                        currentHour = newHour
+                        onTimeSelected(currentHour, currentMinute)
+                    }
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                // Picker per i minuti (0-59)
+                NumberPickerOrario(
+                    value = currentMinute,
+                    range = minutes,
+                    displayValues = minutes.map { "%02d".format(it) },
+                    onValueChange = { newMinute ->
+                        currentMinute = newMinute
+                        onTimeSelected(currentHour, currentMinute)
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+

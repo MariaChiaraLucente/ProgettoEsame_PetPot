@@ -14,6 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.progettoesame_petpot.Calendar.Components.EditFeedScreen
+import com.example.progettoesame_petpot.Calendar.Components.EditViewModel
 import com.example.progettoesame_petpot.Calendar.Components.EventViewModel
 import com.example.progettoesame_petpot.Calendar.Components.FeedCreationScreen
 import com.example.progettoesame_petpot.Calendar.Components.FeedDetailScreen
@@ -87,6 +89,7 @@ fun AppNavigation() {
                 onNavigateToFeedCreation = {
                     // Navigazione verso la creazione del feed senza parametri specifici (se non richiesto)
                     navController.navigate("feedCreation")
+
                 }
             )
         }
@@ -102,6 +105,16 @@ fun AppNavigation() {
             FeedCreationScreen(
                 viewModel = EventViewModel(),
                 navController = navController
+            )
+        }
+
+        composable("EditFeed/{feedId}") { backStackEntry ->
+            val feedId = backStackEntry.arguments?.getString("feedId") ?: ""
+            EditFeedScreen(
+                viewModel = EditViewModel(),
+                userId = homeViewModel.getProfile()?.userId ?: "",
+                feedId = feedId,
+                onBack = { navController.popBackStack() }
             )
         }
     }

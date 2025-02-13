@@ -2,7 +2,10 @@ package com.example.progettoesame_petpot.Calendar.Components
 
 
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.progettoesame_petpot.model.Feed
 import com.example.progettoesame_petpot.model.Meal
 import com.example.progettoesame_petpot.model.PetPotModel
+import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,9 +24,11 @@ import java.util.Locale
 
 class EventViewModel : ViewModel() {
 
+
     private val petPotModel = PetPotModel()
     private val _feedDays = mutableStateOf(setOf<Date>()) // Set to store feed days
     private val calendar = Calendar.getInstance()
+    val errorMessageTime = mutableStateOf<String?>(null)
     val errorMessage = mutableStateOf<String?>(null)
     // Usa mutableStateOf per il recompose immediato
     val _selectedStartDate = mutableStateOf<Date?>(null)
@@ -37,9 +43,6 @@ class EventViewModel : ViewModel() {
     val feedQuantita = mutableStateOf(100f)
     val today: Date = normalizeDate(Date())
     private val daysInMonths = listOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-
-    private val _recentFeedsCalendar = MutableStateFlow<List<Feed>>(emptyList())
-    val recentFeedsCalendar: StateFlow<List<Feed>> = _recentFeedsCalendar
 
 
     fun normalizeDate(date: Date): Date {
@@ -170,17 +173,24 @@ class EventViewModel : ViewModel() {
 
     fun saveFeed() {
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val formattedStartDate = dateFormat.format(selectedStartDate?.time)
-        val formattedEndDate = dateFormat.format(selectedEndDate?.time)
 
+        // Normalizza le date (rimuove ore, minuti e secondi)
+        val normalizedSelectedStartDate = selectedStartDate?.let { dateFormat.format(it) }
+        val normalizedSelectedEndDate = selectedEndDate?.let { dateFormat.format(it) }
+
+        // Recupera i feed esistenti
         petPotModel.getFeeds { existingFeeds ->
-            val alreadyExists = existingFeeds.any {
-                it.dateStart == selectedStartDate && it.timeFix == feedOrarioFisso.value
+            // Verifica se esiste già un feed nello stesso giorno e alla stessa ora
+            val alreadyExists = existingFeeds.any { feed ->
+                val feedDate = feed.dateStart?.let { dateFormat.format(it) } == normalizedSelectedStartDate &&
+                        feed.timeFix == feedOrarioFisso.value
+                feedDate
             }
 
             if (alreadyExists) {
-                errorMessage.value = "A feed already exists for this date and time!"
-                Log.d("Feed", "Esiste già un feed per questa data e ora!")
+                // Mostra un messaggio di errore
+                errorMessageTime.value = "A feed already exists for this date and time!"
+                Log.d("Feed", "A feed already exists for this date and time!")
                 return@getFeeds
             }
 
@@ -192,9 +202,10 @@ class EventViewModel : ViewModel() {
                 quantity = feedQuantita.value,
             )
 
+            // Salva il feed
             petPotModel.saveFeed(feed)
             Log.d("Feed", "Feed salvato con successo: $feed")
-            errorMessage.value = null
+            errorMessageTime.value = null
         }
     }
     private val _errorCreationFeed = MutableLiveData<String?>()
@@ -208,37 +219,34 @@ class EventViewModel : ViewModel() {
         } else {
             saveFeed()
             _errorCreationFeed.value = null
+
         }
     }
     var selectedFeed: Feed? = null
-
         private set
 
     fun setFeed(feed: Feed) {
-
         selectedFeed = feed
 
     }
 
-    fun updateFeed() {
-        val feedToUpdate = selectedFeed ?: return // Assicurati che ci sia un feed da aggiornare
+    fun hasConflict(callback: (Boolean) -> Unit) {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val normalizedSelectedStartDate = selectedStartDate?.let { dateFormat.format(it) }
 
-        // Crea un nuovo feed con i dati aggiornati
-        val updatedFeed = feedToUpdate.copy(
-            timeFix = feedOrarioFisso.value,
-            quantity = feedQuantita.value,
-            dateStart = selectedStartDate,
-            dateEnd = selectedEndDate
-        )
-
-        petPotModel.updateFeed(updatedFeed,
-            onSuccess = {
-                Log.d("Feed", "Feed aggiornato con successo!")
-            },
-            onFailure = { errorMessage ->
-                Log.e("Feed", "Errore nell'aggiornamento del feed: $errorMessage")
+        // Fetch existing feeds
+        petPotModel.getFeeds { existingFeeds ->
+            // Check if a feed already exists for the same date and time
+            val alreadyExists = existingFeeds.any { feed ->
+                val feedDate = feed.dateStart?.let { dateFormat.format(it) } == normalizedSelectedStartDate &&
+                        feed.timeFix == feedOrarioFisso.value
+                feedDate
             }
-        )
+
+            callback(alreadyExists)
+        }
     }
+
+
 
 }

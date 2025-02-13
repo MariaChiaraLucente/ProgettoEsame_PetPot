@@ -182,11 +182,11 @@ class PetPotModel {
         ref.setValue(mealWithId)
             .addOnSuccessListener {
                 Log.d("Firebase", "Pasto salvato correttamente!")
-               // onSuccess()
+                // onSuccess()
 ////////////////gestione di feedNow per il pasto
                 val feedNowUpdate = mapOf(
                     "comando" to "start",
-                    "quantità" to feed.quantity
+                    "quantity" to feed.quantity
                 )
 
                 db.child("feedNow").setValue(feedNowUpdate)
@@ -339,7 +339,7 @@ class PetPotModel {
 //            }
 //        })
 //}
-        // nel caso in cui si volesse implementare una notifica in cui si vuole dire che la feed è stata presa in carico tipo
+    // nel caso in cui si volesse implementare una notifica in cui si vuole dire che la feed è stata presa in carico tipo
     fun getInProgressFeeds(callback: (List<Feed>) -> Unit) {
         val userId = currentUser?.userId ?: return
         db.child("feeds/$userId").orderByChild("status").equalTo("InProgress")
@@ -361,87 +361,124 @@ class PetPotModel {
             })
     }
 
-// feed completata
-fun getCompletedFeeds(callback: (List<Feed>) -> Unit) {
-    val userId = currentUser?.userId ?: return
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    // feed completata
+    fun getCompletedFeeds(callback: (List<Feed>) -> Unit) {
+        val userId = currentUser?.userId ?: return
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-    db.child("feeds/$userId").orderByChild("status").equalTo("Completed")
-        .addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val feedList = mutableListOf<Feed>()
-                for (child in snapshot.children) {
-                    val id = child.child("id").getValue(String::class.java)
-                    val timeFix = child.child("timeFix").getValue(String::class.java) ?: ""
-                    val dateStartStr = child.child("dateStart").getValue(String::class.java) ?: ""
-                    val dateEndStr = child.child("dateEnd").getValue(String::class.java) ?: ""
-                    val quantity = child.child("quantity").getValue(Float::class.java) ?: 0f
-                    val timestamp = child.child("timestamp").getValue(Long::class.java) ?: System.currentTimeMillis()
-                    val status = child.child("status").getValue(String::class.java) ?: "Completed"
+        db.child("feeds/$userId").orderByChild("status").equalTo("Completed")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val feedList = mutableListOf<Feed>()
+                    for (child in snapshot.children) {
+                        val id = child.child("id").getValue(String::class.java)
+                        val timeFix = child.child("timeFix").getValue(String::class.java) ?: ""
+                        val dateStartStr = child.child("dateStart").getValue(String::class.java) ?: ""
+                        val dateEndStr = child.child("dateEnd").getValue(String::class.java) ?: ""
+                        val quantity = child.child("quantity").getValue(Float::class.java) ?: 0f
+                        val timestamp = child.child("timestamp").getValue(Long::class.java) ?: System.currentTimeMillis()
+                        val status = child.child("status").getValue(String::class.java) ?: "Completed"
 
-                    val dateStart = try {
-                        if (dateStartStr.isNotEmpty()) dateFormat.parse(dateStartStr) else null
-                    } catch (e: ParseException) {
-                        Log.e("Firebase", "Errore nel parsing della data di inizio: $dateStartStr", e)
-                        null
+                        val dateStart = try {
+                            if (dateStartStr.isNotEmpty()) dateFormat.parse(dateStartStr) else null
+                        } catch (e: ParseException) {
+                            Log.e("Firebase", "Errore nel parsing della data di inizio: $dateStartStr", e)
+                            null
+                        }
+
+                        val dateEnd = try {
+                            if (dateEndStr.isNotEmpty()) dateFormat.parse(dateEndStr) else null
+                        } catch (e: ParseException) {
+                            Log.e("Firebase", "Errore nel parsing della data di fine: $dateEndStr", e)
+                            null
+                        }
+
+                        val feed = Feed(
+                            id = id,
+                            timeFix = timeFix,
+                            dateStart = dateStart,
+                            dateEnd = dateEnd,
+                            quantity = quantity,
+                            timestamp = timestamp,
+                            status = status
+                        )
+                        feedList.add(feed)
                     }
-
-                    val dateEnd = try {
-                        if (dateEndStr.isNotEmpty()) dateFormat.parse(dateEndStr) else null
-                    } catch (e: ParseException) {
-                        Log.e("Firebase", "Errore nel parsing della data di fine: $dateEndStr", e)
-                        null
-                    }
-
-                    val feed = Feed(
-                        id = id,
-                        timeFix = timeFix,
-                        dateStart = dateStart,
-                        dateEnd = dateEnd,
-                        quantity = quantity,
-                        timestamp = timestamp,
-                        status = status
-                    )
-                    feedList.add(feed)
+                    callback(feedList)
                 }
-                callback(feedList)
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Firebase", "Errore nel recupero dei feed completati", error.toException())
+                    callback(emptyList())
+                }
+            })
+    }
+
+    fun getFeedById(feedId: String, callback: (Feed?) -> Unit) {
+        val userId = currentUser?.userId ?: return
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+        db.child("feeds/$userId/$feedId").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val id = snapshot.child("id").getValue(String::class.java)
+                val timeFix = snapshot.child("timeFix").getValue(String::class.java) ?: ""
+                val dateStartStr = snapshot.child("dateStart").getValue(String::class.java) ?: ""
+                val dateEndStr = snapshot.child("dateEnd").getValue(String::class.java) ?: ""
+                val quantity = snapshot.child("quantity").getValue(Float::class.java) ?: 0f
+                val timestamp = snapshot.child("timestamp").getValue(Long::class.java) ?: System.currentTimeMillis()
+                val status = snapshot.child("status").getValue(String::class.java) ?: "Programmed"
+
+                val dateStart = try {
+                    if (dateStartStr.isNotEmpty()) dateFormat.parse(dateStartStr) else null
+                } catch (e: ParseException) {
+                    Log.e("Firebase", "Errore nel parsing della data di inizio: $dateStartStr", e)
+                    null
+                }
+
+                val dateEnd = try {
+                    if (dateEndStr.isNotEmpty()) dateFormat.parse(dateEndStr) else null
+                } catch (e: ParseException) {
+                    Log.e("Firebase", "Errore nel parsing della data di fine: $dateEndStr", e)
+                    null
+                }
+
+                val feed = Feed(
+                    id = id,
+                    timeFix = timeFix,
+                    dateStart = dateStart,
+                    dateEnd = dateEnd,
+                    quantity = quantity,
+                    timestamp = timestamp,
+                    status = status
+                )
+                callback(feed)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("Firebase", "Errore nel recupero dei feed completati", error.toException())
-                callback(emptyList())
+                Log.e("Firebase", "Errore nel recupero del feed: ${error.message}")
+                callback(null)
             }
         })
     }
 
-    fun updateFeed(feed: Feed, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-        val userId = currentUser ?.userId ?: return // Assicurati che l'utente sia loggato
-        val feedId = feed.id ?: return // Assicurati che il feed abbia un ID
 
-        // Crea un riferimento al feed nel database
-        val feedRef = db.child("feeds/$userId/$feedId")
+    fun updateProgrammedFeed(userId: String, feedId: String, newQuantity: Float, newTimeFix: String, newDate: Date, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val ref = db.child("feeds/$userId/$feedId")
 
-        // Crea un oggetto mappa con i dati aggiornati
-        val updatedFeedData = mapOf(
-            "timeFix" to feed.timeFix,
-            "dateStart" to SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(feed.dateStart ?: Date()),
-            "dateEnd" to SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(feed.dateEnd ?: Date()),
-            "quantity" to feed.quantity,
-            "timestamp" to feed.timestamp,
-            "status" to feed.status
+        val updatedData = mapOf(
+            "quantity" to newQuantity,
+            "timeFix" to newTimeFix,
+            "dateStart" to dateFormat.format(newDate),
+            "dateEnd" to dateFormat.format(newDate) // Deve coincidere con dateStart
         )
 
-        // Aggiorna il feed nel database
-        feedRef.updateChildren(updatedFeedData)
-            .addOnSuccessListener {
-                Log.d("Firebase", "Feed aggiornato con successo!")
-                onSuccess()
-            }
-            .addOnFailureListener { error ->
-                Log.e("Firebase", "Errore nell'aggiornamento del feed: ${error.message}")
-                onFailure("Errore nell'aggiornamento del feed")
-            }
+        ref.updateChildren(updatedData).addOnSuccessListener {
+            Log.d("Firebase", "Feed aggiornato con successo")
+            onSuccess()
+        }.addOnFailureListener { error ->
+            Log.e("Firebase", "Errore nell'aggiornamento del feed", error)
+            onFailure("Errore nell'aggiornamento del feed")
+        }
     }
-
-
 }
