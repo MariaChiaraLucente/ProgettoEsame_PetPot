@@ -100,7 +100,7 @@ fun FeedCreationScreen(
     }
     var selectedHour by remember { mutableStateOf(12) }
     var selectedMinute by remember { mutableStateOf(0) }
-    var selectedQuantity by remember { mutableStateOf(100f) }
+    var selectedQuantity by remember { mutableStateOf(0f) }
     var isCalendarExpanded by remember { mutableStateOf(false) }
 
     val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
@@ -382,44 +382,14 @@ fun FeedCreationScreen(
                         color = Color(0xFF2F34BE),
                         fontWeight = FontWeight.Bold
                     )
-                    Card(
-                        modifier = Modifier
-                            .width(280.dp)  // Imposta una larghezza per la Card
-                            .height(210.dp),  // Imposta l'altezza per la Card
-                        elevation = CardDefaults.cardElevation(8.dp),
-                    ) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color(0xFFA2B0CA)),  // Sfondo per la LazyColumn
-                        ) {
-                            items((0..500 step 50).toList()) { quantity ->  // Crea una lista da 0 a 500 con step 50
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            selectedQuantity = quantity.toFloat()
-                                            viewModel.updateFeedQuantita(selectedQuantity)
-                                        }
-                                        .background(
-                                            color = if (selectedQuantity == quantity.toFloat()) Color(
-                                                0xFF7F96C1
-                                            ) else Color.Transparent
-                                        ),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = "${quantity}g",
-                                        modifier = Modifier.padding(16.dp),
-                                        fontSize = 24.sp,
-                                        color = Color(0xFF2F34BE),
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    QuantityPicker(
+                        selectedQuantity = selectedQuantity,
+                        onQuantitySelected = { quantity ->
+                            selectedQuantity = quantity
+                            viewModel.updateFeedQuantita(quantity) // Chiamata al ViewModel come nella vecchia struttura
                         }
-                    }
+                    )
 
                 }
 
@@ -601,6 +571,8 @@ fun CalendarGridFeed(
     }
 }
 
+
+
 @Composable
 fun TimePickerComponent(
     selectedHour: Int,
@@ -667,6 +639,39 @@ fun TimePickerComponent(
         }
     }
 }
+
+@Composable
+fun QuantityPicker(
+    selectedQuantity: Float,
+    onQuantitySelected: (Float) -> Unit
+) {
+    val quantities = (0..200).map { it * 0.5f } // Quantità da 0 a 100 con step di 0.5
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(Color.White, shape = RoundedCornerShape(12.dp))
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Quantità (g)", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        NumberPickerQuantity(
+            value = selectedQuantity,
+            range = quantities,
+            displayValues = quantities.map { "%.1f".format(it) },
+            onValueChange = { newValue ->
+                onQuantitySelected(newValue) // Chiamata alla funzione passata come parametro
+            }
+        )
+    }
+}
+
+
 
 
 

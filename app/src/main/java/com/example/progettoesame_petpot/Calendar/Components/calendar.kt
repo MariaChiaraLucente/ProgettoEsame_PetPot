@@ -82,7 +82,7 @@ fun CalendarScreen(
                 ),
 
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("HomePage") }) {
+                    IconButton(onClick = { navController.navigate("Drawers") }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }

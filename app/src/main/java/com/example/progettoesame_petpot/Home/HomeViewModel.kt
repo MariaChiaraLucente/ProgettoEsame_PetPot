@@ -46,4 +46,9 @@ class ProfileViewModel(private val profileRepository: PetPotModel = PetPotModel(
     fun logout() {
         profileRepository.clear()
     }
+
+
+
+
+
 }
