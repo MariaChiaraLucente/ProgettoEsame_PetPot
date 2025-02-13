@@ -57,14 +57,14 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFF5576B4))
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Animal Bio",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp),
             fontWeight = FontWeight.Bold
@@ -72,7 +72,7 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
         Spacer(modifier = Modifier.height(25.dp))
         Text(
             text = "Select the size:",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp),
             fontWeight = FontWeight.Bold
@@ -93,7 +93,7 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = "Select the age:",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp),
             fontWeight = FontWeight.Bold
@@ -127,11 +127,11 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
                     navController.navigate("An_bio2") // ✅ Solo se non ci sono errori
                 }
             },
-            colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
             modifier = Modifier.width(180.dp).height(45.dp),
             border = BorderStroke(2.dp, Color.Black)
         ) {
-            Text("Next", color = Color.White, fontSize = 16.sp)
+            Text("Next", color = MaterialTheme.colorScheme.onBackground, fontSize = 16.sp)
         }
     }
 }

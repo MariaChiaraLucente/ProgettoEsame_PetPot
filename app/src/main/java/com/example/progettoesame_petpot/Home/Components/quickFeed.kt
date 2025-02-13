@@ -26,11 +26,11 @@ fun QuickFeedButton(navController: NavController) {
             .size(110.dp)
             .offset(y = (-40).dp)
             .border(3.dp, Color.Black, CircleShape), // Add a black border, // Increase the button size
-        colors = ButtonDefaults.buttonColors(Color(0xFF3A5EAB))
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface)
     ) {
         Text(
             text = "Quick Feed",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineSmall, // Use a larger text style
             textAlign = TextAlign.Center
         )

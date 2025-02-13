@@ -37,7 +37,7 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFF5576B4))
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -55,7 +55,7 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
         Spacer(modifier = Modifier.height(15.dp))
         Text(
             text = "Register",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp),
             fontWeight = FontWeight.Bold
@@ -67,11 +67,13 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
                 registrationViewModel.user = registrationViewModel.user.copy(username = it)
                 usernameError = if (it.isBlank()) "Please choose a username" else null
             },
-            placeholder = { Text("Username (Pet Name)") },
+            placeholder = { Text(text = "Username (Pet Name)", color = Color.Gray) },
             modifier = Modifier.width(300.dp),
             shape = RoundedCornerShape(24.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = Color.White
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
             )
         )
         if (usernameError != null) {
@@ -84,11 +86,13 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
                 registrationViewModel.user = registrationViewModel.user.copy(password = it)
                 passwordError = if (it.isBlank()) "Please choose a password" else null
             },
-            placeholder = { Text("Password") },
+            placeholder = { Text(text = "Password", color = Color.Gray) },
             modifier = Modifier.width(300.dp),
             shape = RoundedCornerShape(24.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = Color.White
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
             ),
             visualTransformation = PasswordVisualTransformation(),
         )
@@ -110,7 +114,7 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
                     navController.navigate("An_bio1") // ✅ Solo se non ci sono errori
                 }
             },
-            colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
             modifier = Modifier.width(180.dp).height(45.dp),
             border = BorderStroke(2.dp, Color.Black)
         ) {
@@ -131,13 +135,13 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
         Spacer(modifier = Modifier.height(15.dp))
         Text(
             text = "I already have an account",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp)
         )
         Text(
             text = "Login",
-            color = Color(0xFF5A3679),
+            color = Color.White,
             style = MaterialTheme.typography.bodyLarge.copy(textDecoration = TextDecoration.Underline),
             modifier = Modifier.padding(top = 8.dp).clickable { navController.navigate("login")},
             fontWeight = FontWeight.Bold,

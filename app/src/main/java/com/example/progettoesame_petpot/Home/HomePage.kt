@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,7 +26,7 @@ fun HomePage(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF5576B4)), // Colore di sfondo della schermata
+            .background(MaterialTheme.colorScheme.background), // Colore di sfondo della schermata
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Sezione superiore con icone e il nome

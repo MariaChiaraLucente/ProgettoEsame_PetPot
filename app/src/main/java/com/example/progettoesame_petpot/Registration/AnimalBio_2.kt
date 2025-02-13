@@ -45,7 +45,7 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFF5576B4))
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -53,7 +53,7 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
         item {
             Text(
                 text = "Animal Bio",
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 8.dp),
                 fontWeight = FontWeight.Bold
@@ -68,11 +68,13 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                     registrationViewModel.user = registrationViewModel.user.copy(breed = it)
                     breedError = if (it.isBlank()) "Please choose a breed" else null
                                 },
-                placeholder = { Text("Breed") },
+                placeholder = { Text(text = "Breed", color = Color.Gray) },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
                 )
             )
             if (breedError != null) {
@@ -87,11 +89,13 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                     registrationViewModel.user = registrationViewModel.user.copy(favoriteFood = it)
                     favoriteFoodError = if (it.isBlank()) "Please choose a favorite food" else null
                                 },
-                placeholder = { Text("Favorite food") },
+                placeholder = { Text(text = "Favorite food", color = Color.Gray) },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
                 )
             )
             if (favoriteFoodError != null) {
@@ -107,11 +111,13 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                     registrationViewModel.user = registrationViewModel.user.copy(allergies = it)
                     allergiesError = if (it.isBlank()) "Please choose allergies or intolerances" else null
                                 },
-                placeholder = { Text("Allergies or intolerances") },
+                placeholder = { Text(text = "Allergies or intolerances", color = Color.Gray) },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
                 )
             )
             if (allergiesError != null) {
@@ -126,11 +132,13 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                 onValueChange = {
                     registrationViewModel.user = registrationViewModel.user.copy(others = it)
                                 },
-                placeholder = { Text("Other information") },
+                placeholder = { Text(text = "Other information", color = Color.Gray) },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
                 )
             )
         }
@@ -152,7 +160,7 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                         navController.navigate("VetContact") // ✅ Solo se non ci sono errori
                     }
                 },
-                colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
                 modifier = Modifier.width(180.dp).height(45.dp),
                 border = BorderStroke(2.dp, Color.Black)
             ) {
