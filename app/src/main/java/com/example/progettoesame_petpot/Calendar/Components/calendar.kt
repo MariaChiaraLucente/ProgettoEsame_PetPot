@@ -71,43 +71,25 @@ fun CalendarScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF8099C9))
+            .background(MaterialTheme.colorScheme.background)
     )
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Calendar", color = Color.White) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF1F2B85)
-                ),
-
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigate("HomePage") }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        },
-        containerColor = Color.Transparent
-    ) { paddingValues ->
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
-
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().height(630.dp).padding(16.dp),
+                modifier = Modifier.fillMaxWidth().height(700.dp).padding(16.dp),
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(
                         onClick = { calendarViewModel.changeMonth(forward = false) },
@@ -145,12 +127,11 @@ fun CalendarScreen(
                 )
 
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(36.dp))
 
                 Column (
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
+                        .fillMaxSize(),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
 
@@ -169,9 +150,9 @@ fun CalendarScreen(
                             showDeleteDialog = true
                         },
                         shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                     ) {
-                        Text(text = "Clear all events")
+                        Text(text = "Clear all events", color = Color.White)
                     }
                 }
             }
@@ -180,7 +161,6 @@ fun CalendarScreen(
                 onScreenSelected = { navController.navigate(it) }
             )
         }
-    }
 
     ConfirmDeleteDialog(
         showDialog = showDeleteDialog,
@@ -212,7 +192,7 @@ fun CalendarGrid(
             .fillMaxWidth()
             .height(330.dp)
             .padding(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF5576B4))
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -258,7 +238,7 @@ fun CalendarGrid(
                                 Box(
                                     modifier = Modifier
                                         .size(35.dp)
-                                        .background(Color.Blue.copy(alpha = 0.3f), CircleShape)
+                                        .background((MaterialTheme.colorScheme.background).copy(alpha = 0.3f), CircleShape)
                                         .clickable {
                                             val formattedDate = SimpleDateFormat(
                                                 "yyyy-MM-dd",
