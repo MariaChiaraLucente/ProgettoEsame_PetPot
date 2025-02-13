@@ -45,7 +45,7 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFF5576B4))
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -67,11 +67,13 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
                     registrationViewModel.user = registrationViewModel.user.copy(vetName = it)
                     vetNameError = if (it.isBlank()) "⚠ Please choose a vet name! ⚠" else null
                 },
-                placeholder = { Text("Vet's name") },
+                placeholder = { Text(text = "Vet's name", color = Color.Gray) },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
                 )
             )
             if (vetNameError != null) {
@@ -86,11 +88,13 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
                     registrationViewModel.user = registrationViewModel.user.copy(vetPhone = it)
                     vetPhoneError = if (it.isBlank()) "⚠ Please choose a vet phone number! ⚠" else null
                 },
-                placeholder = { Text("Vet's phone") },
+                placeholder = { Text(text = "Vet's phone", color = Color.Gray) },
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
                 )
             )
             if (vetPhoneError != null) {
@@ -107,11 +111,11 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
                 enabled = vetNameError == null && vetPhoneError == null &&  // 🔴 Disabilita se ci sono errori
                         registrationViewModel.user.vetName.isNotBlank() &&
                         registrationViewModel.user.vetPhone.isNotBlank(),
-                colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
                 modifier = Modifier.width(180.dp).height(45.dp),
                 border = BorderStroke(2.dp, Color.Black)
             ) {
-                Text("Register", color = Color.White, fontSize = 16.sp)
+                Text("Register", color = MaterialTheme.colorScheme.onBackground, fontSize = 16.sp)
             }
         }
     }

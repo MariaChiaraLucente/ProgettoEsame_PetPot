@@ -9,18 +9,27 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    secondary = Color(0xff496496),
+    tertiary = Color(0xFF232B3E), //NAVBAR
+    background = Color(0xFF1C2639), //SFONDO
+    onBackground = Color(0xffd0d0d0), //TESTO
+    surface = Color(0xFF30488B), //BOTTONE
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = Color(0xFF39B4B0),
+    secondary = Color(0xFF39B4B0),
+    tertiary = Color(0xFF2D4465), //NAVBAR
+    background = Color(0xFF5576B4), //SFONDO
+    onBackground = Color(0xFFFFFFFF), //TESTO
+    surface = Color(0xFF2E3EB8), //BOTTONE
+
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -37,7 +46,7 @@ private val LightColorScheme = lightColorScheme(
 fun ProgettoEsamePetPotTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

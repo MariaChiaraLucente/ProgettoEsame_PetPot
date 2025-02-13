@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.AccountCircle
@@ -32,6 +33,7 @@ import coil.decode.GifDecoder
 import coil.request.ImageRequest
 import com.example.progettoesame_petpot.R
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.colorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -41,9 +43,12 @@ import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Drawers(navController: NavController, userId: String, profileViewModel: ProfileViewModel = viewModel()) {
+
+    val systemDarkMode = isSystemInDarkTheme() // Prende il tema del sistema
+    var isDarkMode by rememberSaveable { mutableStateOf(systemDarkMode) }
+
     var showLeftDrawer by remember { mutableStateOf(false) }
     var showRightDrawer by remember { mutableStateOf(false) }
-    var isDarkMode by remember { mutableStateOf(false) }
     var isDeafMode by remember { mutableStateOf(false) }
     var isNotificationsActive by remember { mutableStateOf(false) }
     var breed by remember { mutableStateOf("") }
@@ -77,7 +82,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF5576B4))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Scaffold(
             topBar = {
@@ -85,7 +90,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                     title = { Text("", fontSize = 20.sp) },
                     modifier = Modifier.padding(15.dp),
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color(0xFF5576B4)
+                        containerColor = MaterialTheme.colorScheme.background
                     ),
                     navigationIcon = {
                         IconButton(onClick = { showLeftDrawer = true }) {
@@ -115,7 +120,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .background(Color(0xFF5576B4)),
+                    .background(MaterialTheme.colorScheme.background),
                 contentAlignment = Alignment.Center
             ) {
                 HomePage(navController)
@@ -140,7 +145,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(306.dp)
-                    .background(Color(0xFF5576B4))
+                    .background(MaterialTheme.colorScheme.background)
             ) {
                 Column(
                     modifier = Modifier
@@ -250,7 +255,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                     modifier = Modifier
                         .fillMaxHeight()
                         .width(306.dp)
-                        .background(Color(0xFF5576B4))
+                        .background(MaterialTheme.colorScheme.background)
                 ) {
                     Column(
                         modifier = Modifier
@@ -317,9 +322,10 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                                     navController.navigate("login")
                                     profileViewModel.logout()
                                 },
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
                             ) {
-                                Text("Logout")
+                                Text(text = "Logout", color = MaterialTheme.colorScheme.onBackground)
                             }                        }
 
                         Spacer(modifier = Modifier.height(16.dp))

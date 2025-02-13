@@ -53,7 +53,7 @@ fun Login(navController: NavHostController, loginViewModel: LoginViewModel = vie
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFF5576B4))
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -71,7 +71,7 @@ fun Login(navController: NavHostController, loginViewModel: LoginViewModel = vie
         Spacer(modifier = Modifier.height(15.dp))
         Text(
             text = "Login",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp),
             fontWeight = FontWeight.Bold
@@ -83,11 +83,13 @@ fun Login(navController: NavHostController, loginViewModel: LoginViewModel = vie
                 username = it
                 loginViewModel.username = it
                             },
-            placeholder = { Text("Username") },
+            placeholder = { Text(text = "Username", color = Color.Gray) },
             modifier = Modifier.width(300.dp),
             shape = RoundedCornerShape(24.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = Color.White
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
             )
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -97,11 +99,13 @@ fun Login(navController: NavHostController, loginViewModel: LoginViewModel = vie
                 password = it
                 loginViewModel.password = it
                             },
-            placeholder = { Text("Password") },
+            placeholder = { Text(text = "Password", color = Color.Gray) },
             modifier = Modifier.width(300.dp),
             shape = RoundedCornerShape(24.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = Color.White
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
             ),
             visualTransformation = PasswordVisualTransformation(),
         )
@@ -120,7 +124,7 @@ fun Login(navController: NavHostController, loginViewModel: LoginViewModel = vie
                     }
                 )
             },
-            colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
             modifier = Modifier.width(180.dp).height(45.dp),
             border = BorderStroke(2.dp, Color.Black)
         )
@@ -142,7 +146,7 @@ fun Login(navController: NavHostController, loginViewModel: LoginViewModel = vie
         Spacer(modifier = Modifier.height(15.dp))
         Text(
             text = "I don’t have an account",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp)
         )

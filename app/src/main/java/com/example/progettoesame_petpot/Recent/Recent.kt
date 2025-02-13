@@ -41,7 +41,7 @@ fun RecentFeedsScreen(navController: NavController, viewModel: RecentFeedsViewMo
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF5576B4))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Spacer(modifier = Modifier.height(26.dp))
         Column(
@@ -64,8 +64,8 @@ fun RecentFeedsScreen(navController: NavController, viewModel: RecentFeedsViewMo
             // 🔹 TAB BAR
             TabRow(
                 selectedTabIndex = selectedTabIndex,
-                containerColor = Color(0xFF5576B4),
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.background,
+                contentColor = MaterialTheme.colorScheme.onBackground
             ) {
                 Tab(
                     selected = selectedTabIndex == 0,
@@ -137,7 +137,7 @@ fun MealCard(feed: Meal) {
     ) {
         Column(
             modifier = Modifier
-                .background(Color(0xFF8099C9))
+                .background(MaterialTheme.colorScheme.secondary)
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
@@ -152,7 +152,7 @@ fun MealCard(feed: Meal) {
                 text = "${feed.quantity} g - ${feed.description}",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF4246BD)
+                color = MaterialTheme.colorScheme.background
             )
         }
     }
@@ -170,7 +170,7 @@ fun FeedCard(feed: Feed) {
     ) {
         Column(
             modifier = Modifier
-                .background(Color(0xFF8099C9))
+                .background(MaterialTheme.colorScheme.secondary)
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
@@ -184,7 +184,7 @@ fun FeedCard(feed: Feed) {
                 text = "Quantity: ${feed.quantity}g",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xFF4246BD)
+                color = MaterialTheme.colorScheme.background
             )
         }
     }

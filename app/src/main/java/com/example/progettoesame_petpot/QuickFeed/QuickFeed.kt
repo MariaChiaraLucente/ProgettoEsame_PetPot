@@ -38,13 +38,13 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
     var foodError by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier.fillMaxSize().background(Color(0xFF5576B4))
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
     ) {
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = { Text("Quick Feed", color = Color.White) },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF5576B4)),
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
                             Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
@@ -63,7 +63,7 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
                     text = "Choose the quantity and the type of food",
                     fontSize = 32.sp,
                     lineHeight = 38.sp,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier.padding(16.dp),
                     textAlign = TextAlign.Center
@@ -120,7 +120,7 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
                         }
                     },
                     shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E3EB8), contentColor = Color.White),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface, contentColor = MaterialTheme.colorScheme.onBackground),
                     border = BorderStroke(2.dp, Color.Black),
                     modifier = Modifier.width(162.dp).height(68.dp)
                 ) {
