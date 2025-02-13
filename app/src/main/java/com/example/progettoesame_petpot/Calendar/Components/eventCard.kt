@@ -76,8 +76,10 @@ fun FeedCreationScreen(
 
 
     ) {
+    val errorMessageTime = viewModel.errorMessage.value
     val errorMessage by viewModel.errorCreationFeed.observeAsState()
     var showSaveDialog by remember { mutableStateOf(false) }
+
 
 // Inside your composable function
     val context = LocalContext.current
@@ -89,7 +91,13 @@ fun FeedCreationScreen(
         viewModel.setFeed(feedToEdit)
     }
 
-    var showDialog by remember { mutableStateOf(false) }
+    if (errorMessage != null) {
+        Text(
+            text = errorMessage!!,
+            color = Color.Red,
+            modifier = Modifier.padding(16.dp)
+        )
+    }
     var selectedHour by remember { mutableStateOf(12) }
     var selectedMinute by remember { mutableStateOf(0) }
     var selectedQuantity by remember { mutableStateOf(100f) }
