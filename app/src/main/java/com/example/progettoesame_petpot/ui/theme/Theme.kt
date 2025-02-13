@@ -11,6 +11,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.example.progettoesame_petpot.Home.Components.ThemeSettings
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -23,7 +24,7 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF39B4B0),
-    secondary = Color(0xFF39B4B0),
+    secondary = Color(0xFF8099C9),
     tertiary = Color(0xFF2D4465), //NAVBAR
     background = Color(0xFF5576B4), //SFONDO
     onBackground = Color(0xFFFFFFFF), //TESTO
@@ -44,7 +45,8 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun ProgettoEsamePetPotTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = ThemeSettings.isDarkMode,
+    //darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit

@@ -2,6 +2,7 @@ package com.example.progettoesame_petpot
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,8 +26,10 @@ fun AutoDismissPopup(
 
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        title = { Text("Message") },
+        title = { Text(text = "Message", color = MaterialTheme.colorScheme.background) },
         text = { Text(message) },
+        containerColor = MaterialTheme.colorScheme.onBackground,
+        textContentColor = MaterialTheme.colorScheme.background,
         confirmButton = {
             if (showButtons && onConfirm != null) {
                 Button(onClick = { onConfirm() }) {
