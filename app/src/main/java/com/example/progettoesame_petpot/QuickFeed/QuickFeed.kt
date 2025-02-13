@@ -134,7 +134,7 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
                 }
                 if (showDialog) {
                     AutoDismissPopup(
-                        message = "Feeded successfully!",
+                        message = "Fed successfully!",
                         onDismiss = {
                             showDialog = false
                             navController.navigate("Drawers")
