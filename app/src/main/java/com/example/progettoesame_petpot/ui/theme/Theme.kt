@@ -15,20 +15,22 @@ import com.example.progettoesame_petpot.Home.Components.ThemeSettings
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
-    secondary = Color(0xff496496),
+    secondary = Color(0xff496496), //CARD
     tertiary = Color(0xFF232B3E), //NAVBAR
     background = Color(0xFF1C2639), //SFONDO
     onBackground = Color(0xffd0d0d0), //TESTO
     surface = Color(0xFF30488B), //BOTTONE
+    error = Color(0xFFA54747),
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF39B4B0),
-    secondary = Color(0xFF8099C9),
+    secondary = Color(0xFF8099C9), //CARD
     tertiary = Color(0xFF2D4465), //NAVBAR
     background = Color(0xFF5576B4), //SFONDO
     onBackground = Color(0xFFFFFFFF), //TESTO
     surface = Color(0xFF2E3EB8), //BOTTONE
+    error = Color(0xffa26262),
 
 
 
