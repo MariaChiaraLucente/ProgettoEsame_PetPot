@@ -89,6 +89,7 @@ fun AppNavigation() {
                 onNavigateToFeedCreation = {
                     // Navigazione verso la creazione del feed senza parametri specifici (se non richiesto)
                     navController.navigate("feedCreation")
+
                 }
             )
         }

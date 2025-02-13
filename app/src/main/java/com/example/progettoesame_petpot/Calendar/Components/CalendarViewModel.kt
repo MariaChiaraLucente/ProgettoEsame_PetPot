@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.progettoesame_petpot.model.Feed
 import com.example.progettoesame_petpot.model.PetPotModel
+import kotlinx.coroutines.launch
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,6 +27,7 @@ class CalendarViewModel : ViewModel() {
     val currentMonth: Int get() = _currentMonth.value
     private val _currentYear = mutableStateOf(calendar.get(Calendar.YEAR))
     val currentYear: Int get() = _currentYear.value
+
 
     fun normalizeDate(date: Date): Date {
         val calendar = Calendar.getInstance().apply{
@@ -68,6 +71,7 @@ class CalendarViewModel : ViewModel() {
             _feedDays.value = markedDays
         }
     }
+
     fun isFeedDay(date: Date): Boolean {
       return  _feedDays.value.contains(normalizeDate(date))
         Log.d("FeedDebug", "Checking Date (Normalized):  | Result: ${_feedDays.value.contains(normalizeDate(date))}")
@@ -122,6 +126,20 @@ class CalendarViewModel : ViewModel() {
     fun deleteFeed(feed: Feed) {
         petPotModel.deleteFeed(feed)
     }
+
+    fun deleteAllProgrammedFeeds() {
+        viewModelScope.launch {
+            petPotModel.getFeeds { feeds ->
+                val programmedFeeds = feeds.filter { it.status == "Programmed" }
+                programmedFeeds.forEach { feed ->
+                    petPotModel.deleteFeed(feed)
+                    loadFeedDays()
+                }
+            }
+        }
+    }
+
+
 
 }
 

@@ -9,7 +9,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,10 +20,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,15 +50,17 @@ fun CalendarScreen(
     onNavigateToFeedCreation: () -> Unit
 ) {
 
-    LaunchedEffect(Unit) {
+//    LaunchedEffect(Unit) {
+//        calendarViewModel.loadFeedDays()
+//    }
+    LaunchedEffect(navController.currentBackStackEntry) {
         calendarViewModel.loadFeedDays()
     }
-
     val currentMonth = calendarViewModel.currentMonth
     val currentYear = calendarViewModel.currentYear
     val selectedStartDate = calendarViewModel.selectedStartDate
     val selectedEndDate = calendarViewModel.selectedEndDate
-
+    var showDeleteDialog by remember { mutableStateOf(false) }
 //
 
     val monthNames = listOf(
@@ -73,7 +82,7 @@ fun CalendarScreen(
                 ),
 
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigate("HomePage") }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
@@ -138,15 +147,32 @@ fun CalendarScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
-                    onClick = {
-                        onNavigateToFeedCreation()
+                Column (
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+
+                ){
+                    Button(
+                        onClick = {
+                            onNavigateToFeedCreation()
 //                    calendarViewModel.completeSelection()
-                    },
-                    shape = CircleShape,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    Text(text = "New Event")
+                        },
+                        shape = CircleShape
+                    ) {
+                        Text(text = "New Event")
+                    }
+                    Button(
+                        onClick = {
+                            showDeleteDialog = true
+                        },
+                        shape = CircleShape,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                    ) {
+                        Text(text = "Clear all events")
+                    }
                 }
             }
             BottomNavBar(
@@ -155,6 +181,15 @@ fun CalendarScreen(
             )
         }
     }
+
+    ConfirmDeleteDialog(
+        showDialog = showDeleteDialog,
+        onDismiss = { showDeleteDialog = false },
+        onConfirm = {
+            showDeleteDialog = false
+            calendarViewModel.deleteAllProgrammedFeeds()
+        }
+    )
 }
 
 
@@ -167,6 +202,7 @@ fun CalendarGrid(
     currentYear: Int,
 
     ) {
+
     val calendar = Calendar.getInstance()
     val dayNames = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
@@ -265,113 +301,28 @@ fun CalendarGrid(
     }
 }
 
-
 @Composable
-fun CalendarGridFeed(
-    calendarViewModel: EventViewModel,
-    daysInMonth: Int,
-    currentMonth: Int,
-    currentYear: Int,
-    selectedStartDate: Date?,
-    selectedEndDate: Date?,
-    onDayClick: (Int) -> Unit
+fun ConfirmDeleteDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
 ) {
-    val calendar = Calendar.getInstance()
-    val dayNames = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(330.dp)
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF5576B4))
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
-        ) {
-
-            // Row for day names
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                dayNames.forEach { dayName ->
-                    Text(
-                        text = dayName,
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(4.dp)
-                    )
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            title = { Text(text = "Confirm Deletion") },
+            text = { Text(text = "Are you sure you want to delete all programmed feeds?") },
+            confirmButton = {
+                TextButton(onClick = { onConfirm() }) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text("No")
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Rows for days in the month
-            for (week in 0 until 6) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    for (day in 1..7) {
-                        val currentDay = week * 7 + day
-                        if (currentDay <= daysInMonth) {
-                            // Create the date corresponding to the current day
-                            calendar.set(Calendar.YEAR, currentYear)
-                            calendar.set(Calendar.MONTH, currentMonth)
-                            calendar.set(Calendar.DAY_OF_MONTH, currentDay)
-                            val currentDate = calendar.time
-
-                            // Check if the day is selected or in the range
-                            val isSelected = calendarViewModel.isDateSelected(
-                                currentDate,
-                                selectedStartDate,
-                                selectedEndDate
-                            )
-                            val hasFeed = calendarViewModel.isFeedDay(currentDate)
-                            val backgroundColor = when {
-                                isSelected -> Color(0xFF1F2B85) // Selected color
-
-                                else -> Color.Blue.copy(alpha = 0.3f)
-                            }
-                            Column {
-                                Box(
-                                    modifier = Modifier
-                                        .size(35.dp)
-                                        .background(backgroundColor, CircleShape)
-                                        .clickable { onDayClick(currentDay) },
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = currentDay.toString(),
-                                        color = Color.White,
-                                        fontSize = 16.sp
-                                    )
-                                }
-                                if (hasFeed) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(8.dp)
-                                            .background(Color.Gray, CircleShape)
-                                            .align(Alignment.CenterHorizontally)
-                                    )
-                                }
-                            }
-
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .size(35.dp)
-                                    .background(Color.Transparent, CircleShape)
-                            )
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
+        )
     }
 }
 

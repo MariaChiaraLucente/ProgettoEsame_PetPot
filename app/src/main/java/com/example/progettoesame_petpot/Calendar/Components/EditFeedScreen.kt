@@ -17,10 +17,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,18 +45,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.progettoesame_petpot.model.Feed
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onBack: () -> Unit) {
     val feed by viewModel.feed.observeAsState()
+    var showExitDialog by remember { mutableStateOf(false) }
+    var showSaveDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(feedId) {
         viewModel.getFeedById(feedId)
@@ -57,60 +74,193 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
 
     // Update values when the feed is loaded from the database
     LaunchedEffect(feed) {
+
+        Log.d("DEBUG", "Feed ricevuto: $feed")
         feed?.let {
             quantity = it.quantity
             timeFix = it.timeFix
-            date = Calendar.getInstance().apply { time = it.dateStart ?: Date() } // Imposta la data salvata
+            date = Calendar.getInstance().apply { time = it.dateStart ?: Date() }
         }
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Edit Feed", style = MaterialTheme.typography.bodyLarge)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF8099C9))
+    )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Calendar", color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF1F2B85)
+                ),
 
-        // Usa il QuantityPickerComponent invece del TextField
-        QuantityPickerComponent(
-            selectedQuantity = quantity,
-            onQuantitySelected = { newQuantity ->
-                quantity = newQuantity
-            }
-        )
-
-        // Time Picker
-        TimePickerComponent(
-            selectedTime = timeFix,
-            onTimeSelected = { newTime ->
-                timeFix = newTime
-            }
-        )
-
-        // Date picker component
-        date?.let {
-            DatePickerComponent(selectedDate = it, onDateSelected = { newDate, isValid ->
-                date = newDate
-                isDateValid = isValid
-            })
-        }
-
-        if (!isDateValid) {
-            Text("Invalid date, please select a future date!", color = Color.Red, fontSize = 14.sp)
-        }
-
-        Button(
-            onClick = {
-                if (isDateValid) {
-                    date?.let {
-                        viewModel.updateFeed(userId, feedId, quantity, timeFix, it.time, {
-                            onBack()
-                        }, {
-                            Log.e("UI", "Error updating feed")
-                        })
+                navigationIcon = {
+                    IconButton(onClick = { showExitDialog = true }) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
-            },
-            enabled = isDateValid
+            )
+        },
+        containerColor = Color.Transparent
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+
         ) {
-            Text("Save Changes")
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(8.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Date picker component
+                    date?.let {
+                        DatePickerComponent(
+                            selectedDate = it,
+                            onDateSelected = { newDate, isValid ->
+                                date = newDate
+                                isDateValid = isValid
+                            })
+                    }
+                }
+            }
+
+            if (!isDateValid) {
+                Text(
+                    "Invalid date, please select a future date!",
+                    color = Color.Red,
+                    fontSize = 14.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(50.dp))
+            // Usa il QuantityPickerComponent invece del TextField
+            QuantityPickerComponent(
+                selectedQuantity = quantity,
+                onQuantitySelected = { newQuantity ->
+                    quantity = newQuantity
+                }
+            )
+
+            // Time Picker
+            TimePickerComponent(
+                selectedTime = timeFix,
+                onTimeSelected = { newTime ->
+                    timeFix = newTime
+                },
+                feed
+            )
+            Log.d("DEBUG", "TimeFix: $timeFix")
+
+            if (!isDateValid) {
+                Text(
+                    "Invalid date, please select a future date!",
+                    color = Color.Red,
+                    fontSize = 14.sp
+                )
+            }
+
+            Button(
+                onClick = {
+                    if (isDateValid) {
+                        showSaveDialog = true
+                    }
+                },
+                enabled = isDateValid,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+
+            ) {
+                Text("Save Changes")
+            }
         }
+    }
+    ConfirmExitDialog(
+        showDialog = showExitDialog,
+        onDismiss = { showExitDialog = false },
+        onConfirm = {
+            showExitDialog = false
+            onBack()
+        }
+    )
+    ConfirmSaveDialog(
+        showDialog = showSaveDialog,
+        onDismiss = { showSaveDialog = false },
+        onConfirm = {
+            showSaveDialog = false
+            date?.let {
+                viewModel.updateFeed(userId, feedId, quantity, timeFix, it.time, {
+                    onBack()
+                }, {
+                    Log.e("UI", "Error updating feed")
+                })
+            }
+        }
+    )
+}
+
+
+@Composable
+fun ConfirmSaveDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            title = { Text(text = "Confirm Save") },
+            text = { Text(text = "Are you sure you want to save the changes?") },
+            confirmButton = {
+                TextButton(onClick = { onConfirm() }) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text("No")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun ConfirmExitDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            title = { Text(text = "Confirm Exit") },
+            text = { Text(text = "Are you sure you want to leave this page?") },
+            confirmButton = {
+                TextButton(onClick = { onConfirm() }) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text("No")
+                }
+            }
+        )
     }
 }
 
@@ -146,9 +296,12 @@ fun DatePickerComponent(
     ) {
         // Header
         Row(
-            modifier = Modifier.width(250.dp),
+            modifier = Modifier
+                .width(250.dp)
+                .background(Color.White),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
+
         ) {
             listOf("Giorno", "Mese", "Anno").forEach { label ->
                 Column(
@@ -173,7 +326,13 @@ fun DatePickerComponent(
                 range = days,
                 onValueChange = {
                     selectedDay = it
-                    updateDate(selectedDay, selectedMonth, selectedYear, currentDate, onDateSelected)
+                    updateDate(
+                        selectedDay,
+                        selectedMonth,
+                        selectedYear,
+                        currentDate,
+                        onDateSelected
+                    )
                 }
             )
             NumberPicker(
@@ -182,7 +341,13 @@ fun DatePickerComponent(
                 displayValues = months,
                 onValueChange = {
                     selectedMonth = it
-                    updateDate(selectedDay, selectedMonth, selectedYear, currentDate, onDateSelected)
+                    updateDate(
+                        selectedDay,
+                        selectedMonth,
+                        selectedYear,
+                        currentDate,
+                        onDateSelected
+                    )
                 }
             )
             NumberPicker(
@@ -190,7 +355,13 @@ fun DatePickerComponent(
                 range = years,
                 onValueChange = {
                     selectedYear = it
-                    updateDate(selectedDay, selectedMonth, selectedYear, currentDate, onDateSelected)
+                    updateDate(
+                        selectedDay,
+                        selectedMonth,
+                        selectedYear,
+                        currentDate,
+                        onDateSelected
+                    )
                 }
             )
         }
@@ -198,13 +369,20 @@ fun DatePickerComponent(
 }
 
 // Funzione per aggiornare la data e verificarne la validità
-private fun updateDate(day: Int, month: Int, year: Int, currentDate: Calendar, onDateSelected: (Calendar, Boolean) -> Unit) {
+private fun updateDate(
+    day: Int,
+    month: Int,
+    year: Int,
+    currentDate: Calendar,
+    onDateSelected: (Calendar, Boolean) -> Unit
+) {
     val updatedCalendar = Calendar.getInstance().apply {
         set(Calendar.YEAR, year)
         set(Calendar.MONTH, month)
         set(Calendar.DAY_OF_MONTH, day)
     }
-    val isValidDate = updatedCalendar.get(Calendar.DAY_OF_MONTH) == day && updatedCalendar >= currentDate
+    val isValidDate =
+        updatedCalendar.get(Calendar.DAY_OF_MONTH) == day && updatedCalendar >= currentDate
     onDateSelected(updatedCalendar, isValidDate)
 }
 
@@ -276,9 +454,7 @@ fun QuantityPickerComponent(
     selectedQuantity: Float,
     onQuantitySelected: (Float) -> Unit
 ) {
-    // Definiamo un intervallo di valori per la quantità (es. da 0.0 a 100.0 con incrementi di 0.5)
-    val quantities = (0..200).map { it * 0.5f } // Genera [0.0, 0.5, 1.0, 1.5, ..., 100.0]
-
+    val quantities = (0..200).map { it * 0.5f }
     var selectedValue by remember { mutableStateOf(selectedQuantity) }
 
     LaunchedEffect(selectedQuantity) {
@@ -286,32 +462,30 @@ fun QuantityPickerComponent(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(Color.White, shape = RoundedCornerShape(12.dp))
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Header
-        Text(
-            "Quantità (kg)",
-            color = Color.Black.copy(alpha = 0.5f),
-            fontSize = 15.sp,
-            textAlign = TextAlign.Center
-        )
+        Text("Quantity (kg)", fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Scrollable picker
         NumberPickerQuantity(
             value = selectedValue,
             range = quantities,
             displayValues = quantities.map { "%.1f".format(it) },
-            onValueChange = { newValue ->
-                selectedValue = newValue
-                onQuantitySelected(newValue)
+            onValueChange = {
+                selectedValue = it
+                onQuantitySelected(it)
             }
         )
     }
 }
+
 
 @Composable
 fun NumberPickerQuantity(
@@ -320,25 +494,43 @@ fun NumberPickerQuantity(
     displayValues: List<String>? = null,
     onValueChange: (Float) -> Unit
 ) {
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = range.indexOf(value))
+    val index = range.indexOf(value).takeIf { it >= 0 } ?: 0
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = index)
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(listState.isScrollInProgress) {
+        // Se lo scroll non è in corso, aggiorniamo il valore
         if (!listState.isScrollInProgress) {
             val index = listState.firstVisibleItemIndex
+            // Prendi il valore associato all'indice corrente
             val newValue = range.getOrNull(index) ?: value
-            onValueChange(newValue)
 
-            coroutineScope.launch {
-                listState.animateScrollToItem(index)
+            // Invia il nuovo valore solo se diverso dall'attuale
+            if (newValue != value) {
+                onValueChange(newValue)
             }
         }
     }
 
+// Gestione del valore iniziale per la scrollata
+    LaunchedEffect(value) {
+        Log.d("DEBUG", "Value: $value")
+
+        // Trova l'indice del valore iniziale e scorre alla posizione corretta solo quando il valore cambia
+        val initialIndex = range.indexOf(value).takeIf { it >= 0 } ?: 0
+
+        coroutineScope.launch {
+            // Anima la scrollata all'indice iniziale in modo fluido
+            listState.animateScrollToItem(initialIndex)
+        }
+    }
+
+
     Box(
         modifier = Modifier
-            .height(80.dp)
+            .height(120.dp)
             .width(100.dp)
+            .background(Color.White, shape = RoundedCornerShape(8.dp))
     ) {
         LazyColumn(
             state = listState,
@@ -355,7 +547,7 @@ fun NumberPickerQuantity(
                     text = displayValues?.get(index) ?: "%.1f".format(number),
                     fontSize = textSize,
                     color = textColor,
-                    modifier = Modifier.padding(vertical = 4.dp)
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
         }
@@ -365,19 +557,23 @@ fun NumberPickerQuantity(
             modifier = Modifier
                 .height(40.dp)
                 .width(90.dp)
-                .background(Color.Black.copy(alpha = 0.3f), shape = RoundedCornerShape(4.dp))
+                .background(Color.Black.copy(alpha = 0.1f), shape = RoundedCornerShape(4.dp))
         )
     }
 }
+
 @Composable
 fun TimePickerComponent(
     selectedTime: String, // Formato HH:MM
-    onTimeSelected: (String) -> Unit
+    onTimeSelected: (String) -> Unit,
+    feed: Feed?
 ) {
+    val isFeedLoaded = feed != null
     // Estrai ore e minuti dalla stringa selectedTime
     val (initialHour, initialMinute) = selectedTime.split(":").let {
         it[0].toInt() to it[1].toInt()
     }
+    Log.d("DEBUG", "Initial Hour: $initialHour, Initial Minute: $initialMinute")
 
     var selectedHour by remember { mutableStateOf(initialHour) }
     var selectedMinute by remember { mutableStateOf(initialMinute) }
@@ -389,47 +585,54 @@ fun TimePickerComponent(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White, shape = RoundedCornerShape(12.dp))
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Header
         Text(
             "Seleziona l'ora",
-            color = Color.Black.copy(alpha = 0.5f),
-            fontSize = 15.sp,
-            textAlign = TextAlign.Center
+            color = Color.Black.copy(alpha = 0.8f),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+        if (isFeedLoaded) {
+            // Scrollable pickers per ore e minuti
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Picker per le ore (0-23)
+                NumberPickerOrario(
+                    value = selectedHour,
+                    range = (0..23).toList(),
+                    displayValues = (0..23).map { "%02d".format(it) },
+                    onValueChange = { newHour ->
+                        selectedHour = newHour
+                    },
+                    feed
+                )
 
-        // Scrollable pickers per ore e minuti
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Picker per le ore (0-23)
-            NumberPickerOrario(
-                value = selectedHour,
-                range = (0..23).toList(),
-                displayValues = (0..23).map { "%02d".format(it) },
-                onValueChange = { newHour ->
-                    selectedHour = newHour
-                }
-            )
+                Spacer(modifier = Modifier.width(16.dp))
 
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Picker per i minuti (0-59)
-            NumberPickerOrario(
-                value = selectedMinute,
-                range = (0..59).toList(),
-                displayValues = (0..59).map { "%02d".format(it) },
-                onValueChange = { newMinute ->
-                    selectedMinute = newMinute
-                }
-            )
+                // Picker per i minuti (0-59)
+                NumberPickerOrario(
+                    value = selectedMinute,
+                    range = (0..59).toList(),
+                    displayValues = (0..59).map { "%02d".format(it) },
+                    onValueChange = { newMinute ->
+                        selectedMinute = newMinute
+                    },
+                    feed
+                )
+            }
         }
     }
 }
@@ -439,19 +642,27 @@ fun NumberPickerOrario(
     value: Int,
     range: List<Int>,
     displayValues: List<String>? = null,
-    onValueChange: (Int) -> Unit
+    onValueChange: (Int) -> Unit,
+    feed: Feed? = null
 ) {
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = range.indexOf(value))
+    val index = range.indexOf(value).takeIf { it >= 0 } ?: 0
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = index)
     val coroutineScope = rememberCoroutineScope()
+
+    // Aggiorna lo stato quando il valore cambia
+    LaunchedEffect(value) {
+        val initialIndex = range.indexOf(value).takeIf { it >= 0 } ?: 0
+        coroutineScope.launch {
+            listState.animateScrollToItem(initialIndex)
+        }
+    }
 
     LaunchedEffect(listState.isScrollInProgress) {
         if (!listState.isScrollInProgress) {
             val index = listState.firstVisibleItemIndex
             val newValue = range.getOrNull(index) ?: value
-            onValueChange(newValue)
-
-            coroutineScope.launch {
-                listState.animateScrollToItem(index)
+            if (newValue != value) {
+                onValueChange(newValue)
             }
         }
     }
@@ -459,7 +670,7 @@ fun NumberPickerOrario(
     Box(
         modifier = Modifier
             .height(80.dp)
-            .width(100.dp)
+            .width(150.dp)
     ) {
         LazyColumn(
             state = listState,
@@ -471,7 +682,6 @@ fun NumberPickerOrario(
                 val isSelected = index == listState.firstVisibleItemIndex
                 val textSize = if (isSelected) 26.sp else 20.sp
                 val textColor = if (isSelected) Color.Black else Color.Black.copy(alpha = 0.5f)
-
                 Text(
                     text = displayValues?.get(index) ?: "%02d".format(number),
                     fontSize = textSize,
@@ -485,8 +695,8 @@ fun NumberPickerOrario(
         Box(
             modifier = Modifier
                 .height(40.dp)
-                .width(90.dp)
-                .background(Color.Black.copy(alpha = 0.3f), shape = RoundedCornerShape(4.dp))
+                .width(300.dp)
+                .background(Color(0xFF5576B4).copy(alpha = 0.3f), shape = RoundedCornerShape(4.dp))
         )
     }
 }

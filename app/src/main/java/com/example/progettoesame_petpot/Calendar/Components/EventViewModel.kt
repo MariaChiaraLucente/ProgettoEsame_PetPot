@@ -2,7 +2,10 @@ package com.example.progettoesame_petpot.Calendar.Components
 
 
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.progettoesame_petpot.model.Feed
 import com.example.progettoesame_petpot.model.Meal
 import com.example.progettoesame_petpot.model.PetPotModel
+import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -19,6 +23,7 @@ import java.util.Date
 import java.util.Locale
 
 class EventViewModel : ViewModel() {
+
 
     private val petPotModel = PetPotModel()
     private val _feedDays = mutableStateOf(setOf<Date>()) // Set to store feed days
@@ -37,6 +42,9 @@ class EventViewModel : ViewModel() {
     val feedQuantita = mutableStateOf(100f)
     val today: Date = normalizeDate(Date())
     private val daysInMonths = listOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+
+
+
 
     private val _recentFeedsCalendar = MutableStateFlow<List<Feed>>(emptyList())
     val recentFeedsCalendar: StateFlow<List<Feed>> = _recentFeedsCalendar
@@ -169,6 +177,7 @@ class EventViewModel : ViewModel() {
     }
 
     fun saveFeed() {
+        val calendarViewModel = CalendarViewModel()
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val formattedStartDate = dateFormat.format(selectedStartDate?.time)
         val formattedEndDate = dateFormat.format(selectedEndDate?.time)
@@ -193,6 +202,7 @@ class EventViewModel : ViewModel() {
             )
 
             petPotModel.saveFeed(feed)
+            calendarViewModel.loadFeedDays()
             Log.d("Feed", "Feed salvato con successo: $feed")
             errorMessage.value = null
         }
@@ -208,15 +218,19 @@ class EventViewModel : ViewModel() {
         } else {
             saveFeed()
             _errorCreationFeed.value = null
+
         }
     }
     var selectedFeed: Feed? = null
-
         private set
 
     fun setFeed(feed: Feed) {
-
         selectedFeed = feed
 
     }
+
+
+
+
+
 }
