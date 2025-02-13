@@ -28,8 +28,8 @@ class LoginViewModel(private val userRepository: PetPotModel = PetPotModel()) : 
                 )
             }
         } else {
-            loginMessage = "Username or password cannot be empty!"
-            onFailure("Username or password cannot be empty!")
+            loginMessage = "⚠ Username or password cannot be empty! ⚠"
+            onFailure("⚠ Username or password cannot be empty! ⚠")
         }
     }
 }

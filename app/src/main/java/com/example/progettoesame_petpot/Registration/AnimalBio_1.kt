@@ -51,6 +51,9 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
     var selectedSize by remember { mutableStateOf("") }
     var selectedAge by remember { mutableStateOf("") }
 
+    var sizeError by remember { mutableStateOf<String?>(null) }
+    var ageError by remember { mutableStateOf<String?>(null) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -80,9 +83,12 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            SizeOption(image1, 92, 39, "Small", selectedSize) { selectedSize = "Small"; registrationViewModel.user = registrationViewModel.user.copy(size = "Small") }
-            SizeOption(image2, 104, 55, "Medium", selectedSize) { selectedSize = "Medium"; registrationViewModel.user = registrationViewModel.user.copy(size = "Medium") }
-            SizeOption(image3, 117, 70, "Large", selectedSize) { selectedSize = "Large"; registrationViewModel.user = registrationViewModel.user.copy(size = "Large") }
+            SizeOption(image1, 92, 39, "Small", selectedSize) { selectedSize = "Small"; registrationViewModel.user = registrationViewModel.user.copy(size = "Small"); sizeError = if (selectedSize.isBlank()) "Please choose a size" else null }
+            SizeOption(image2, 104, 55, "Medium", selectedSize) { selectedSize = "Medium"; registrationViewModel.user = registrationViewModel.user.copy(size = "Medium"); sizeError = if (selectedSize.isBlank()) "Please choose a size" else null }
+            SizeOption(image3, 117, 70, "Large", selectedSize) { selectedSize = "Large"; registrationViewModel.user = registrationViewModel.user.copy(size = "Large"); sizeError = if (selectedSize.isBlank()) "Please choose a size" else null }
+        }
+        if (sizeError != null) {
+            Text(sizeError!!, color = Color.Yellow, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
         }
         Spacer(modifier = Modifier.height(20.dp))
         Text(
@@ -98,15 +104,28 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            AgeOption(imagebaby, 92, 39, "0-3 years", selectedAge) { selectedAge = "0-3 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "0-3 years") }
-            AgeOption(imageyoung, 104, 55, "4-9 years", selectedAge) { selectedAge = "4-9 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "4-9 years") }
-            AgeOption(imageold, 117, 70, "> 10 years", selectedAge) { selectedAge = "> 10 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "> 10 years") }
+            AgeOption(imagebaby, 92, 39, "0-3 years", selectedAge) { selectedAge = "0-3 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "0-3 years"); ageError = if (selectedAge.isBlank()) "Please choose an age" else null }
+            AgeOption(imageyoung, 104, 55, "4-9 years", selectedAge) { selectedAge = "4-9 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "4-9 years"); ageError = if (selectedAge.isBlank()) "Please choose an age" else null }
+            AgeOption(imageold, 117, 70, "> 10 years", selectedAge) { selectedAge = "> 10 years"; registrationViewModel.user = registrationViewModel.user.copy(age = "> 10 years"); ageError = if (selectedAge.isBlank()) "Please choose an age" else null }
+        }
+        if (ageError != null) {
+            Text(ageError!!, color = Color.Yellow, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
         }
 
         Spacer(modifier = Modifier.height(55.dp))
         Button(
-            onClick = {
-                navController.navigate("An_bio2")
+            onClick =
+            {
+                if (registrationViewModel.user.size.isBlank()) {
+                    sizeError = "⚠ Please choose a size! ⚠"
+                }
+                if (registrationViewModel.user.age.isBlank()) {
+                    ageError = "⚠ Please choose an age! ⚠"
+                }
+
+                if (sizeError == null && ageError == null) {
+                    navController.navigate("An_bio2") // ✅ Solo se non ci sono errori
+                }
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF2e3eb8)),
             modifier = Modifier.width(180.dp).height(45.dp),

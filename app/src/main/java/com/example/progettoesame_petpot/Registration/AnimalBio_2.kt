@@ -76,7 +76,7 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                 )
             )
             if (breedError != null) {
-                Text(breedError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+                Text(breedError!!, color = Color.Yellow, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
             }
         }
         item { Spacer(modifier = Modifier.height(12.dp)) }
@@ -95,7 +95,7 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                 )
             )
             if (favoriteFoodError != null) {
-                Text(favoriteFoodError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+                Text(favoriteFoodError!!, color = Color.Yellow, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
             }
         }
         item { Spacer(modifier = Modifier.height(12.dp)) }
@@ -115,7 +115,7 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                 )
             )
             if (allergiesError != null) {
-                Text(allergiesError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+                Text(allergiesError!!, color = Color.Yellow, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
             }
         }
         item { Spacer(modifier = Modifier.height(12.dp)) }
@@ -139,13 +139,13 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
             Button(
                 onClick = {
                     if (registrationViewModel.user.breed.isBlank()) {
-                        breedError = "Please choose a breed"
+                        breedError = "⚠ Please choose a breed! ⚠"
                     }
                     if (registrationViewModel.user.favoriteFood.isBlank()) {
-                        favoriteFoodError = "Please choose a favorite food"
+                        favoriteFoodError = "⚠ Please choose a favorite food! ⚠"
                     }
                     if (registrationViewModel.user.allergies.isBlank()) {
-                        allergiesError = "Please choose allergies or intolerances"
+                        allergiesError = "⚠ Please choose allergies or intolerances! ⚠"
                     }
 
                     if (allergiesError == null && favoriteFoodError == null && breedError == null) {

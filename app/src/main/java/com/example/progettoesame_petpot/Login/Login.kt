@@ -135,7 +135,7 @@ fun Login(navController: NavHostController, loginViewModel: LoginViewModel = vie
         if (errorMessage != null) {
             Text(
                 text = errorMessage!!,
-                color = Color.Red,
+                color = Color.Yellow,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
@@ -148,7 +148,7 @@ fun Login(navController: NavHostController, loginViewModel: LoginViewModel = vie
         )
         Text(
             text = "Register",
-            color = Color(0xFF5A3679),
+            color = Color.White,
             style = MaterialTheme.typography.bodyLarge.copy(textDecoration = TextDecoration.Underline),
             modifier = Modifier.padding(top = 8.dp).clickable { navController.navigate("registration")},
             fontWeight = FontWeight.Bold,

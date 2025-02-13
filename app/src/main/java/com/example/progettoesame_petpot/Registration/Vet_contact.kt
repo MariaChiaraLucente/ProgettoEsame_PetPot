@@ -65,7 +65,7 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
                 value = registrationViewModel.user.vetName,
                 onValueChange = {
                     registrationViewModel.user = registrationViewModel.user.copy(vetName = it)
-                    vetNameError = if (it.isBlank()) "Please choose a vet name" else null
+                    vetNameError = if (it.isBlank()) "⚠ Please choose a vet name! ⚠" else null
                 },
                 placeholder = { Text("Vet's name") },
                 modifier = Modifier.width(300.dp),
@@ -75,7 +75,7 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
                 )
             )
             if (vetNameError != null) {
-                Text(vetNameError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+                Text(vetNameError!!, color = Color.Yellow, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
             }
         }
         item { Spacer(modifier = Modifier.height(12.dp)) }
@@ -84,7 +84,7 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
                 value = registrationViewModel.user.vetPhone,
                 onValueChange = {
                     registrationViewModel.user = registrationViewModel.user.copy(vetPhone = it)
-                    vetPhoneError = if (it.isBlank()) "Please choose a vet phone number" else null
+                    vetPhoneError = if (it.isBlank()) "⚠ Please choose a vet phone number! ⚠" else null
                 },
                 placeholder = { Text("Vet's phone") },
                 modifier = Modifier.width(300.dp),
@@ -94,7 +94,7 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
                 )
             )
             if (vetPhoneError != null) {
-                Text(vetPhoneError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+                Text(vetPhoneError!!, color = Color.Yellow, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
             }
             Spacer(modifier = Modifier.height(12.dp))
             Button(

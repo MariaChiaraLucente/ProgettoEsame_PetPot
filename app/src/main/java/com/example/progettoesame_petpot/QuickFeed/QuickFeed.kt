@@ -34,6 +34,8 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
     var showDialog by remember { mutableStateOf(false) }
     var selectedFood by remember { mutableStateOf("Meat") }
 
+    var quantityError by remember { mutableStateOf(false) }
+    var foodError by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize().background(Color(0xFF5576B4))
@@ -74,6 +76,15 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
                     FoodQuantitySelector(viewModel)
                 }
 
+                if (quantityError) {
+                    Text(
+                        text = "⚠ Please select a quantity! ⚠",
+                        color = Color.Yellow,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(20.dp))
 
                 FoodSelector(
@@ -83,16 +94,30 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
                     orientation = FoodSelectorOrientation.HORIZONTAL
                 )
 
+                if (foodError) {
+                    Text(
+                        text = "Please select a food type!",
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Button(
                     onClick = {
-                        viewModel.saveMeal(
-                            onSuccess = {
-                                showDialog = true
-                            },
-                            onFailure = { showMessage = it }
-                        )
+                        quantityError = viewModel.foodQuantity == 0
+                        foodError = selectedFood.isEmpty()
+
+                        if (!quantityError && !foodError) {
+                            viewModel.saveMeal(
+                                onSuccess = {
+                                    showDialog = true
+                                },
+                                onFailure = { showMessage = it }
+                            )
+                        }
                     },
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E3EB8), contentColor = Color.White),
