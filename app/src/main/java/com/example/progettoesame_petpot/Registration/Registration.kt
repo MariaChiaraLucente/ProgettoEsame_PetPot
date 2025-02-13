@@ -67,7 +67,7 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
                 registrationViewModel.user = registrationViewModel.user.copy(username = it)
                 usernameError = if (it.isBlank()) "Please choose a username" else null
             },
-            placeholder = { Text("Username") },
+            placeholder = { Text("Username (Pet Name)") },
             modifier = Modifier.width(300.dp),
             shape = RoundedCornerShape(24.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -75,7 +75,7 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
             )
         )
         if (usernameError != null) {
-            Text(usernameError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+            Text(usernameError!!, color = Color.Yellow, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
         }
         Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
@@ -93,17 +93,17 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
             visualTransformation = PasswordVisualTransformation(),
         )
         if (passwordError != null) {
-            Text(passwordError!!, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+            Text(passwordError!!, color = Color.Yellow, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
         }
         Spacer(modifier = Modifier.height(25.dp))
         Button(
             onClick =
             {
                 if (registrationViewModel.user.username.isBlank()) {
-                    usernameError = "Choose a username"
+                    usernameError = "⚠ Please choose a username! ⚠"
                 }
                 if (registrationViewModel.user.password.isBlank()) {
-                    passwordError = "Choose a password"
+                    passwordError = "⚠ Please choose a password! ⚠"
                 }
 
                 if (usernameError == null && passwordError == null) {
@@ -124,7 +124,7 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
         if (errorMessage != null) {
             Text(
                 text = errorMessage!!,
-                color = Color(0xFFCA413F),
+                color = Color.Yellow,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
