@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -25,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -103,11 +105,14 @@ fun FeedDetailScreen(
             }
         }
     }
+
 }
 
 @Composable
 fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewModel(), eventViewModel: EventViewModel = EventViewModel(), navController: NavController) {
+    var showDeleteDialog by remember { mutableStateOf(false) }
     Card(
+
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
@@ -120,7 +125,7 @@ fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewMode
             Text(text = "Time: ${feed.timeFix}", style = MaterialTheme.typography.bodyLarge)
             Text(text = "Quantity: ${feed.quantity}g", style = MaterialTheme.typography.bodyLarge)
             IconButton(
-                onClick = {  calendarViewModel.deleteFeed(feed) },
+                onClick = { showDeleteDialog = true },
                 modifier = Modifier.align(Alignment.End)
             ) {
                 Icon(
@@ -151,6 +156,44 @@ fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewMode
 
             }
         }
+    }
+
+    if (showDeleteDialog) {
+        ConfirmDeleteDialog(
+            showDialog = showDeleteDialog,
+            onDismiss = { showDeleteDialog = false },
+            onConfirm = {
+                showDeleteDialog = false
+                calendarViewModel.deleteFeed(feed)
+                calendarViewModel.loadFeedDays() // Aggiorna la griglia
+                navController.navigate("calendar")
+            }
+        )
+    }
+}
+
+@Composable
+fun ConfirmDeleteDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            title = { Text(text = "Confirm Delete") },
+            text = { Text(text = "Are you sure you want to delete this feed?") },
+            confirmButton = {
+                TextButton(onClick = { onConfirm() }) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text("No")
+                }
+            }
+        )
     }
 }
 

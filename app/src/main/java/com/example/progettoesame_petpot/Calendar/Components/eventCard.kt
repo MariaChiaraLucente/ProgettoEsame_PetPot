@@ -453,7 +453,7 @@ fun FeedCreationScreen(
             viewModel.validateAndSaveFeed()
             viewModel.completeSelection()
             Toast.makeText(context, "Feed created successfully!", Toast.LENGTH_SHORT).show()
-            navController.popBackStack("HomePage", inclusive = false)
+            navController.navigate("Drawers")
         }
     )
 }
