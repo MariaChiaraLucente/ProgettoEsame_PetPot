@@ -76,28 +76,19 @@ fun FeedCreationScreen(
 
 
     ) {
-    val errorMessageTime = viewModel.errorMessage.value
-    val errorMessage by viewModel.errorCreationFeed.observeAsState()
     var showSaveDialog by remember { mutableStateOf(false) }
+    val errorMessage = viewModel.errorMessage
+    val showAlertDialog = viewModel.showAlertDialog
 
 
-// Inside your composable function
+    // Inside your composable function
     val context = LocalContext.current
-
     val feedToEdit = viewModel.selectedFeed
     // Se il feed non è nullo, carica i dati nel ViewModel
-
     if (feedToEdit != null) {
         viewModel.setFeed(feedToEdit)
     }
 
-    if (errorMessage != null) {
-        Text(
-            text = errorMessage!!,
-            color = Color.Red,
-            modifier = Modifier.padding(16.dp)
-        )
-    }
     var selectedHour by remember { mutableStateOf(12) }
     var selectedMinute by remember { mutableStateOf(0) }
     var selectedQuantity by remember { mutableStateOf(0f) }
@@ -143,6 +134,8 @@ fun FeedCreationScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -333,6 +326,7 @@ fun FeedCreationScreen(
                                     // Bottone per confermare e chiudere il calendario
                                     Button(
                                         onClick = {
+
                                             isCalendarExpanded = false
                                             viewModel.completeSelection()
                                         },
@@ -343,7 +337,7 @@ fun FeedCreationScreen(
                                         ),
                                         modifier = Modifier.padding(top = 16.dp)
                                     ) {
-                                        Text("Conferma", color = Color.White)
+                                        Text("Confirm", color = Color.White)
                                     }
                                 }
                             }
@@ -394,18 +388,15 @@ fun FeedCreationScreen(
                 }
 
                 item {
-                    if (errorMessage != null) {
-                        Text(
-                            text = errorMessage!!,
-                            color = Color.Red,
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
+
+                    // Pulsante "Save Feed"
                     Button(
                         onClick = {
-                            showSaveDialog = true
-
+                            if (viewModel.validateAndSaveFeed()) {
+                                // Se non ci sono errori, l'AlertDialog verrà mostrato
+                            }
                         },
+                        enabled = errorMessage == null, // Disabilita il pulsante se c'è un errore
                         shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2B85)),
                         modifier = Modifier
@@ -413,11 +404,59 @@ fun FeedCreationScreen(
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = "Feed",
+                            text = "Save Feed",
                             color = Color.White,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
+
+                    // Mostra l'AlertDialog solo se non ci sono errori
+                    if (showAlertDialog) {
+                        AlertDialog(
+                            onDismissRequest = {
+                                viewModel.hideDialog() // Nascondi l'AlertDialog
+                            },
+                            title = {
+                                Text(text = "Success")
+                            },
+                            text = {
+                                Text(text = "Feed saved successfully!")
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        viewModel.hideDialog() // Nascondi l'AlertDialog
+                                    }
+                                ) {
+                                    Text("OK")
+                                }
+                            }
+                        )
+                    }
+                    if (viewModel.showErrorDialog) {
+                        AlertDialog(
+                            onDismissRequest = { viewModel.hideError() },
+                            title = { Text("Attenction!") },
+                            text = { Text(viewModel.errorMessage ?: "Selezione non valida, riprova.") },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        viewModel.resetFeedSelection()
+                                    }
+                                ) {
+                                    Text("Riprova")
+                                }
+                            },
+                            dismissButton = {
+                                Button(
+                                    onClick = { viewModel.hideError() }
+                                ) {
+                                    Text("Chiudi")
+                                }
+                            }
+                        )
+                    }
+
                 }
             }
         }
@@ -428,7 +467,7 @@ fun FeedCreationScreen(
         onDismiss = { showSaveDialog = false },
         onConfirm = {
             showSaveDialog = false
-            viewModel.validateAndSaveFeed()
+            viewModel.saveFeed()
             viewModel.completeSelection()
             Toast.makeText(context, "Feed created successfully!", Toast.LENGTH_SHORT).show()
             navController.navigate("Drawers")
@@ -570,7 +609,6 @@ fun CalendarGridFeed(
         }
     }
 }
-
 
 
 @Composable
