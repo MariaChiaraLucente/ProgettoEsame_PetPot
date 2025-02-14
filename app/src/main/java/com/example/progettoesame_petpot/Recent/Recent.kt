@@ -145,14 +145,14 @@ fun MealCard(feed: Meal) {
                 text = "${SimpleDateFormat("dd/MM/yyyy - HH:mm").format(Date(feed.timestamp))}", // 🆕 Mostra la data e ora formattata
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "${feed.quantity} g - ${feed.description}",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.background
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }

@@ -55,6 +55,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
@@ -104,14 +105,14 @@ fun FeedCreationScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF5576B4))
+            .background(MaterialTheme.colorScheme.background)
     )
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Next Feed", color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF1F2B85)
+                    containerColor = MaterialTheme.colorScheme.background
                 ),
 
                 navigationIcon = {
@@ -134,7 +135,7 @@ fun FeedCreationScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
+            Spacer(modifier = Modifier.height(16.dp))
 
             LazyColumn(
                 modifier = Modifier
@@ -154,7 +155,8 @@ fun FeedCreationScreen(
                                 isCalendarExpanded = !isCalendarExpanded
                             }, // Espandi o chiudi il calendario
                         elevation = CardDefaults.cardElevation(8.dp),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary, contentColor = MaterialTheme.colorScheme.onBackground)
                     ) {
                         Row(
                             modifier = Modifier.padding(16.dp),
@@ -163,7 +165,7 @@ fun FeedCreationScreen(
                             val (startDate, endDate) = viewModel.getStartAndEndDate()
 
                             val startDateFormatted =
-                                startDate?.let { dateFormat.format(it) } ?: "Non selezionato"
+                                startDate?.let { dateFormat.format(it) } ?: "Not selected"
                             val endDateFormatted = if (endDate != null) {
                                 dateFormat.format(endDate)
                             } else {
@@ -176,13 +178,14 @@ fun FeedCreationScreen(
                                     .weight(1f)
                                     .padding(end = 8.dp)
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(Color.White)
+                                    .background(MaterialTheme.colorScheme.background)
                                     .padding(16.dp)
                             ) {
                                 Text(
                                     text = "$startDateFormatted",
                                     fontSize = 16.sp,
-                                    color = Color(0xFF2F34BE),
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    textAlign = TextAlign.Center,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -192,13 +195,13 @@ fun FeedCreationScreen(
                                     .weight(1f)
                                     .padding(start = 8.dp)
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(Color.White)
+                                    .background(MaterialTheme.colorScheme.background)
                                     .padding(16.dp)
                             ) {
                                 Text(
                                     text = "$endDateFormatted",
                                     fontSize = 16.sp,
-                                    color = Color(0xFF2F34BE),
+                                    color = MaterialTheme.colorScheme.onBackground,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -226,54 +229,37 @@ fun FeedCreationScreen(
                             Card(
 
                                 modifier = Modifier
-
                                     .fillMaxWidth()
-
-                                    .padding(horizontal = 16.dp),
-
+                                    .padding(16.dp),
                                 elevation = CardDefaults.cardElevation(8.dp),
-
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background, contentColor = MaterialTheme.colorScheme.onBackground),
                                 shape = RoundedCornerShape(16.dp)
 
                             ) {
 
                                 Column(
-
                                     modifier = Modifier
-
                                         .padding(16.dp)
-
                                         .fillMaxWidth(),
-
                                     horizontalAlignment = Alignment.CenterHorizontally
 
                                 ) {
 
                                     // Selezione del mese
-
                                     Row(
-
                                         modifier = Modifier.fillMaxWidth(),
-
                                         horizontalArrangement = Arrangement.SpaceBetween,
-
                                         verticalAlignment = Alignment.CenterVertically
-
                                     ) {
 
                                         IconButton(onClick = {
-
                                             viewModel.changeMonth(false)
-
                                         }) {
 
                                             Icon(
-
                                                 imageVector = Icons.Default.ArrowBack,
-
                                                 contentDescription = "Mese precedente",
-
-                                                tint = Color(0xFF2F34BE)
+                                                tint = MaterialTheme.colorScheme.onBackground
 
                                             )
 
@@ -284,7 +270,7 @@ fun FeedCreationScreen(
                                             text = "$formattedDate",
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
-                                            color = Color(0xFF2F34BE)
+                                            color = MaterialTheme.colorScheme.onBackground
                                         )
 
                                         IconButton(onClick = {
@@ -294,24 +280,17 @@ fun FeedCreationScreen(
                                         }) {
 
                                             Icon(
-
                                                 imageVector = Icons.Default.ArrowForward,
-
                                                 contentDescription = "Mese successivo",
-
-                                                tint = Color(0xFF2F34BE)
-
+                                                tint = MaterialTheme.colorScheme.onBackground
                                             )
-
                                         }
-
                                     }
 
 
                                     // CalendarGrid composable
 
                                     CalendarGridFeed(
-
                                         calendarViewModel = viewModel,
                                         daysInMonth = viewModel.getDaysInCurrentMonth(),
                                         currentMonth = viewModel.currentMonth,
@@ -326,14 +305,11 @@ fun FeedCreationScreen(
                                     // Bottone per confermare e chiudere il calendario
                                     Button(
                                         onClick = {
-
                                             isCalendarExpanded = false
                                             viewModel.completeSelection()
                                         },
                                         colors = ButtonDefaults.buttonColors(
-                                            containerColor = Color(
-                                                0xFF1F2B85
-                                            )
+                                            containerColor = MaterialTheme.colorScheme.surface
                                         ),
                                         modifier = Modifier.padding(top = 16.dp)
                                     ) {
@@ -347,10 +323,9 @@ fun FeedCreationScreen(
                 item {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "Orario: ${viewModel.feedOrarioFisso.value}",
-                            modifier = Modifier.padding(16.dp),
+                            text = "Time: ${viewModel.feedOrarioFisso.value}",
                             fontSize = 24.sp,
-                            color = Color(0xFF2F34BE),
+                            color = MaterialTheme.colorScheme.onBackground,
                             fontWeight = FontWeight.Bold
                         )
 
@@ -370,13 +345,11 @@ fun FeedCreationScreen(
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Grammi a pasto: ${viewModel.feedQuantita.value}g",
-                        modifier = Modifier.padding(16.dp),
+                        text = "Quantity: ${viewModel.feedQuantita.value}g",
                         fontSize = 24.sp,
-                        color = Color(0xFF2F34BE),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
                     QuantityPicker(
                         selectedQuantity = selectedQuantity,
                         onQuantitySelected = { quantity ->
@@ -398,14 +371,15 @@ fun FeedCreationScreen(
                         },
                         enabled = errorMessage == null, // Disabilita il pulsante se c'è un errore
                         shape = MaterialTheme.shapes.medium,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2B85)),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
                         modifier = Modifier
                             .height(50.dp)
                             .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
                     ) {
                         Text(
                             text = "Save Feed",
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onBackground,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -413,45 +387,51 @@ fun FeedCreationScreen(
                     // Mostra l'AlertDialog solo se non ci sono errori
                     if (showAlertDialog) {
                         AlertDialog(
+                            containerColor = MaterialTheme.colorScheme.secondary,
                             onDismissRequest = {
                                 viewModel.hideDialog() // Nascondi l'AlertDialog
                             },
                             title = {
-                                Text(text = "Success")
+                                Text(text = "Success", color = MaterialTheme.colorScheme.onBackground)
                             },
                             text = {
-                                Text(text = "Feed saved successfully!")
+                                Text(text = "Feed saved successfully!", color = MaterialTheme.colorScheme.onBackground)
                             },
                             confirmButton = {
                                 Button(
+                                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
                                     onClick = {
                                         viewModel.hideDialog() // Nascondi l'AlertDialog
+                                        navController.navigate("Calendar")
                                     }
                                 ) {
-                                    Text("OK")
+                                    Text("OK", color = MaterialTheme.colorScheme.onBackground)
                                 }
                             }
                         )
                     }
                     if (viewModel.showErrorDialog) {
                         AlertDialog(
+                            containerColor = MaterialTheme.colorScheme.secondary,
                             onDismissRequest = { viewModel.hideError() },
-                            title = { Text("Attenction!") },
+                            title = { Text("Attention!") },
                             text = { Text(viewModel.errorMessage ?: "Selezione non valida, riprova.") },
                             confirmButton = {
                                 Button(
                                     onClick = {
                                         viewModel.resetFeedSelection()
-                                    }
-                                ) {
-                                    Text("Riprova")
+                                    },
+                                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+                                    ) {
+                                    Text("Try again", color = MaterialTheme.colorScheme.onBackground)
                                 }
                             },
                             dismissButton = {
                                 Button(
-                                    onClick = { viewModel.hideError() }
-                                ) {
-                                    Text("Chiudi")
+                                    onClick = { viewModel.hideError() },
+                                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+                                    ) {
+                                    Text("Close", color = MaterialTheme.colorScheme.onBackground)
                                 }
                             }
                         )
@@ -520,7 +500,7 @@ fun CalendarGridFeed(
             .fillMaxWidth()
             .height(330.dp)
             .padding(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF5576B4))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -536,7 +516,7 @@ fun CalendarGridFeed(
                 dayNames.forEach { dayName ->
                     Text(
                         text = dayName,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 16.sp,
                         modifier = Modifier.padding(4.dp)
                     )
@@ -569,7 +549,7 @@ fun CalendarGridFeed(
                             val backgroundColor = when {
                                 isSelected -> Color(0xFF1F2B85) // Selected color
 
-                                else -> Color.Blue.copy(alpha = 0.3f)
+                                else -> MaterialTheme.colorScheme.background
                             }
                             Column {
                                 Box(
@@ -581,7 +561,7 @@ fun CalendarGridFeed(
                                 ) {
                                     Text(
                                         text = currentDay.toString(),
-                                        color = Color.White,
+                                        color = MaterialTheme.colorScheme.onBackground,
                                         fontSize = 16.sp
                                     )
                                 }
@@ -628,7 +608,8 @@ fun TimePickerComponent(
             .fillMaxWidth()
             .padding(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -638,7 +619,7 @@ fun TimePickerComponent(
             // Header
             Text(
                 "Seleziona l'ora",
-                color = Color(0xFF333333), // Testo scuro
+                color = MaterialTheme.colorScheme.onBackground, // Testo scuro
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -689,12 +670,12 @@ fun QuantityPicker(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(Color.White, shape = RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(12.dp))
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Quantità (g)", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text("quantity (g)", color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(8.dp))
 

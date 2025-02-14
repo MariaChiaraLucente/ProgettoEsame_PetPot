@@ -25,7 +25,7 @@ fun QuickFeedButton(navController: NavController) {
         modifier = Modifier
             .size(110.dp)
             .offset(y = (-40).dp)
-            .border(3.dp, Color.Black, CircleShape), // Add a black border, // Increase the button size
+            .border(3.dp, MaterialTheme.colorScheme.outline, CircleShape), // Add a black border, // Increase the button size
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface)
     ) {
         Text(

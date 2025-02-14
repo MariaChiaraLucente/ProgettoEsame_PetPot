@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -86,14 +87,14 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF8099C9))
+            .background(MaterialTheme.colorScheme.background)
     )
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Calendar", color = Color.White) },
+                title = { Text("Calendar", color = MaterialTheme.colorScheme.onBackground) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF1F2B85)
+                    containerColor = MaterialTheme.colorScheme.background
                 ),
 
                 navigationIcon = {
@@ -111,14 +112,14 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
                 .padding(paddingValues),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
-
         ) {
+            Spacer(modifier = Modifier.height(36.dp))
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
                 elevation = CardDefaults.cardElevation(8.dp)
             ) {
                 Column(
@@ -140,13 +141,11 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
 
             if (!isDateValid) {
                 Text(
-                    "Invalid date, please select a future date!",
-                    color = Color.Red,
+                    "⚠ Invalid date, please select a future date! ⚠",
+                    color = Color.Yellow,
                     fontSize = 14.sp
                 )
             }
-
-            Spacer(modifier = Modifier.height(50.dp))
             // Usa il QuantityPickerComponent invece del TextField
             QuantityPickerComponent(
                 selectedQuantity = quantity,
@@ -167,11 +166,13 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
 
             if (!isDateValid) {
                 Text(
-                    "Invalid date, please select a future date!",
-                    color = Color.Red,
+                    "⚠ Invalid time, please select a future time! ⚠",
+                    color = Color.Yellow,
                     fontSize = 14.sp
                 )
             }
+
+            Spacer(modifier = Modifier.height(36.dp))
 
             Button(
                 onClick = {
@@ -182,10 +183,10 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
                 enabled = isDateValid,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-
+                    .padding(horizontal = 32.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
             ) {
-                Text("Save Changes")
+                Text("Save Changes", color = MaterialTheme.colorScheme.onBackground)
             }
         }
     }
@@ -222,17 +223,18 @@ fun ConfirmSaveDialog(
 ) {
     if (showDialog) {
         AlertDialog(
+            containerColor = MaterialTheme.colorScheme.secondary,
             onDismissRequest = { onDismiss() },
-            title = { Text(text = "Confirm Save") },
-            text = { Text(text = "Are you sure you want to save the changes?") },
+            title = { Text(text = "Confirm Save", color = MaterialTheme.colorScheme.onBackground) },
+            text = { Text(text = "Are you sure you want to save the changes?", color = MaterialTheme.colorScheme.onBackground) },
             confirmButton = {
                 TextButton(onClick = { onConfirm() }) {
-                    Text("Yes")
+                    Text("Yes", color = MaterialTheme.colorScheme.onBackground)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { onDismiss() }) {
-                    Text("No")
+                    Text("No", color = MaterialTheme.colorScheme.onBackground)
                 }
             }
         )
@@ -247,17 +249,18 @@ fun ConfirmExitDialog(
 ) {
     if (showDialog) {
         AlertDialog(
+            containerColor = MaterialTheme.colorScheme.secondary,
             onDismissRequest = { onDismiss() },
-            title = { Text(text = "Confirm Exit") },
-            text = { Text(text = "Are you sure you want to leave this page?") },
+            title = { Text(text = "Confirm Exit", color = MaterialTheme.colorScheme.onBackground) },
+            text = { Text(text = "Are you sure you want to leave this page?", color = MaterialTheme.colorScheme.onBackground) },
             confirmButton = {
                 TextButton(onClick = { onConfirm() }) {
-                    Text("Yes")
+                    Text("Yes", color = MaterialTheme.colorScheme.onBackground)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { onDismiss() }) {
-                    Text("No")
+                    Text("No", color = MaterialTheme.colorScheme.onBackground)
                 }
             }
         )
@@ -298,7 +301,7 @@ fun DatePickerComponent(
         Row(
             modifier = Modifier
                 .width(250.dp)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.background),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
 
@@ -309,7 +312,7 @@ fun DatePickerComponent(
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(label, color = Color.Black.copy(alpha = 1f), fontSize = 15.sp)
+                    Text(label, color = MaterialTheme.colorScheme.onBackground, fontSize = 15.sp)
                 }
             }
         }
@@ -433,7 +436,7 @@ fun NumberPicker(
                 Text(
                     text = displayValues?.get(realIndex) ?: number.toString().padStart(2, '0'),
                     fontSize = textSize,
-                    color = textColor,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
@@ -465,12 +468,12 @@ fun QuantityPickerComponent(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(Color.White, shape = RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(12.dp))
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Quantity (kg)", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text("Quantity (kg)", color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -530,7 +533,7 @@ fun NumberPickerQuantity(
         modifier = Modifier
             .height(120.dp)
             .width(100.dp)
-            .background(Color.White, shape = RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(8.dp))
     ) {
         LazyColumn(
             state = listState,
@@ -546,7 +549,7 @@ fun NumberPickerQuantity(
                 Text(
                     text = displayValues?.get(index) ?: "%.1f".format(number),
                     fontSize = textSize,
-                    color = textColor,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
@@ -556,7 +559,7 @@ fun NumberPickerQuantity(
         Box(
             modifier = Modifier
                 .height(40.dp)
-                .width(90.dp)
+                .width(100.dp)
                 .background(Color.Black.copy(alpha = 0.1f), shape = RoundedCornerShape(4.dp))
         )
     }
@@ -586,16 +589,17 @@ fun TimePickerComponent(
 
     Column(
         modifier = Modifier
+            .padding(16.dp)
             .fillMaxWidth()
-            .background(Color.White, shape = RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(12.dp))
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Header
         Text(
-            "Seleziona l'ora",
-            color = Color.Black.copy(alpha = 0.8f),
+            "Select Time",
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -685,7 +689,7 @@ fun NumberPickerOrario(
                 Text(
                     text = displayValues?.get(index) ?: "%02d".format(number),
                     fontSize = textSize,
-                    color = textColor,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
