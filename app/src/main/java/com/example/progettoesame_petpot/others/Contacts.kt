@@ -1,4 +1,4 @@
-package com.example.progettoesame_petpot.Others
+package com.example.progettoesame_petpot.others
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -16,11 +16,11 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutScreen(navController: NavController) {
+fun ContactScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("About", color = Color.White) },
+                title = { Text("Contact Us", color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -40,35 +40,29 @@ fun AboutScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "PetPot - A Smart Feeding System",
+                text = "Get in Touch with Us",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "This project was developed at Politecnico di Torino as part of the Digital Interaction Design exam.",
+                text = "For any questions or support, feel free to reach out to our team.",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(40.dp))
-            Text(
-                text = "Developed by:",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Caldarelli Andrea", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)
-                Text("D'Agnese Anna", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)
-                Text("Lucente Maria Chiara", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)
-                Text("Masciangelo Federica", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)
-                Text("Rossetti Damiano", fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)
-            }
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+
+            ContactItem("Caldarelli Andrea", "UX Designer", "s327621@studenti.polito.it")
+            ContactItem("D'Agnese Anna", "Project Manager", "s333164@studenti.polito.it")
+            ContactItem("Lucente Maria Chiara", "Full Stack Developer", "s319443@studenti.polito.it")
+            ContactItem("Masciangelo Federica", "Full stack Developer", "s329018@studenti.polito.it")
+            ContactItem("Rossetti Damiano", "Firmware/Hardware Engineer", "s328451@studenti.polito.it")
+
+
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = "© 2025 Politecnico di Torino - All rights reserved",
                 fontSize = 14.sp,
@@ -77,5 +71,21 @@ fun AboutScreen(navController: NavController) {
                 textAlign = TextAlign.Center
             )
         }
+    }
+}
+
+@Composable
+fun ContactItem(name: String, role: String, email: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = name, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+        Text(text = role, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary)
+        Text(text = email, fontSize = 14.sp, fontWeight = FontWeight.Light, color = MaterialTheme.colorScheme.onBackground)
+        Spacer(modifier = Modifier.height(8.dp))
+        Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp, modifier = Modifier.width(200.dp))
     }
 }
