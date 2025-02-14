@@ -29,7 +29,7 @@ class EventViewModel : ViewModel() {
     private val _feedDays = mutableStateOf(setOf<Date>()) // Set to store feed days
     private val calendar = Calendar.getInstance()
     val errorMessageTime = mutableStateOf<String?>(null)
-    val errorMessage = mutableStateOf<String?>(null)
+
     // Usa mutableStateOf per il recompose immediato
     val _selectedStartDate = mutableStateOf<Date?>(null)
     val selectedStartDate: Date? get() = _selectedStartDate.value
@@ -43,6 +43,42 @@ class EventViewModel : ViewModel() {
     val feedQuantita = mutableStateOf(100f)
     val today: Date = normalizeDate(Date())
     private val daysInMonths = listOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+
+
+    var errorMessage by mutableStateOf<String?>(null)
+        private set
+
+    var showAlertDialog by mutableStateOf(false)
+        private set
+
+    fun showDialog() {
+        showAlertDialog = true
+    }
+
+    fun hideDialog() {
+        showAlertDialog = false
+    }
+
+    var showErrorDialog by mutableStateOf(false)
+        private set
+
+    fun showError() {
+        showErrorDialog = true
+    }
+
+    fun hideError() {
+        showErrorDialog = false
+    }
+
+    fun resetFeedSelection() {
+        _selectedStartDate.value = null
+        _selectedEndDate.value = null
+        feedOrarioFisso.value = "12:00" // Orario predefinito
+        feedQuantita.value = 100f // Quantità predefinita
+        errorMessageTime.value = null
+        errorMessage = null
+        hideError() // Chiude il dialog dopo il reset
+    }
 
 
     fun normalizeDate(date: Date): Date {
@@ -211,17 +247,60 @@ class EventViewModel : ViewModel() {
     private val _errorCreationFeed = MutableLiveData<String?>()
     val errorCreationFeed: LiveData<String?> get() = _errorCreationFeed
 
-    fun validateAndSaveFeed() {
-        if (selectedStartDate == null || selectedEndDate == null) {
-            _errorCreationFeed.value = "Please select both start and end dates."
-        } else if (feedQuantita.value == null || feedOrarioFisso.value == null) {
-            _errorCreationFeed.value = "Please select both quantity and time."
-        } else {
-            saveFeed()
-            _errorCreationFeed.value = null
+//    fun validateAndSaveFeed(): Boolean {
+//        return if (selectedStartDate == null || selectedEndDate == null) {
+//            _errorCreationFeed.value = "Please select both start and end dates."
+//            false
+//        } else if (feedQuantita.value == null || feedOrarioFisso.value == null) {
+//            _errorCreationFeed.value = "Please select both quantity and time."
+//            false
+//        } else {
+//            saveFeed()
+//            _errorCreationFeed.value = null
+//            true
+//        }
+//    }
 
+    fun validateAndSaveFeed(): Boolean {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val normalizedSelectedStartDate = selectedStartDate?.let { dateFormat.format(it) }
+
+        if (selectedStartDate == null || selectedEndDate == null) {
+            errorMessage = "Please select both start and end dates."
+            showError()
+            return false
         }
+
+        if (feedQuantita.value == null || feedOrarioFisso.value == null) {
+            errorMessage = "Please select both quantity and time."
+            showError()
+            return false
+        }
+
+        var hasConflict = false
+        petPotModel.getFeeds { existingFeeds ->
+            existingFeeds.forEach { feed ->
+                val feedDate = feed.dateStart?.let { dateFormat.format(it) }
+
+                if (feed.timeFix == feedOrarioFisso.value && feedDate == normalizedSelectedStartDate) {
+                    hasConflict = true
+                    errorMessage = "A feed already exists for this date and time!"
+                    showError()
+                    return@getFeeds
+                }
+            }
+
+            if (!hasConflict) {
+                errorMessage = null
+                saveFeed()
+                showDialog() // Mostra l'AlertDialog di conferma
+            }
+        }
+
+        return !hasConflict
     }
+
+
     var selectedFeed: Feed? = null
         private set
 
@@ -229,24 +308,5 @@ class EventViewModel : ViewModel() {
         selectedFeed = feed
 
     }
-
-    fun hasConflict(callback: (Boolean) -> Unit) {
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val normalizedSelectedStartDate = selectedStartDate?.let { dateFormat.format(it) }
-
-        // Fetch existing feeds
-        petPotModel.getFeeds { existingFeeds ->
-            // Check if a feed already exists for the same date and time
-            val alreadyExists = existingFeeds.any { feed ->
-                val feedDate = feed.dateStart?.let { dateFormat.format(it) } == normalizedSelectedStartDate &&
-                        feed.timeFix == feedOrarioFisso.value
-                feedDate
-            }
-
-            callback(alreadyExists)
-        }
-    }
-
-
 
 }
