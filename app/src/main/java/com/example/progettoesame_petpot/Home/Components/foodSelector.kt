@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -79,7 +80,7 @@ fun MainFoodButton(selectedFoodImage: Int, isExpanded: Boolean, onClick: () -> U
     Box(
         modifier = Modifier
             .size(50.dp)
-            .background(if (isExpanded) Color.Gray else Color.LightGray, shape = CircleShape)
+            .background(if (isExpanded) Color.Gray else MaterialTheme.colorScheme.secondary, shape = CircleShape)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -96,7 +97,7 @@ fun FoodOption(foodImage: Int, foodName: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .size(50.dp)
-            .background(Color.White, shape = CircleShape)
+            .background(MaterialTheme.colorScheme.secondary, shape = CircleShape)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {

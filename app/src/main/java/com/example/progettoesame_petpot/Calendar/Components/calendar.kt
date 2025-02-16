@@ -83,7 +83,7 @@ fun CalendarScreen(
             Column(
                 modifier = Modifier.fillMaxWidth().height(700.dp).padding(16.dp),
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(56.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -141,16 +141,17 @@ fun CalendarScreen(
                             onNavigateToFeedCreation()
 //                    calendarViewModel.completeSelection()
                         },
-                        shape = CircleShape
+                        shape = CircleShape,
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface)
                     ) {
-                        Text(text = "New Event")
+                        Text(text = "New Event", color = Color.White)
                     }
                     Button(
                         onClick = {
                             showDeleteDialog = true
                         },
                         shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                        colors = ButtonDefaults.buttonColors(containerColor =Color(0xffca413f))
                     ) {
                         Text(text = "Clear all events", color = Color.White)
                     }
@@ -238,7 +239,7 @@ fun CalendarGrid(
                                 Box(
                                     modifier = Modifier
                                         .size(35.dp)
-                                        .background((MaterialTheme.colorScheme.background).copy(alpha = 0.3f), CircleShape)
+                                        .background((MaterialTheme.colorScheme.background).copy(alpha = 0.5f), CircleShape)
                                         .clickable {
                                             val formattedDate = SimpleDateFormat(
                                                 "yyyy-MM-dd",
@@ -260,7 +261,7 @@ fun CalendarGrid(
                                     Box(
                                         modifier = Modifier
                                             .size(8.dp)
-                                            .background(Color.Gray, CircleShape)
+                                            .background(Color(0xffca413f), CircleShape)
                                             .align(Alignment.CenterHorizontally)
                                     )
                                 }

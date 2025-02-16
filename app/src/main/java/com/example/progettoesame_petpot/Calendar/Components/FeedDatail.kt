@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -73,7 +75,7 @@ fun FeedDetailScreen(
             TopAppBar(
                 title = { Text(text = "Feed Details - $formattedDate", color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF1F2B85)
+                    containerColor = MaterialTheme.colorScheme.background
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -85,11 +87,12 @@ fun FeedDetailScreen(
     ) { paddingValues ->
         Box(
             modifier = Modifier.padding(paddingValues)
-                                .background (Color(0xFF5576B4))
+                                .background (MaterialTheme.colorScheme.background)
         ) {
             if (feedsForDate.isEmpty()) {
                 Text(
                     text = "No feeds available for this date",
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.fillMaxSize(),
                     textAlign = TextAlign.Center
                 )
@@ -116,27 +119,43 @@ fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewMode
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
     ) {
+
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = "Time: ${feed.timeFix}", style = MaterialTheme.typography.bodyLarge)
-            Text(text = "Quantity: ${feed.quantity}g", style = MaterialTheme.typography.bodyLarge)
-            IconButton(
-                onClick = { showDeleteDialog = true },
-                modifier = Modifier.align(Alignment.End)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete Feed",
-                    tint = Color.Red
-                )
+                Column {
+                    Text(
+                        text = "Time: ${feed.timeFix}",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = "Quantity: ${feed.quantity}g",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+                IconButton(
+                    onClick = { showDeleteDialog = true },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Feed",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-
 
             // Bottone per modificare il feed
 
@@ -146,13 +165,12 @@ fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewMode
                     navController.navigate("EditFeed/${feed.id}")
                 },
 
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2B85)),
-
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
                 modifier = Modifier.fillMaxWidth()
 
             ) {
 
-                Text("Modifica Feed", color = Color.White)
+                Text("Edit Feed", color = MaterialTheme.colorScheme.onBackground)
 
             }
         }

@@ -23,6 +23,7 @@ import com.example.progettoesame_petpot.Home.Components.Drawers
 import com.example.progettoesame_petpot.QuickFeed.QuickFeed
 import com.example.progettoesame_petpot.Login.Caricamento
 import com.example.progettoesame_petpot.Login.Login
+import com.example.progettoesame_petpot.others.AboutScreen
 import com.example.progettoesame_petpot.Recent.RecentFeedsScreen
 import com.example.progettoesame_petpot.Registration.AnimalBio1
 import com.example.progettoesame_petpot.Registration.AnimalBio2
@@ -32,13 +33,14 @@ import com.example.progettoesame_petpot.Registration.DeviceConnected
 import com.example.progettoesame_petpot.Registration.Registration
 import com.example.progettoesame_petpot.Registration.VetContact
 import com.example.progettoesame_petpot.model.Feed
+import com.example.progettoesame_petpot.others.ContactScreen
+import com.example.progettoesame_petpot.others.HelpScreen
 import com.example.progettoesame_petpot.ui.CalendarScreen
 import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
 
 import com.example.progettoesame_petpot.viewmodel.RegistrationViewModel
 import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 
@@ -74,6 +76,9 @@ fun AppNavigation() {
             Caricamento(navController, destination)
         }
         composable("Drawers") { Drawers(navController, homeViewModel.getProfile()?.userId ?: "", homeViewModel) }
+        composable("About") { AboutScreen(navController) }
+        composable("Contact") { ContactScreen(navController) }
+        composable("Help") { HelpScreen(navController) }
         composable("Recent") { RecentFeedsScreen(navController) }
         composable("QuickFeed") { QuickFeed(navController) }
         composable("HomePage") { HomePage(navController) }

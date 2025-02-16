@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.AccountCircle
@@ -212,9 +213,30 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                             .padding(horizontal = 12.dp)
                     ) {
                         Spacer(modifier = Modifier.weight(1f))
-                        Text("About", fontSize = 30.sp, fontWeight = FontWeight.Light, color = Color.White)
-                        Text("Contact", fontSize = 30.sp, fontWeight = FontWeight.Light, color = Color.White)
-                        Text("Help", fontSize = 30.sp, fontWeight = FontWeight.Light, color = Color.White)
+                        Text(
+                            "About",
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Light,
+                            color = Color.White,
+                            modifier = Modifier
+                                .clickable { navController.navigate("About") },
+                        )
+                        Text(
+                            "Contact",
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Light,
+                            color = Color.White,
+                            modifier = Modifier
+                                .clickable { navController.navigate("Contact") },
+                        )
+                        Text(
+                            "Help",
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Light,
+                            color = Color.White,
+                            modifier = Modifier
+                                .clickable { navController.navigate("Help") },
+                        )
                         Spacer(modifier = Modifier.height(36.dp))
                         Text("Pet Pot ® All right reserved",
                             fontSize = 15.sp,
@@ -290,6 +312,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                             EditableTextField("Vet Phone:", vetPhone) { vetPhone = it }
 
                             Button(
+                                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
                                 onClick = {
                                     isEditMode = false
                                     val updatedProfile = dogProfile.copy(
@@ -303,7 +326,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                                 },
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             ) {
-                                Text("Save")
+                                Text("Save", color = MaterialTheme.colorScheme.onBackground)
                             }
                         } else {
                             ProfileInfoRow("Breed:", dogProfile.breed)
@@ -336,8 +359,8 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
 @Composable
 fun ProfileInfoRow(label: String, value: String) {
     Row {
-        Text("$label ", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
-        Text(value, fontSize = 24.sp, fontWeight = FontWeight.Light, color = Color.White)
+        Text("$label ", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+        Text(value, fontSize = 24.sp, fontWeight = FontWeight.Light, color = MaterialTheme.colorScheme.onBackground)
     }
     Spacer( modifier = Modifier.height(16.dp) )
 }
@@ -347,12 +370,14 @@ fun ProfileInfoRow(label: String, value: String) {
 @Composable
 fun EditableTextField(label: String, value: String, onValueChange: (String) -> Unit) {
     Column {
-        Text(label, fontWeight = FontWeight.Bold, color = Color.White)
+        Text(label, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
+            shape = RoundedCornerShape(24.dp),
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(containerColor = Color.White)
+            colors = TextFieldDefaults.outlinedTextFieldColors(containerColor = MaterialTheme.colorScheme.secondary, focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground, unfocusedBorderColor = MaterialTheme.colorScheme.outline)
         )
         Spacer(modifier = Modifier.height(16.dp))
     }
