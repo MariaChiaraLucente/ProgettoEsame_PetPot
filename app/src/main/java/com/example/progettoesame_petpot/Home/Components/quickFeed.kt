@@ -20,7 +20,7 @@ import androidx.navigation.NavController
 @Composable
 fun QuickFeedButton(navController: NavController) {
     Button(
-        onClick = { navController.navigate("QuickFeed") },
+        onClick = {navController.navigate("QuickFeed")},
         shape = CircleShape,
         modifier = Modifier
             .size(110.dp)

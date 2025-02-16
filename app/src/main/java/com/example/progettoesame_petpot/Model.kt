@@ -481,4 +481,30 @@ class PetPotModel {
             onFailure("Errore nell'aggiornamento del feed")
         }
     }
+
+    fun saveFoodLevels(userId: String, totalStorage: Float, bowl: Float) {
+        val updates = mapOf(
+            "totalFoodStorage" to totalStorage,
+            "bowlLevel" to bowl
+        )
+
+        db.child("users").child(userId).child("foodLevels")
+            .updateChildren(updates)
+    }
+
+    fun getFoodLevels(userId: String, onSuccess: (Float, Float) -> Unit, onFailure: (String) -> Unit) {
+        db.child("users").child(userId).child("foodLevels")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val totalStorage = snapshot.child("totalFoodStorage").getValue(Float::class.java) ?: 5000f
+                    val bowl = snapshot.child("bowlLevel").getValue(Float::class.java) ?: 0f
+                    onSuccess(totalStorage, bowl)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    onFailure("Error loading food levels")
+                }
+            })
+    }
+
 }

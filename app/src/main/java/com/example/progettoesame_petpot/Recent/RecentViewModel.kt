@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 class RecentFeedsViewModel : ViewModel() {
     private val petPotModel = PetPotModel()
 
-
     private val _recentMeals = MutableStateFlow<List<Meal>>(emptyList())
     val recentMeals: StateFlow<List<Meal>> = _recentMeals
 

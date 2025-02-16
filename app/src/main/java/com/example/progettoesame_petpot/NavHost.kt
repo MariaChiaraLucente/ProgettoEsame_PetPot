@@ -23,6 +23,7 @@ import com.example.progettoesame_petpot.Home.Components.Drawers
 import com.example.progettoesame_petpot.QuickFeed.QuickFeed
 import com.example.progettoesame_petpot.Login.Caricamento
 import com.example.progettoesame_petpot.Login.Login
+import com.example.progettoesame_petpot.QuickFeed.QuickFeedViewModel
 import com.example.progettoesame_petpot.others.AboutScreen
 import com.example.progettoesame_petpot.Recent.RecentFeedsScreen
 import com.example.progettoesame_petpot.Registration.AnimalBio1
@@ -55,6 +56,7 @@ fun AppNavigation() {
     val events = remember { mutableStateListOf<Feed>() }
     val registrationViewModel: RegistrationViewModel = viewModel()
     val homeViewModel: ProfileViewModel = viewModel()
+    val quickFeedViewModel: QuickFeedViewModel = viewModel()
     val calendarViewModel = viewModel<CalendarViewModel>()
 
 
@@ -80,8 +82,9 @@ fun AppNavigation() {
         composable("Contact") { ContactScreen(navController) }
         composable("Help") { HelpScreen(navController) }
         composable("Recent") { RecentFeedsScreen(navController) }
-        composable("QuickFeed") { QuickFeed(navController) }
-        composable("HomePage") { HomePage(navController) }
+        composable("QuickFeed") {
+            QuickFeed(navController, homeViewModel = homeViewModel, quickFeedViewModel, userId = homeViewModel.getProfile()?.userId ?: "")}
+        composable("HomePage") { HomePage(navController, homeViewModel, homeViewModel.getProfile()?.userId ?: "" ) }
         composable("An_bio1") { AnimalBio1(navController, registrationViewModel) }
         composable("An_bio2") { AnimalBio2(navController, registrationViewModel) }
         composable("VetContact") { VetContact(navController, registrationViewModel) }
