@@ -79,7 +79,7 @@ fun QuickFeed(navController: NavController, homeViewModel: ProfileViewModel = vi
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 FoodSelector(
                     //selectedFood = viewModel.foodType,

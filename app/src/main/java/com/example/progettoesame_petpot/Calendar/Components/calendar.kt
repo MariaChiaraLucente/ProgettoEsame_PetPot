@@ -2,6 +2,7 @@ package com.example.progettoesame_petpot.ui
 
 import BottomNavBar
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -74,94 +76,109 @@ fun CalendarScreen(
             .background(MaterialTheme.colorScheme.background)
     )
 
+    Text(
+        text = "Calendar",
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.White,
+        modifier = Modifier.padding(top = 40.dp, start =130.dp),
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Column(
             modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth()
+                .height(700.dp)
+                .padding(16.dp),
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth().height(700.dp).padding(16.dp),
+            Spacer(modifier = Modifier.height(60.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Spacer(modifier = Modifier.height(56.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                IconButton(
+                    onClick = { calendarViewModel.changeMonth(forward = false) },
                 ) {
-                    IconButton(
-                        onClick = { calendarViewModel.changeMonth(forward = false) },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Previous Month",
-                            tint = Color.White
-                        )
-                    }
-
-                    Text(
-                        text = "${monthNames[currentMonth]} $currentYear",
-                        style = MaterialTheme.typography.headlineSmall
-
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Previous Month",
+                        tint = Color.White
                     )
-
-                    IconButton(
-                        onClick = { calendarViewModel.changeMonth(forward = true) },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowForward,
-                            contentDescription = "Next Month",
-                            tint = Color.White
-                        )
-                    }
                 }
 
-                CalendarGrid(
-                    navController = navController,
-                    calendarViewModel = calendarViewModel,
-                    daysInMonth = calendarViewModel.getDaysInCurrentMonth(),
-                    currentMonth = currentMonth,
-                    currentYear = currentYear,
+                Text(
+                    text = "${monthNames[currentMonth]} $currentYear",
+                    style = MaterialTheme.typography.headlineSmall
+
                 )
 
-
-                Spacer(modifier = Modifier.height(36.dp))
-
-                Column (
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-
-                ){
-                    Button(
-                        onClick = {
-                            onNavigateToFeedCreation()
-//                    calendarViewModel.completeSelection()
-                        },
-                        shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface)
-                    ) {
-                        Text(text = "New Event", color = Color.White)
-                    }
-                    Button(
-                        onClick = {
-                            showDeleteDialog = true
-                        },
-                        shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(containerColor =Color(0xffca413f))
-                    ) {
-                        Text(text = "Clear all events", color = Color.White)
-                    }
+                IconButton(
+                    onClick = { calendarViewModel.changeMonth(forward = true) },
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowForward,
+                        contentDescription = "Next Month",
+                        tint = Color.White
+                    )
                 }
             }
-            BottomNavBar(
-                selectedScreen = "calendar",
-                onScreenSelected = { navController.navigate(it) }
+
+            CalendarGrid(
+                navController = navController,
+                calendarViewModel = calendarViewModel,
+                daysInMonth = calendarViewModel.getDaysInCurrentMonth(),
+                currentMonth = currentMonth,
+                currentYear = currentYear,
             )
+
+
+            Spacer(modifier = Modifier.height(36.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+
+            ) {
+                Button(
+                    onClick = {
+                        onNavigateToFeedCreation()
+//                    calendarViewModel.completeSelection()
+                    },
+                    shape = CircleShape,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+                    modifier = Modifier.border(2.dp, color = Color(0xFF0A0A0A), CircleShape),
+
+                    ) {
+                    Text(text = "+ New Event", color = Color.White, fontSize = 25.sp)
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = {
+                        showDeleteDialog = true
+                    },
+                    shape = CircleShape,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xffca413f)),
+                    modifier = Modifier.border(3.5.dp, color = Color(0xFF5C0303), CircleShape),
+                ) {
+                    Text(text = "Clear all events", color = Color.White, fontSize = 18.sp)
+                }
+            }
         }
+        BottomNavBar(
+            selectedScreen = "calendar",
+            onScreenSelected = { navController.navigate(it) }
+        )
+    }
 
     ConfirmDeleteDialog(
         showDialog = showDeleteDialog,
@@ -239,7 +256,11 @@ fun CalendarGrid(
                                 Box(
                                     modifier = Modifier
                                         .size(35.dp)
-                                        .background((MaterialTheme.colorScheme.background).copy(alpha = 0.5f), CircleShape)
+                                        .background(
+                                            (MaterialTheme.colorScheme.background).copy(
+                                                alpha = 0.5f
+                                            ), CircleShape
+                                        )
                                         .clickable {
                                             val formattedDate = SimpleDateFormat(
                                                 "yyyy-MM-dd",
