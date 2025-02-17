@@ -93,10 +93,11 @@ fun BottomNavBar(
                 .offset(y = (-90).dp) // Posiziona l'icona sotto la ciambella
         ) {
             Icon(
+
                 painter = painterResource(id = R.drawable.bluetooth), // Placeholder per batteria
                 contentDescription = "Battery Status",
                 tint = Color.White,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(15.dp)
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
@@ -124,12 +125,12 @@ fun BottomNavBar(
                BottomNavIcon(
                     isSelected = selectedScreen == "calendar",
                     iconResId = R.drawable.calendar,
-                    label = "calendar",
+                    label = "Calendar",
                     onClick = {
                         onScreenSelected("calendar")
                         },
                     modifier = Modifier.offset(x = 22.dp),
-                    verticalOffset = 1.dp // Più in basso rispetto a Home
+                   verticalOffset = 10.dp // Più in basso rispetto a Home
                 )
 
                 // Recent
@@ -139,7 +140,7 @@ fun BottomNavBar(
                     label = "Recent",
                     onClick = { onScreenSelected("Recent") },
                     modifier = Modifier.offset(x = (-22).dp),
-                    verticalOffset = 10.dp // Più in basso rispetto a Home
+                    verticalOffset = 15.dp // Più in basso rispetto a Home
                 )
 
             }
@@ -152,7 +153,7 @@ fun BottomNavBar(
                 onClick = { onScreenSelected("Drawers") },
                 modifier = Modifier
                     .align(Alignment.BottomCenter) // Allinea al centro della ciambella
-                    .offset(y = (-150).dp), // Posizione più alta
+                    .offset(y = (-130).dp), // Posizione più alta
                 verticalOffset = 10.dp // Offset specifico per Home
             )
         }

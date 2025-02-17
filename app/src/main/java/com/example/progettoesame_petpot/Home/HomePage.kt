@@ -45,18 +45,18 @@ fun HomePage(navController: NavController, homeViewModel: ProfileViewModel = vie
         // Nome dell'animale con icone decorative
         PetNameSection()
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         // Indicatore di cibo
         //FoodIndicators()
         FoodDispenserView(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(390.dp),
+                .height(320.dp),
             foodLevel = totalFoodStorage / 1000f,
             bowlLevel = bowlLevel / 50f
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         // Pulsante centrale "Quick Feed"
         QuickFeedButton(navController)

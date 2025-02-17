@@ -1,5 +1,6 @@
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
@@ -23,16 +25,17 @@ fun QuickFeedButton(navController: NavController) {
         onClick = {navController.navigate("QuickFeed")},
         shape = CircleShape,
         modifier = Modifier
-            .size(110.dp)
+            .size(90.dp)
             .offset(y = (-40).dp)
-            .border(3.dp, MaterialTheme.colorScheme.outline, CircleShape), // Add a black border, // Increase the button size
+            .border(2.dp, Color(0xff0A0A0A), CircleShape), // Add a black border, // Increase the button size
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface)
     ) {
         Text(
             text = "Quick Feed",
+            fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineSmall, // Use a larger text style
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }
