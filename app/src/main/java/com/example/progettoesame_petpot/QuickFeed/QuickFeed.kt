@@ -3,19 +3,13 @@ package com.example.progettoesame_petpot.QuickFeed
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,11 +19,11 @@ import androidx.navigation.NavController
 import com.example.progettoesame_petpot.AutoDismissPopup
 import com.example.progettoesame_petpot.Home.Components.FoodSelector
 import com.example.progettoesame_petpot.Home.Components.FoodSelectorOrientation
-import com.example.progettoesame_petpot.R
+import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = viewModel()) {
+fun QuickFeed(navController: NavController, homeViewModel: ProfileViewModel = viewModel(), viewModel: QuickFeedViewModel = viewModel(), userId: String) {
     var showMessage by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var selectedFood by remember { mutableStateOf("Meat") }
@@ -113,6 +107,7 @@ fun QuickFeed(navController: NavController, viewModel: QuickFeedViewModel = view
                         if (!quantityError && !foodError) {
                             viewModel.saveMeal(
                                 onSuccess = {
+                                    homeViewModel.dispenseFood( userId = userId , viewModel.foodQuantity)
                                     showDialog = true
                                 },
                                 onFailure = { showMessage = it }

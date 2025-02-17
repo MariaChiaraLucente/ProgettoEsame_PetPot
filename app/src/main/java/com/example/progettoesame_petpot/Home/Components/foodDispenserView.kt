@@ -98,7 +98,7 @@ fun FoodDispenserView(
                         textAlign = android.graphics.Paint.Align.CENTER
                     }
                     canvas.nativeCanvas.drawText(
-                        "${((foodLevel * 3.0)*100).roundToInt() / 100.0} / 3 Kg",
+                        "${((foodLevel * 1000f).roundToInt())} / 1000 g",
                         width / 2,
                         height / 2,
                         paint
@@ -146,7 +146,7 @@ fun FoodDispenserView(
                 )
             }
             Text(
-                text = "${(bowlLevel * 50).toInt()} / 50 gr",
+                text = "${((bowlLevel * 50f).roundToInt())} / 50 g",
                 color = Color.White,
                 fontSize = 16.sp,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,

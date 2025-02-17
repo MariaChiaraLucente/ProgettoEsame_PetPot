@@ -117,7 +117,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                     .background(MaterialTheme.colorScheme.background),
                 contentAlignment = Alignment.Center
             ) {
-                HomePage(navController)
+                HomePage(navController, homeViewModel = viewModel(), userId)
             }
         }
 
