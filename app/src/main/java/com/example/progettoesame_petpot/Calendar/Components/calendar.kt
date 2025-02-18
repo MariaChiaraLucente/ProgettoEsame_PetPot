@@ -81,7 +81,7 @@ fun CalendarScreen(
         fontSize = 24.sp,
         fontWeight = FontWeight.Bold,
         color = Color.White,
-        modifier = Modifier.padding(top = 40.dp, start =130.dp),
+        modifier = Modifier.padding(top = 40.dp, start = 130.dp),
     )
 
     Column(
@@ -93,14 +93,14 @@ fun CalendarScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(700.dp)
-                .padding(16.dp),
+                .height(597.dp)
+                .padding(15.dp),
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(65.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 26.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -110,13 +110,15 @@ fun CalendarScreen(
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Previous Month",
-                        tint = Color.White
+                        tint = Color(0xFFC6E9EB)
                     )
                 }
 
                 Text(
                     text = "${monthNames[currentMonth]} $currentYear",
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontSize = 22.5.sp,
+                    color = Color(0xFFD5EDED)
 
                 )
 
@@ -126,7 +128,7 @@ fun CalendarScreen(
                     Icon(
                         imageVector = Icons.Filled.ArrowForward,
                         contentDescription = "Next Month",
-                        tint = Color.White
+                        tint = Color(0xFFC6E9EB)
                     )
                 }
             }
@@ -139,8 +141,7 @@ fun CalendarScreen(
                 currentYear = currentYear,
             )
 
-
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             Column(
                 modifier = Modifier
@@ -155,11 +156,11 @@ fun CalendarScreen(
 //                    calendarViewModel.completeSelection()
                     },
                     shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
                     modifier = Modifier.border(2.dp, color = Color(0xFF0A0A0A), CircleShape),
 
                     ) {
-                    Text(text = "+ New Event", color = Color.White, fontSize = 25.sp)
+                    Text(text = "+ New Event", color = Color.White, fontSize = 18.sp, modifier = Modifier.padding(5.dp))
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
@@ -168,9 +169,9 @@ fun CalendarScreen(
                     },
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xffca413f)),
-                    modifier = Modifier.border(3.5.dp, color = Color(0xFF5C0303), CircleShape),
+                    modifier = Modifier.border(3.dp, color = Color(0xFF5C0303), CircleShape),
                 ) {
-                    Text(text = "Clear all events", color = Color.White, fontSize = 18.sp)
+                    Text(text = "Clear all events", color = Color.White, fontSize = 13.sp, modifier = Modifier.padding(5.dp))
                 }
             }
         }
@@ -203,19 +204,20 @@ fun CalendarGrid(
 
     val calendar = Calendar.getInstance()
     val dayNames = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+    val todayCalendar = Calendar.getInstance()
 
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
             .height(330.dp)
-            .padding(16.dp),
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().padding(5.dp)
         ) {
 
             // Intestazione con i nomi dei giorni
@@ -251,15 +253,22 @@ fun CalendarGrid(
 
                             // Controlliamo se ci sono feed per questo giorno
                             val hasFeed = calendarViewModel.isFeedDay(currentDate)
+                            val isPastDate = currentDate.before(todayCalendar.time)
+                            val isToday = calendar.get(Calendar.YEAR) == todayCalendar.get(Calendar.YEAR) &&
+                                    calendar.get(Calendar.MONTH) == todayCalendar.get(Calendar.MONTH) &&
+                                    calendar.get(Calendar.DAY_OF_MONTH) == todayCalendar.get(Calendar.DAY_OF_MONTH)
 
                             Column {
                                 Box(
                                     modifier = Modifier
                                         .size(35.dp)
                                         .background(
-                                            (MaterialTheme.colorScheme.background).copy(
-                                                alpha = 0.5f
-                                            ), CircleShape
+                                            when {
+                                                isToday -> Color(0xFF2E3957)
+                                                isPastDate -> Color(0xFF8791A2)
+                                                else -> MaterialTheme.colorScheme.background.copy(alpha = 0.5f)
+                                            },
+                                            CircleShape
                                         )
                                         .clickable {
                                             val formattedDate = SimpleDateFormat(
@@ -270,15 +279,21 @@ fun CalendarGrid(
                                         },
                                     contentAlignment = Alignment.Center
                                 ) {
+
                                     Text(
                                         text = currentDay.toString(),
-                                        color = Color.White,
+                                        color = when{
+                                            isToday -> Color.White
+                                            isPastDate -> Color(0xFFC2C0C0)
+                                            else -> Color.White.copy(alpha = 0.7f)
+                                        },
                                         fontSize = 16.sp
                                     )
                                 }
 
                                 // Aggiunge il pallino sotto i giorni con feed
                                 if (hasFeed) {
+                                    Spacer(modifier = Modifier.height(1.dp))
                                     Box(
                                         modifier = Modifier
                                             .size(8.dp)
@@ -297,7 +312,7 @@ fun CalendarGrid(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(15.dp))
             }
         }
     }
@@ -312,16 +327,18 @@ fun ConfirmDeleteDialog(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { onDismiss() },
-            title = { Text(text = "Confirm Deletion") },
+            title = { Text(text = "Confirm Clear", color = MaterialTheme.colorScheme.onBackground) },
+            containerColor = MaterialTheme.colorScheme.secondary,
+            textContentColor = MaterialTheme.colorScheme.onBackground,
             text = { Text(text = "Are you sure you want to delete all programmed feeds?") },
             confirmButton = {
                 TextButton(onClick = { onConfirm() }) {
-                    Text("Yes")
+                    Text("Yes", color = Color(0xFF227D33))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { onDismiss() }) {
-                    Text("No")
+                    Text("No", color = Color(0xFFA72626))
                 }
             }
         )

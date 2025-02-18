@@ -162,7 +162,7 @@ fun AnimalBio2(navController: NavHostController, registrationViewModel: Registra
                 },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
                 modifier = Modifier.width(180.dp).height(45.dp),
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline)
+                border = BorderStroke(2.dp, Color(0xFF0A0A0A))
             ) {
                 Text("Next", color = Color.White, fontSize = 16.sp)
             }

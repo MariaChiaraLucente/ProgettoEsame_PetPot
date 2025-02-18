@@ -100,7 +100,7 @@ fun VetContact(navController: NavHostController, registrationViewModel: Registra
             if (vetPhoneError != null) {
                 Text(vetPhoneError!!, color = Color.Yellow, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             Button(
                 onClick = {
                     registrationViewModel.completeRegistration(

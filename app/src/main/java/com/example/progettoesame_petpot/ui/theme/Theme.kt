@@ -22,7 +22,8 @@ private val DarkColorScheme = darkColorScheme(
     onBackground = Color(0xffd0d0d0), //TESTO
     surface = Color(0xFF30488B), //BOTTONE
     error = Color(0xFFA54747),
-    outline = Color(0xff262a37) //BORDER
+    outline = Color(0xff262a37), //BORDER
+    inversePrimary = Color.White,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -34,7 +35,8 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color(0xfff0f0f0), //TESTO
     surface = Color(0xFF2E3EB8), //BOTTONE
     error = Color(0xffa26262),
-    outline = Color(0xff607191) //BORDER
+    outline = Color(0xff607191), //BORDER
+    inversePrimary = Color.Black,
 
 
 

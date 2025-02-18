@@ -30,6 +30,7 @@ fun FoodSelector(
     var currentFood by remember { mutableStateOf(selectedFood) } // 🔥 Assicura che il pallino si aggiorni subito
 
     val foodOptions = listOf(
+        "" to R.drawable.add,
         "Meat" to R.drawable.beef,
         "Chicken" to R.drawable.chicken,
         "Vegetables" to R.drawable.carrot,
@@ -79,6 +80,7 @@ fun FoodSelector(
 fun MainFoodButton(selectedFoodImage: Int, isExpanded: Boolean, onClick: () -> Unit) {
     Box(
         modifier = Modifier
+            .padding(6.dp)
             .size(50.dp)
             .background(if (isExpanded) Color.Gray else MaterialTheme.colorScheme.secondary, shape = CircleShape)
             .clickable { onClick() },
@@ -87,7 +89,7 @@ fun MainFoodButton(selectedFoodImage: Int, isExpanded: Boolean, onClick: () -> U
         Image(
             painter = painterResource(id = selectedFoodImage),
             contentDescription = "Selected Food",
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier.size(35.dp)
         )
     }
 }
@@ -104,7 +106,7 @@ fun FoodOption(foodImage: Int, foodName: String, onClick: () -> Unit) {
         Image(
             painter = painterResource(id = foodImage),
             contentDescription = foodName,
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier.size(35.dp)
         )
     }
 }

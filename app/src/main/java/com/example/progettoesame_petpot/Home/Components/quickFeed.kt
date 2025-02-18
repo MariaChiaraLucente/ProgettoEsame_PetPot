@@ -14,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,7 +34,9 @@ fun QuickFeedButton(navController: NavController) {
     ) {
         Text(
             text = "Quick Feed",
-            fontSize = 14.sp,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 26.sp,
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineSmall, // Use a larger text style
             textAlign = TextAlign.Center,

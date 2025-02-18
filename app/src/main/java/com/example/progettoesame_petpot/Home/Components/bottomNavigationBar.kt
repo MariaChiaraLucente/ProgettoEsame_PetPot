@@ -2,6 +2,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -92,16 +93,14 @@ fun BottomNavBar(
                 .align(Alignment.BottomCenter)
                 .offset(y = (-90).dp) // Posiziona l'icona sotto la ciambella
         ) {
-            Icon(
-
-                painter = painterResource(id = R.drawable.bluetooth), // Placeholder per batteria
+            Image(
+                painter = painterResource(id = R.drawable.plug), // Placeholder per batteria
                 contentDescription = "Battery Status",
-                tint = Color.White,
-                modifier = Modifier.size(15.dp)
+                modifier = Modifier.size(25.dp)
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "88%", // Testo batteria
+                text = "OK!", // Testo batteria
                 color = Color.White,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -174,7 +173,7 @@ fun BottomNavIcon(
         animationSpec = tween(durationMillis = 300)
     )
     val iconSize by animateDpAsState(
-        targetValue = if (isSelected) 50.dp else 40.dp,
+        targetValue = if (isSelected) 40.dp else 30.dp,
         animationSpec = tween(durationMillis = 300)
     )
     val iconTint by animateColorAsState(

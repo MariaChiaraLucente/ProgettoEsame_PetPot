@@ -48,7 +48,7 @@ class ProfileViewModel(private val profileRepository: PetPotModel = PetPotModel(
         profileRepository.clear()
     }
 
-    private val _totalFoodStorage = MutableStateFlow(1000f) // Default: 1000g
+    private val _totalFoodStorage = MutableStateFlow(300f) // Default: 1000g
     val totalFoodStorage: StateFlow<Float> = _totalFoodStorage
 
     private val _bowlLevel = MutableStateFlow(0f) // Default: 0g

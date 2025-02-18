@@ -160,9 +160,9 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                                 ThemeSettings.isDarkMode = it
                                               },
                             colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color(0xFF3A5383),
+                                checkedThumbColor = Color(0xFF227D33),
                                 checkedTrackColor = Color.White,
-                                uncheckedThumbColor = Color(0xFF5576B4),
+                                uncheckedThumbColor = Color(0xFFA72626),
                                 uncheckedTrackColor = Color.White
                             ),
                         )
@@ -178,7 +178,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                                 imageVector = Icons.Default.Notifications,
                                 modifier = Modifier.size(35.dp),
                                 contentDescription = "Notifications",
-                                tint = if (isNotificationsActive) Color.White else Color.Black
+                                tint = if (isNotificationsActive) Color(0xFFA72626) else Color.Black
                             )
                         }
                     }
@@ -192,9 +192,9 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                             checked = isDeafMode,
                             onCheckedChange = { isDeafMode = it },
                             colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color(0xFF3A5383),
+                                checkedThumbColor = Color(0xFF227D33),
                                 checkedTrackColor = Color.White,
-                                uncheckedThumbColor = Color(0xFF5576B4),
+                                uncheckedThumbColor = Color(0xFFA72626),
                                 uncheckedTrackColor = Color.White
                             ),
                         )
@@ -222,7 +222,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                                 .clickable { navController.navigate("About") },
                         )
                         Text(
-                            "Contact",
+                            "Contact Us",
                             fontSize = 30.sp,
                             fontWeight = FontWeight.Light,
                             color = Color.White,
@@ -230,7 +230,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                                 .clickable { navController.navigate("Contact") },
                         )
                         Text(
-                            "Help",
+                            "FAQ",
                             fontSize = 30.sp,
                             fontWeight = FontWeight.Light,
                             color = Color.White,
@@ -294,16 +294,26 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         ) {
-                            IconButton(onClick = { isEditMode = !isEditMode }) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "Edit Profile",
-                                    tint = Color.White
-                                )
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
+                        Button(
+                            onClick = { isEditMode = !isEditMode },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3A5383)),
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit Profile",
+                                tint = Color.White
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Edit",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White
+                            )
                         }
-                        Spacer(modifier = Modifier.height(36.dp))
+                    }
+                        Spacer(modifier = Modifier.height(20.dp))
                         if (isEditMode) {
                             EditableTextField("Breed:", breed) { breed = it }
                             EditableTextField("Favorite Food:", favoriteFood) { favoriteFood = it }
@@ -342,7 +352,7 @@ fun Drawers(navController: NavController, userId: String, profileViewModel: Prof
                                     profileViewModel.logout()
                                 },
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+                                colors = ButtonDefaults.buttonColors(Color(0xFFA72626)),
                             ) {
                                 Text(text = "Logout", color = MaterialTheme.colorScheme.onBackground)
                             }                        }

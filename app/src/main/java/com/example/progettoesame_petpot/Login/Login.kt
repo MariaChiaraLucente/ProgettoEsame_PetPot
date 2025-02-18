@@ -126,7 +126,7 @@ fun Login(navController: NavHostController, loginViewModel: LoginViewModel = vie
             },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
             modifier = Modifier.width(180.dp).height(45.dp),
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline)
+            border = BorderStroke(2.dp, Color(0xFF0A0A0A))
         )
         {
             if (isLoading) {
@@ -152,7 +152,7 @@ fun Login(navController: NavHostController, loginViewModel: LoginViewModel = vie
         )
         Text(
             text = "Register",
-            color = Color.White,
+            color = Color(0xFF5A3679),
             style = MaterialTheme.typography.bodyLarge.copy(textDecoration = TextDecoration.Underline),
             modifier = Modifier.padding(top = 8.dp).clickable { navController.navigate("registration")},
             fontWeight = FontWeight.Bold,

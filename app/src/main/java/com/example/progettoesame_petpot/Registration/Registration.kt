@@ -116,7 +116,7 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
             },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
             modifier = Modifier.width(180.dp).height(45.dp),
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline)
+            border = BorderStroke(2.dp, Color(0xFF0A0A0A))
         ) {
             if (isLoading) {
                 CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
@@ -141,7 +141,7 @@ fun Registration(navController: NavHostController, registrationViewModel: Regist
         )
         Text(
             text = "Login",
-            color = Color.White,
+            color = Color(0xFF5A3679),
             style = MaterialTheme.typography.bodyLarge.copy(textDecoration = TextDecoration.Underline),
             modifier = Modifier.padding(top = 8.dp).clickable { navController.navigate("login")},
             fontWeight = FontWeight.Bold,

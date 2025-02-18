@@ -73,7 +73,7 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
         Text(
             text = "Select the size:",
             color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.headlineMedium,
+            fontSize = 25.sp,
             modifier = Modifier.padding(bottom = 8.dp),
             fontWeight = FontWeight.Bold
         )
@@ -94,7 +94,7 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
         Text(
             text = "Select the age:",
             color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.headlineMedium,
+            fontSize = 25.sp,
             modifier = Modifier.padding(bottom = 8.dp),
             fontWeight = FontWeight.Bold
         )
@@ -129,7 +129,7 @@ fun AnimalBio1(navController: NavHostController, registrationViewModel: Registra
             },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
             modifier = Modifier.width(180.dp).height(45.dp),
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline)
+            border = BorderStroke(2.dp, Color(0xFF0A0A0A))
         ) {
             Text("Next", color = MaterialTheme.colorScheme.onBackground, fontSize = 16.sp)
         }

@@ -26,7 +26,8 @@ import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
 fun QuickFeed(navController: NavController, homeViewModel: ProfileViewModel = viewModel(), viewModel: QuickFeedViewModel = viewModel(), userId: String) {
     var showMessage by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
-    var selectedFood by remember { mutableStateOf("Meat") }
+    var selectedFood by remember { mutableStateOf("") }
+    var foodSelected by remember { mutableStateOf(false) }
 
     var quantityError by remember { mutableStateOf(false) }
     var foodError by remember { mutableStateOf(false) }
@@ -54,15 +55,15 @@ fun QuickFeed(navController: NavController, homeViewModel: ProfileViewModel = vi
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Choose the quantity and the type of food",
-                    fontSize = 32.sp,
+                    text = "Choose the quantity\nand the type of food",
+                    fontSize = 25.sp,
                     lineHeight = 38.sp,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier.padding(16.dp),
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(70.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 Box(
                     modifier = Modifier.fillMaxWidth().height(300.dp),
                     contentAlignment = Alignment.Center
@@ -79,19 +80,22 @@ fun QuickFeed(navController: NavController, homeViewModel: ProfileViewModel = vi
                     )
                 }
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 FoodSelector(
                     //selectedFood = viewModel.foodType,
                     selectedFood = selectedFood,
-                    onFoodSelected = { viewModel.setFoodType(it) },
+                    onFoodSelected = {
+                        viewModel.setFoodType(it)
+                        foodSelected = true
+                    },
                     orientation = FoodSelectorOrientation.HORIZONTAL
                 )
 
                 if (foodError) {
                     Text(
-                        text = "Please select a food type!",
-                        color = Color.Red,
+                        text = "⚠ Please select a food type! ⚠",
+                        color = Color.Yellow,
                         fontSize = 14.sp,
                         modifier = Modifier.padding(top = 4.dp)
                     )
@@ -102,7 +106,7 @@ fun QuickFeed(navController: NavController, homeViewModel: ProfileViewModel = vi
                 Button(
                     onClick = {
                         quantityError = viewModel.foodQuantity == 0
-                        foodError = selectedFood.isEmpty()
+                        foodError = !foodSelected
 
                         if (!quantityError && !foodError) {
                             viewModel.saveMeal(
@@ -115,11 +119,14 @@ fun QuickFeed(navController: NavController, homeViewModel: ProfileViewModel = vi
                         }
                     },
                     shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface, contentColor = MaterialTheme.colorScheme.onBackground),
-                    border = BorderStroke(2.dp, Color.Black),
-                    modifier = Modifier.width(162.dp).height(68.dp)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+                    modifier = Modifier
+                        .height(50.dp)
+                        .width(200.dp)
+                        .padding(horizontal = 16.dp)
+                        .border(2.dp, Color(0xFF0A0A0A), shape = RoundedCornerShape(16.dp))
                 ) {
-                    Text("Feed", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Text("Feed", fontSize = 17.sp, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -129,7 +136,7 @@ fun QuickFeed(navController: NavController, homeViewModel: ProfileViewModel = vi
                 }
                 if (showDialog) {
                     AutoDismissPopup(
-                        message = "Fed successfully!",
+                        message = "✅",
                         onDismiss = {
                             showDialog = false
                             navController.navigate("Drawers")

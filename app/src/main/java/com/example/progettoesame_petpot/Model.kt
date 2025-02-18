@@ -496,7 +496,7 @@ class PetPotModel {
         db.child("users").child(userId).child("foodLevels")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val totalStorage = snapshot.child("totalFoodStorage").getValue(Float::class.java) ?: 5000f
+                    val totalStorage = snapshot.child("totalFoodStorage").getValue(Float::class.java) ?: 300f
                     val bowl = snapshot.child("bowlLevel").getValue(Float::class.java) ?: 0f
                     onSuccess(totalStorage, bowl)
                 }
