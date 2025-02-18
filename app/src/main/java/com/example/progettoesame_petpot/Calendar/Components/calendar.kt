@@ -55,9 +55,10 @@ fun CalendarScreen(
 //    LaunchedEffect(Unit) {
 //        calendarViewModel.loadFeedDays()
 //    }
-    LaunchedEffect(navController.currentBackStackEntry) {
+    LaunchedEffect(Unit) {
         calendarViewModel.loadFeedDays()
     }
+
     val currentMonth = calendarViewModel.currentMonth
     val currentYear = calendarViewModel.currentYear
     val selectedStartDate = calendarViewModel.selectedStartDate

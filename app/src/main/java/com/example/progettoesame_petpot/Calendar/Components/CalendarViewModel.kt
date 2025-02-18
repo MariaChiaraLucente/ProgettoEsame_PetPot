@@ -87,7 +87,7 @@ class CalendarViewModel : ViewModel() {
                 val startDate = feed.dateStart?.let { normalizeDate(it) }
                 val endDate = feed.dateEnd?.let { normalizeDate(it) }
 
-                startDate != null && endDate != null && targetDate in startDate..endDate
+                startDate != null && endDate != null && targetDate in startDate..endDate && feed.status == "Programmed"
             }
             callback(filteredFeeds)
         }
