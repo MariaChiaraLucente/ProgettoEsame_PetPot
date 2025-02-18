@@ -1,11 +1,15 @@
 package com.example.progettoesame_petpot
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import kotlinx.coroutines.delay
 
 @Composable
@@ -26,10 +30,10 @@ fun AutoDismissPopup(
 
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        title = { Text(text = "Message", color = MaterialTheme.colorScheme.background) },
-        text = { Text(message) },
-        containerColor = MaterialTheme.colorScheme.onBackground,
-        textContentColor = MaterialTheme.colorScheme.background,
+        title = { Text(text = "Fed successfully!", color = MaterialTheme.colorScheme.onBackground, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
+        text = { Text(text = message, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
+        containerColor = MaterialTheme.colorScheme.secondary,
+        textContentColor = MaterialTheme.colorScheme.onBackground,
         confirmButton = {
             if (showButtons && onConfirm != null) {
                 Button(onClick = { onConfirm() }) {

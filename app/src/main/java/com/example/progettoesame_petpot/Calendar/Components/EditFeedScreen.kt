@@ -3,6 +3,7 @@ package com.example.progettoesame_petpot.Calendar.Components
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -92,14 +93,14 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Calendar", color = MaterialTheme.colorScheme.onBackground) },
+                title = { Text("Edit Feed", color = MaterialTheme.colorScheme.onBackground) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 ),
 
                 navigationIcon = {
                     IconButton(onClick = { showExitDialog = true }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
                     }
                 }
             )
@@ -113,7 +114,7 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(36.dp))
+            //Spacer(modifier = Modifier.height(36.dp))
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -146,14 +147,6 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
                     fontSize = 14.sp
                 )
             }
-            // Usa il QuantityPickerComponent invece del TextField
-            QuantityPickerComponent(
-                selectedQuantity = quantity,
-                onQuantitySelected = { newQuantity ->
-                    quantity = newQuantity
-                }
-            )
-
             // Time Picker
             TimePickerComponent(
                 selectedTime = timeFix,
@@ -162,6 +155,16 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
                 },
                 feed
             )
+
+            // Usa il QuantityPickerComponent invece del TextField
+            QuantityPickerComponent(
+                selectedQuantity = quantity,
+                onQuantitySelected = { newQuantity ->
+                    quantity = newQuantity
+                }
+            )
+
+
             Log.d("DEBUG", "TimeFix: $timeFix")
 
             if (!isDateValid) {
@@ -172,7 +175,7 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
                 )
             }
 
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Button(
                 onClick = {
@@ -181,12 +184,15 @@ fun EditFeedScreen(viewModel: EditViewModel, userId: String, feedId: String, onB
                     }
                 },
                 enabled = isDateValid,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(200.dp)
+                    .padding(horizontal = 16.dp)
+                    .border(2.dp, Color(0xFF0A0A0A), shape = RoundedCornerShape(16.dp))
             ) {
-                Text("Save Changes", color = MaterialTheme.colorScheme.onBackground)
+                Text("Save Feed", fontSize = 17.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -229,12 +235,12 @@ fun ConfirmSaveDialog(
             text = { Text(text = "Are you sure you want to save the changes?", color = MaterialTheme.colorScheme.onBackground) },
             confirmButton = {
                 TextButton(onClick = { onConfirm() }) {
-                    Text("Yes", color = MaterialTheme.colorScheme.onBackground)
+                    Text("Yes", color = Color(0xFF227D33))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { onDismiss() }) {
-                    Text("No", color = MaterialTheme.colorScheme.onBackground)
+                    Text("No", color = Color(0xFFA72626))
                 }
             }
         )
@@ -255,12 +261,12 @@ fun ConfirmExitDialog(
             text = { Text(text = "Are you sure you want to leave this page?", color = MaterialTheme.colorScheme.onBackground) },
             confirmButton = {
                 TextButton(onClick = { onConfirm() }) {
-                    Text("Yes", color = MaterialTheme.colorScheme.onBackground)
+                    Text("Yes", color = Color(0xFF227D33))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { onDismiss() }) {
-                    Text("No", color = MaterialTheme.colorScheme.onBackground)
+                    Text("No", color = Color(0xFFA72626))
                 }
             }
         )
@@ -301,18 +307,18 @@ fun DatePickerComponent(
         Row(
             modifier = Modifier
                 .width(250.dp)
-                .background(MaterialTheme.colorScheme.background),
+                ,
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
 
         ) {
-            listOf("Giorno", "Mese", "Anno").forEach { label ->
+            listOf("Day", "Month", "Year").forEach { label ->
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(label, color = MaterialTheme.colorScheme.onBackground, fontSize = 15.sp)
+                    Text(label, color = MaterialTheme.colorScheme.onBackground, fontSize = 15.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -436,7 +442,8 @@ fun NumberPicker(
                 Text(
                     text = displayValues?.get(realIndex) ?: number.toString().padStart(2, '0'),
                     fontSize = textSize,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = textColor,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
@@ -447,7 +454,7 @@ fun NumberPicker(
             modifier = Modifier
                 .height(40.dp)
                 .width(75.dp)
-                .background(Color.Black.copy(alpha = 0.3f), shape = RoundedCornerShape(4.dp))
+                .background(Color(0xFF5576B4).copy(alpha = 0.4f), shape = RoundedCornerShape(12.dp))
         )
     }
 }
@@ -457,7 +464,7 @@ fun QuantityPickerComponent(
     selectedQuantity: Float,
     onQuantitySelected: (Float) -> Unit
 ) {
-    val quantities = (0..200).map { it * 0.5f }
+    val quantities = (0..100).map { it * 0.5f }
     var selectedValue by remember { mutableStateOf(selectedQuantity) }
 
     LaunchedEffect(selectedQuantity) {
@@ -473,9 +480,9 @@ fun QuantityPickerComponent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Quantity (kg)", color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text("Quantity (g)", color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
-        Spacer(modifier = Modifier.height(8.dp))
+        //Spacer(modifier = Modifier.height(8.dp))
 
         NumberPickerQuantity(
             value = selectedValue,
@@ -502,38 +509,29 @@ fun NumberPickerQuantity(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(listState.isScrollInProgress) {
-        // Se lo scroll non è in corso, aggiorniamo il valore
         if (!listState.isScrollInProgress) {
             val index = listState.firstVisibleItemIndex
-            // Prendi il valore associato all'indice corrente
             val newValue = range.getOrNull(index) ?: value
-
-            // Invia il nuovo valore solo se diverso dall'attuale
             if (newValue != value) {
                 onValueChange(newValue)
             }
         }
     }
 
-// Gestione del valore iniziale per la scrollata
     LaunchedEffect(value) {
         Log.d("DEBUG", "Value: $value")
-
-        // Trova l'indice del valore iniziale e scorre alla posizione corretta solo quando il valore cambia
         val initialIndex = range.indexOf(value).takeIf { it >= 0 } ?: 0
 
         coroutineScope.launch {
-            // Anima la scrollata all'indice iniziale in modo fluido
             listState.animateScrollToItem(initialIndex)
         }
     }
-
 
     Box(
         modifier = Modifier
             .height(120.dp)
             .width(100.dp)
-            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(12.dp)) // Angoli più arrotondati
     ) {
         LazyColumn(
             state = listState,
@@ -543,27 +541,30 @@ fun NumberPickerQuantity(
         ) {
             itemsIndexed(range) { index, number ->
                 val isSelected = index == listState.firstVisibleItemIndex
-                val textSize = if (isSelected) 26.sp else 20.sp
-                val textColor = if (isSelected) Color.Black else Color.Black.copy(alpha = 0.5f)
+                val textSize = if (isSelected) 28.sp else 20.sp
+                val textColor = if (isSelected) Color.Black else Color.Black.copy(alpha = 0.3f)
 
                 Text(
                     text = displayValues?.get(index) ?: "%.1f".format(number),
                     fontSize = textSize,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    color = textColor,
+                    modifier = Modifier.padding(vertical = 45.dp)
                 )
             }
         }
 
-        // Indicatore centrale
+        // Indicatore centrale con angoli più arrotondati
         Box(
             modifier = Modifier
                 .height(40.dp)
                 .width(100.dp)
-                .background(Color.Black.copy(alpha = 0.1f), shape = RoundedCornerShape(4.dp))
+                .background(Color(0xFF5576B4).copy(alpha = 0.4f), shape = RoundedCornerShape(12.dp)) // Angoli più arrotondati
+                .align(Alignment.Center)
         )
     }
 }
+
 
 @Composable
 fun TimePickerComponent(
@@ -598,14 +599,14 @@ fun TimePickerComponent(
     ) {
         // Header
         Text(
-            "Select Time",
+            "Time",
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        //Spacer(modifier = Modifier.height(8.dp))
         if (isFeedLoaded) {
             // Scrollable pickers per ore e minuti
             Row(
@@ -623,8 +624,6 @@ fun TimePickerComponent(
                     },
                     feed
                 )
-
-                Spacer(modifier = Modifier.width(16.dp))
 
                 // Picker per i minuti (0-59)
                 NumberPickerOrario(
@@ -684,23 +683,29 @@ fun NumberPickerOrario(
         ) {
             itemsIndexed(range) { index, number ->
                 val isSelected = index == listState.firstVisibleItemIndex
-                val textSize = if (isSelected) 26.sp else 20.sp
-                val textColor = if (isSelected) Color.Black else Color.Black.copy(alpha = 0.5f)
+                val textSize = if (isSelected) 25.sp else 18.sp
+                val textColor = if (isSelected) Color.Black else Color.Black.copy(alpha = 0.3f)
+
                 Text(
                     text = displayValues?.get(index) ?: "%02d".format(number),
                     fontSize = textSize,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(vertical = 4.dp)
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    color = textColor,
+                    modifier = Modifier.padding(vertical = 25.dp)
                 )
             }
         }
 
-        // Indicatore centrale
+        // Indicatore centrale con angoli più arrotondati
         Box(
             modifier = Modifier
                 .height(40.dp)
-                .width(300.dp)
-                .background(Color(0xFF5576B4).copy(alpha = 0.3f), shape = RoundedCornerShape(4.dp))
+                .width(140.dp)
+                .background(
+                    Color(0xFF5576B4).copy(alpha = 0.4f),
+                    shape = RoundedCornerShape(12.dp) // Angoli più arrotondati
+                )
+                .align(Alignment.Center)
         )
     }
 }

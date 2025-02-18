@@ -1,6 +1,8 @@
 package com.example.progettoesame_petpot.Calendar.Components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,11 +44,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.progettoesame_petpot.R
 import com.example.progettoesame_petpot.model.Feed
 import com.example.progettoesame_petpot.viewmodel.CalendarViewModel
 import java.text.SimpleDateFormat
@@ -73,7 +79,7 @@ fun FeedDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Feed Details - $formattedDate", color = Color.White) },
+                title = { Text(text = "", color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 ),
@@ -89,20 +95,41 @@ fun FeedDetailScreen(
             modifier = Modifier.padding(paddingValues)
                                 .background (MaterialTheme.colorScheme.background)
         ) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            )
+            {
+                Text(
+                    text = "$formattedDate",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+
+
+                )
+            }
+
             if (feedsForDate.isEmpty()) {
+                Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = "No feeds available for this date",
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().padding(50.dp),
                     textAlign = TextAlign.Center
                 )
             } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp)
-                ) {
-                    items(feedsForDate) { feed ->
-                        FeedCard(feed, navController = navController)
+                Column {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp)
+                    ) {
+                        items(feedsForDate) { feed ->
+                            //Spacer(modifier = Modifier.padding(8.dp))
+                            FeedCard(feed, navController = navController)
+                        }
                     }
                 }
             }
@@ -115,14 +142,12 @@ fun FeedDetailScreen(
 fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewModel(), eventViewModel: EventViewModel = EventViewModel(), navController: NavController) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     Card(
-
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
     ) {
-
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -136,42 +161,35 @@ fun FeedCard(feed: Feed, calendarViewModel: CalendarViewModel = CalendarViewMode
                     Text(
                         text = "Time: ${feed.timeFix}",
                         color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.bodyLarge
+                        fontSize = 20.sp,
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Quantity: ${feed.quantity}g",
                         color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.bodyLarge
+                        fontSize = 20.sp,
                     )
                 }
-                IconButton(
-                    onClick = { showDeleteDialog = true },
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Feed",
-                        tint = MaterialTheme.colorScheme.error
+                    Image(
+                        painter = painterResource(id = R.drawable.edit),
+                        contentDescription = "Edit",
+                        modifier = Modifier.size(35.dp)
+                            .clickable(onClick = {
+                                navController.navigate("EditFeed/${feed.id}")
+                            },)
                     )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.trash),
+                        contentDescription = "Delete",
+                        modifier = Modifier.size(35.dp)
+                            .clickable(onClick = { showDeleteDialog = true })
+                    )
+
                 }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Bottone per modificare il feed
-
-            Button(
-
-                onClick = {
-                    navController.navigate("EditFeed/${feed.id}")
-                },
-
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
-                modifier = Modifier.fillMaxWidth()
-
-            ) {
-
-                Text("Edit Feed", color = MaterialTheme.colorScheme.onBackground)
-
             }
         }
     }
@@ -199,16 +217,18 @@ fun ConfirmDeleteDialog(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { onDismiss() },
-            title = { Text(text = "Confirm Delete") },
+            title = { Text(text = "Confirm Delete", color = MaterialTheme.colorScheme.onBackground) },
+            containerColor = MaterialTheme.colorScheme.secondary,
+            textContentColor = MaterialTheme.colorScheme.onBackground,
             text = { Text(text = "Are you sure you want to delete this feed?") },
             confirmButton = {
                 TextButton(onClick = { onConfirm() }) {
-                    Text("Yes")
+                    Text("Yes", color = Color(0xFF227D33))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { onDismiss() }) {
-                    Text("No")
+                    Text("No", color = Color(0xFFA72626))
                 }
             }
         )

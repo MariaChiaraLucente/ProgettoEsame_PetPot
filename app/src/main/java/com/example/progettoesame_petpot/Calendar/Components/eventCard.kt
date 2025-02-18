@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -110,7 +111,7 @@ fun FeedCreationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Next Feed", color = Color.White) },
+                title = { Text("New Event", color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 ),
@@ -135,13 +136,13 @@ fun FeedCreationScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            //Spacer(modifier = Modifier.height(16.dp))
 
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
 
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
 
                 ) {
@@ -159,8 +160,8 @@ fun FeedCreationScreen(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary, contentColor = MaterialTheme.colorScheme.onBackground)
                     ) {
                         Row(
-                            modifier = Modifier.padding(16.dp),
-                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             val (startDate, endDate) = viewModel.getStartAndEndDate()
 
@@ -171,66 +172,70 @@ fun FeedCreationScreen(
                             } else {
                                 startDateFormatted // Se endDate è null, mostra startDate
                             }
-
-
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = 8.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(MaterialTheme.colorScheme.background)
-                                    .padding(16.dp)
-                            ) {
+                            Column {
                                 Text(
-                                    text = "$startDateFormatted",
+                                    text = "Start Date",
                                     fontSize = 16.sp,
                                     color = MaterialTheme.colorScheme.onBackground,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.align(Alignment.Start)
                                 )
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(Color(0xFF6C87BB))
+                                        .padding(16.dp)
+                                ) {
+                                    Text(
+                                        text = "$startDateFormatted",
+                                        fontSize = 16.sp,
+                                        color = Color.Black,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
 
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(start = 8.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(MaterialTheme.colorScheme.background)
-                                    .padding(16.dp)
-                            ) {
+                            Column {
                                 Text(
-                                    text = "$endDateFormatted",
+                                    text = "End Date",
                                     fontSize = 16.sp,
                                     color = MaterialTheme.colorScheme.onBackground,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.align(Alignment.Start)
                                 )
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(Color(0xFF6C87BB))
+                                        .padding(16.dp)
+                                ) {
+                                    Text(
+                                        text = "$endDateFormatted",
+                                        fontSize = 16.sp,
+                                        color = Color.Black,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                         }
                         // Animazione smooth per la CalendarGrid
-
                         AnimatedVisibility(
-
                             visible = isCalendarExpanded,
-
                             enter = androidx.compose.animation.expandVertically(
-
                                 animationSpec = tween(durationMillis = 300)
-
                             ),
-
                             exit = androidx.compose.animation.shrinkVertically(
-
                                 animationSpec = tween(durationMillis = 300)
-
                             )
 
                         ) {
 
                             Card(
-
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(16.dp),
+                                    .padding(12.dp),
                                 elevation = CardDefaults.cardElevation(8.dp),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background, contentColor = MaterialTheme.colorScheme.onBackground),
                                 shape = RoundedCornerShape(16.dp)
@@ -343,7 +348,7 @@ fun FeedCreationScreen(
                     }
                 }
                 item {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "Quantity: ${viewModel.feedQuantita.value}g",
                         fontSize = 24.sp,
@@ -370,17 +375,17 @@ fun FeedCreationScreen(
                             }
                         },
                         enabled = errorMessage == null, // Disabilita il pulsante se c'è un errore
-                        shape = MaterialTheme.shapes.medium,
+                        shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
                         modifier = Modifier
                             .height(50.dp)
-                            .fillMaxWidth()
+                            .width(200.dp)
                             .padding(horizontal = 16.dp)
+                            .border(2.dp, Color(0xFF0A0A0A), shape = RoundedCornerShape(16.dp))
                     ) {
                         Text(
                             text = "Save Feed",
-                            color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.bodyLarge
+                            fontSize = 17.sp, fontWeight = FontWeight.Bold
                         )
                     }
 
@@ -426,14 +431,6 @@ fun FeedCreationScreen(
                                     Text("Try again", color = MaterialTheme.colorScheme.onBackground)
                                 }
                             },
-                            dismissButton = {
-                                Button(
-                                    onClick = { viewModel.hideError() },
-                                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
-                                    ) {
-                                    Text("Close", color = MaterialTheme.colorScheme.onBackground)
-                                }
-                            }
                         )
                     }
 
@@ -493,19 +490,20 @@ fun CalendarGridFeed(
 ) {
     val calendar = Calendar.getInstance()
     val dayNames = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+    val todayCalendar = Calendar.getInstance()
 
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .height(330.dp)
-            .padding(16.dp),
+            .height(310.dp)
+            .padding(4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().padding(5.dp)
         ) {
 
             // Row for day names
@@ -546,6 +544,10 @@ fun CalendarGridFeed(
                                 selectedEndDate
                             )
                             val hasFeed = calendarViewModel.isFeedDay(currentDate)
+                            val isPastDate = currentDate.before(todayCalendar.time)
+                            val isToday = calendar.get(Calendar.YEAR) == todayCalendar.get(Calendar.YEAR) &&
+                                    calendar.get(Calendar.MONTH) == todayCalendar.get(Calendar.MONTH) &&
+                                    calendar.get(Calendar.DAY_OF_MONTH) == todayCalendar.get(Calendar.DAY_OF_MONTH)
                             val backgroundColor = when {
                                 isSelected -> Color(0xFF1F2B85) // Selected color
 
@@ -555,13 +557,25 @@ fun CalendarGridFeed(
                                 Box(
                                     modifier = Modifier
                                         .size(35.dp)
-                                        .background(backgroundColor, CircleShape)
+                                        .background(
+                                            when {
+                                                isToday -> Color(0xFF2E3957)
+                                                isPastDate -> Color(0xFF8791A2)
+                                                isSelected -> backgroundColor
+                                                else -> MaterialTheme.colorScheme.background.copy(alpha = 0.5f)
+                                            },
+                                    CircleShape
+                                )
                                         .clickable { onDayClick(currentDay) },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
                                         text = currentDay.toString(),
-                                        color = MaterialTheme.colorScheme.onBackground,
+                                        color = when{
+                                            isToday -> Color.White
+                                            isPastDate -> Color(0xFFC2C0C0)
+                                            else -> Color.White.copy(alpha = 0.7f)
+                                        },
                                         fontSize = 16.sp
                                     )
                                 }
@@ -617,13 +631,6 @@ fun TimePickerComponent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header
-            Text(
-                "Seleziona l'ora",
-                color = MaterialTheme.colorScheme.onBackground, // Testo scuro
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
 
             // Scrollable pickers per ore e minuti
             Row(
@@ -670,14 +677,13 @@ fun QuantityPicker(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(12.dp))
-            .padding(16.dp),
+            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(12.dp)),
+
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("quantity (g)", color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
-        Spacer(modifier = Modifier.height(8.dp))
+        //Spacer(modifier = Modifier.height(8.dp))
 
         NumberPickerQuantity(
             value = selectedQuantity,

@@ -1,12 +1,15 @@
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.RoundRect
@@ -15,11 +18,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.colorspace.Rgb
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -50,7 +55,7 @@ fun FoodDispenserView(
         bowlLevel > 0.3f -> arrayOf(bowlLevel to Color(0xFFD3A85F), bowlLevel to Color.White) // Orange
         else -> arrayOf(bowlLevel to Color(0xFFCA413F), bowlLevel to Color.White)
     }
-    var selectedFood by remember { mutableStateOf("Meat") }
+    var selectedFood by remember { mutableStateOf("") }
     Box(modifier = modifier ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -65,14 +70,14 @@ fun FoodDispenserView(
 
                 val containerPath = Path().apply {
 
-                    moveTo(width * 0.2f, 0f)
-                    lineTo(width * 0.8f, 0f)
-                    lineTo(width * 0.75f, height * 0.3f)
-                    lineTo(width * 0.6f, height * 0.7f)
-                    lineTo(width * 0.6f, height * 0.9f)
-                    lineTo(width * 0.4f, height * 0.9f)
-                    lineTo(width * 0.4f, height * 0.7f)
-                    lineTo(width * 0.25f, height * 0.3f)
+                    moveTo(width * 0.27f, 0f)
+                    lineTo(width * 0.73f, 0f)
+                    lineTo(width * 0.68f, height * 0.35f)
+                    lineTo(width * 0.56f, height * 0.75f)
+                    lineTo(width * 0.56f, height * 0.9f)
+                    lineTo(width * 0.44f, height * 0.9f)
+                    lineTo(width * 0.44f, height * 0.75f)
+                    lineTo(width * 0.32f, height * 0.35f)
                     close()
 
                 }
@@ -92,15 +97,29 @@ fun FoodDispenserView(
                 )
                 drawIntoCanvas { canvas ->
                     val paint = NativePaint().apply {
-                        color = android.graphics.Color.BLACK
+                        color = android.graphics.Color.WHITE
                         textSize = 40f
                         isFakeBoldText = true
                         textAlign = android.graphics.Paint.Align.CENTER
                     }
+                    val borderPaint = NativePaint().apply {
+                        color = android.graphics.Color.BLACK
+                        textSize = 40f
+                        isFakeBoldText = true
+                        textAlign = android.graphics.Paint.Align.CENTER
+                        style = NativePaint.Style.STROKE
+                        strokeWidth = 7f
+                    }
                     canvas.nativeCanvas.drawText(
                         "${((foodLevel * 1000f).roundToInt())} / 1000 g",
                         width / 2,
-                        height / 2,
+                        height / 3,
+                        borderPaint
+                    )
+                    canvas.nativeCanvas.drawText(
+                        "${((foodLevel * 1000f).roundToInt())} / 1000 g",
+                        width / 2,
+                        height / 3,
                         paint
                     )
                 }
@@ -112,8 +131,8 @@ fun FoodDispenserView(
                 modifier = Modifier
                     .offset(y = (-60).dp)
                     .zIndex(1f)
-                    .width(95.dp)
-                    .height(95.dp)
+                    .width(75.dp)
+                    .height(75.dp)
             )
             Canvas(modifier = Modifier
                 .weight(0.1f)
@@ -148,15 +167,15 @@ fun FoodDispenserView(
             Text(
                 text = "${((bowlLevel * 50f).roundToInt())} / 50 g",
                 color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                fontSize = 15.sp,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
                 modifier = Modifier
-                    .offset(y = (-40).dp)
+                    .offset(y = (-45).dp)
                     .zIndex(1f)
             )
         }
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp).offset(x = (50).dp, y = (270).dp)
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp).offset(x = (50).dp, y = (110).dp)
         ) {
             // ✅ Aggiungiamo il selettore del cibo
             FoodSelector(selectedFood = selectedFood, onFoodSelected = { newFood -> selectedFood = newFood })

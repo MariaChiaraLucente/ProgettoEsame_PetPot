@@ -46,7 +46,7 @@ fun RecentFeedsScreen(navController: NavController, viewModel: RecentFeedsViewMo
         Spacer(modifier = Modifier.height(26.dp))
         Column(
             modifier = Modifier
-                .height(670.dp)
+                .height(571.dp)
                 .padding(16.dp)
                 .fillMaxWidth(),
         ) {
@@ -143,16 +143,16 @@ fun MealCard(feed: Meal) {
         ) {
             Text(
                 text = "${SimpleDateFormat("dd/MM/yyyy - HH:mm").format(Date(feed.timestamp))}", // 🆕 Mostra la data e ora formattata
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(3.dp))
             Text(
                 text = "${feed.quantity} g - ${feed.description}",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color(0xFF5D60B0)
             )
         }
     }
@@ -175,16 +175,17 @@ fun FeedCard(feed: Feed) {
                 .padding(16.dp)
         ) {
             Text(
-                text = "Date: ${SimpleDateFormat("dd/MM/yyyy HH:mm").format(Date(feed.timestamp))}", // 🆕 Mostra la data e ora formattata
+                text = "${SimpleDateFormat("dd/MM/yyyy - HH:mm").format(Date(feed.timestamp))}", // 🆕 Mostra la data e ora formattata
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
+            Spacer(modifier = Modifier.height(3.dp))
             Text(
                 text = "Quantity: ${feed.quantity}g",
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.background
+                color = Color(0xFF5D60B0)
             )
         }
     }
