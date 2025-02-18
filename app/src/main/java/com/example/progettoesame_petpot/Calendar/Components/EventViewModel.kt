@@ -40,7 +40,7 @@ class EventViewModel : ViewModel() {
     private val _currentYear = mutableStateOf(calendar.get(Calendar.YEAR))
     val currentYear: Int get() = _currentYear.value
     val feedOrarioFisso = mutableStateOf("12:00")
-    val feedQuantita = mutableStateOf(100f)
+    val feedQuantita = mutableStateOf(10f)
     val today: Date = normalizeDate(Date())
     private val daysInMonths = listOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 

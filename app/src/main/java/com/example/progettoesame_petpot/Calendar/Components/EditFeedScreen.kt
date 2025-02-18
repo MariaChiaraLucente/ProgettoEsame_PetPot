@@ -464,7 +464,7 @@ fun QuantityPickerComponent(
     selectedQuantity: Float,
     onQuantitySelected: (Float) -> Unit
 ) {
-    val quantities = (0..100).map { it * 0.5f }
+    val quantities = (10..55 step 5).toList().map { it.toFloat() }
     var selectedValue by remember { mutableStateOf(selectedQuantity) }
 
     LaunchedEffect(selectedQuantity) {

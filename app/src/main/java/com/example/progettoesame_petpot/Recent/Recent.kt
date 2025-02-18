@@ -175,7 +175,7 @@ fun FeedCard(feed: Feed) {
                 .padding(16.dp)
         ) {
             Text(
-                text = "${SimpleDateFormat("dd/MM/yyyy - HH:mm").format(Date(feed.timestamp))}", // 🆕 Mostra la data e ora formattata
+                text = "${SimpleDateFormat("dd/MM/yyyy").format(feed.dateStart)} - ${feed.timeFix}", // 🆕 Mostra la data e ora formattata
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground

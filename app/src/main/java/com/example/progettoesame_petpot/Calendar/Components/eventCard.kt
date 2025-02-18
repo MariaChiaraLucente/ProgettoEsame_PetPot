@@ -671,7 +671,7 @@ fun QuantityPicker(
     selectedQuantity: Float,
     onQuantitySelected: (Float) -> Unit
 ) {
-    val quantities = (0..200).map { it * 0.5f } // Quantità da 0 a 100 con step di 0.5
+    val quantities = (10..55 step 5).toList().map { it.toFloat() }
 
     Column(
         modifier = Modifier

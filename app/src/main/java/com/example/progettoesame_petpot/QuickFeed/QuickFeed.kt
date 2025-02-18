@@ -162,8 +162,8 @@ fun FoodQuantitySelector(viewModel: QuickFeedViewModel) {
         elevation = CardDefaults.cardElevation(8.dp),
     ) {
         LazyColumn(modifier = Modifier.fillMaxWidth().background(Color(0xFFA2B0CA))) {
-            items(50) { index ->
-                val grams = (index + 1) * 5
+            items(9) { index ->
+                val grams = (index + 2) * 5
                 val isSelected = grams == selectedQuantity
                 Row(
                     modifier = Modifier.fillMaxWidth().clickable {
