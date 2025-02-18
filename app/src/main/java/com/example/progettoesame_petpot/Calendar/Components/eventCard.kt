@@ -515,7 +515,7 @@ fun CalendarGridFeed(
                     Text(
                         text = dayName,
                         color = MaterialTheme.colorScheme.onBackground,
-                        fontSize = 16.sp,
+                        fontSize = 13.sp,
                         modifier = Modifier.padding(4.dp)
                     )
                 }
@@ -556,7 +556,7 @@ fun CalendarGridFeed(
                             Column {
                                 Box(
                                     modifier = Modifier
-                                        .size(35.dp)
+                                        .size(30.dp)
                                         .background(
                                             when {
                                                 isToday -> Color(0xFF2E3957)
@@ -576,7 +576,7 @@ fun CalendarGridFeed(
                                             isPastDate -> Color(0xFFC2C0C0)
                                             else -> Color.White.copy(alpha = 0.7f)
                                         },
-                                        fontSize = 16.sp
+                                        fontSize = 14.sp
                                     )
                                 }
                                 if (hasFeed) {

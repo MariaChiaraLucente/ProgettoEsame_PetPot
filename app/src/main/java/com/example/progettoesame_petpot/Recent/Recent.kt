@@ -46,7 +46,7 @@ fun RecentFeedsScreen(navController: NavController, viewModel: RecentFeedsViewMo
         Spacer(modifier = Modifier.height(26.dp))
         Column(
             modifier = Modifier
-                .height(571.dp)
+                .height(531.dp)
                 .padding(16.dp)
                 .fillMaxWidth(),
         ) {

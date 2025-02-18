@@ -34,7 +34,7 @@ fun QuickFeedButton(navController: NavController) {
     ) {
         Text(
             text = "Quick Feed",
-            fontSize = 16.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             lineHeight = 26.sp,
             color = MaterialTheme.colorScheme.onBackground,

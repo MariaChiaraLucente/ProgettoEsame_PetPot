@@ -84,10 +84,10 @@ class PetPotModel {
                                 Log.d("Firebase", "Login riuscito!")
                                 currentUser = userSnapshot.getValue(User::class.java);
                                 // da togliere appena  riabilitiamo il passaggio dell utente corrente
-                                onSuccess()
-//                                currentUser?.userId?.let { userId ->
-////                                    setCurrentUserInDatabase(userId, onSuccess, onFailure)
-////                                }
+//                                onSuccess()
+                                currentUser?.userId?.let { userId ->
+                                    setCurrentUserInDatabase(userId, onSuccess, onFailure)
+                                }
                                 return
                             }
                         }

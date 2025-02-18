@@ -81,7 +81,7 @@ fun CalendarScreen(
         fontSize = 24.sp,
         fontWeight = FontWeight.Bold,
         color = Color.White,
-        modifier = Modifier.padding(top = 40.dp, start = 130.dp),
+        modifier = Modifier.padding(top = 20.dp, start = 130.dp),
     )
 
     Column(
@@ -93,10 +93,10 @@ fun CalendarScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(597.dp)
+                .height(559.dp)
                 .padding(15.dp),
         ) {
-            Spacer(modifier = Modifier.height(65.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -160,9 +160,9 @@ fun CalendarScreen(
                     modifier = Modifier.border(2.dp, color = Color(0xFF0A0A0A), CircleShape),
 
                     ) {
-                    Text(text = "+ New Event", color = Color.White, fontSize = 18.sp, modifier = Modifier.padding(5.dp))
+                    Text(text = "+ New Event", color = Color.White, fontSize = 14.sp, modifier = Modifier.padding(3.dp))
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = {
                         showDeleteDialog = true
@@ -171,7 +171,7 @@ fun CalendarScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xffca413f)),
                     modifier = Modifier.border(3.dp, color = Color(0xFF5C0303), CircleShape),
                 ) {
-                    Text(text = "Clear all events", color = Color.White, fontSize = 13.sp, modifier = Modifier.padding(5.dp))
+                    Text(text = "Clear all events", color = Color.White, fontSize = 13.sp, modifier = Modifier.padding(3.dp))
                 }
             }
         }
