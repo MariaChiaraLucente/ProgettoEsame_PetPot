@@ -1,9 +1,14 @@
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,6 +39,7 @@ import android.graphics.Paint as NativePaint
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.zIndex
 import com.example.progettoesame_petpot.Home.Components.FoodSelector
+import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
@@ -42,9 +48,13 @@ fun FoodDispenserView(
     modifier: Modifier = Modifier,
     foodLevel: Float, // Valore tra 0.0 (vuoto) e 1.0 (pieno)
     bowlLevel: Float, // Valore tra 0.0 (vuoto) e 1.0 (pieno)
+    homeViewModel: ProfileViewModel,
+    userId: String,
     gradientEnd: Float = 1.0f // End point of the gradient (0.0 to 1.0)
 ) {
     val bowl: Painter = painterResource(R.drawable.pet_bowl)
+    val totalFoodStorage by homeViewModel.totalFoodStorage.collectAsState()
+    var showFoodSetupDialog by remember { mutableStateOf(false) }
     val gradientColors = when {
         foodLevel > 0.6f -> arrayOf(1f-foodLevel to Color.Transparent, 1f-foodLevel to Color(0xFF8CD78B))
         foodLevel > 0.3f -> arrayOf(1f-foodLevel to Color.Transparent, 1f-foodLevel to Color(0xFFD3A85F)) // Orange
@@ -64,7 +74,10 @@ fun FoodDispenserView(
             Canvas(modifier = Modifier
                 .weight(1f)
                 .fillMaxSize()
-                .zIndex(0f)) {
+                .zIndex(0f)
+                .clickable(onClick = { showFoodSetupDialog = true })
+            )
+            {
                 val width = size.width
                 val height = size.height
 
@@ -180,5 +193,58 @@ fun FoodDispenserView(
             // ✅ Aggiungiamo il selettore del cibo
             FoodSelector(selectedFood = selectedFood, onFoodSelected = { newFood -> selectedFood = newFood })
         }
+    }
+    @Composable
+    fun FoodSetupDialog(
+        initialFood: Int,
+        onConfirm: (Int) -> Unit,
+        onDismiss: () -> Unit
+    ) {
+        var selectedFood by remember { mutableStateOf(initialFood) }
+
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text("Set Initial Food Storage", color = MaterialTheme.colorScheme.onBackground) },
+            containerColor = MaterialTheme.colorScheme.secondary,
+            textContentColor = MaterialTheme.colorScheme.onBackground,
+            text = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Select the amount of food available (max 1000g):", color = MaterialTheme.colorScheme.onBackground)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Slider(
+                        value = selectedFood.toFloat(),
+                        onValueChange = { selectedFood = it.toInt() },
+                        valueRange = 0f..1000f,
+                        colors = SliderDefaults.colors(
+                            thumbColor = MaterialTheme.colorScheme.onBackground,
+                            activeTrackColor = MaterialTheme.colorScheme.onBackground,
+                            inactiveTrackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+                        )
+                    )
+                    Text("$selectedFood g", color = MaterialTheme.colorScheme.onBackground)
+                }
+            },
+            confirmButton = {
+                Button(onClick = { onConfirm(selectedFood) }) {
+                    Text("Confirm", color = MaterialTheme.colorScheme.onBackground)
+                }
+            },
+            dismissButton = {
+                Button(onClick = onDismiss) {
+                    Text("Cancel", color = MaterialTheme.colorScheme.onBackground)
+                }
+            }
+        )
+    }
+
+    if (showFoodSetupDialog) {
+        FoodSetupDialog(
+            initialFood = totalFoodStorage.toInt(),
+            onConfirm = { newFoodAmount->
+                homeViewModel.updateTotalFood(userId, newFoodAmount.toFloat())
+                showFoodSetupDialog = false
+            },
+            onDismiss = { showFoodSetupDialog = false }
+        )
     }
 }

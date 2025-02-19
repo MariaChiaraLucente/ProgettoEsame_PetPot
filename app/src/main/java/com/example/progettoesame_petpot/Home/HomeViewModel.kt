@@ -48,7 +48,7 @@ class ProfileViewModel(private val profileRepository: PetPotModel = PetPotModel(
         profileRepository.clear()
     }
 
-    private val _totalFoodStorage = MutableStateFlow(300f) // Default: 1000g
+    private val _totalFoodStorage = MutableStateFlow(1000f) // Default: 1000g
     val totalFoodStorage: StateFlow<Float> = _totalFoodStorage
 
     private val _bowlLevel = MutableStateFlow(0f) // Default: 0g
@@ -66,28 +66,43 @@ class ProfileViewModel(private val profileRepository: PetPotModel = PetPotModel(
     }
 
     fun dispenseFood(userId: String, amount: Int) {
-        val currentStorage = _totalFoodStorage.value
-        val currentBowl = _bowlLevel.value
 
-        viewModelScope.launch {
-            when {
-                amount > currentStorage -> {
-                    _bowlLevel.value = currentBowl + currentStorage
-                    _totalFoodStorage.value = 0f
+        profileRepository.getFoodLevels(userId, { storage, bowl ->
+
+            viewModelScope.launch {
+                val newBowlLevel: Float
+                val newStorage: Float
+
+                when {
+                    amount > storage -> {
+                        newBowlLevel = (bowl + storage).coerceAtMost(bowlCapacity)
+                        newStorage = 0f
+                    }
+                    bowl + amount > bowlCapacity -> {
+                        val maxPossible = bowlCapacity - bowl
+                        newBowlLevel = bowl + maxPossible
+                        newStorage = storage - maxPossible
+                    }
+                    else -> {
+                        newBowlLevel = bowl + amount
+                        newStorage = storage - amount
+                    }
                 }
-                currentBowl + amount > bowlCapacity -> {
-                    val maxPossible = bowlCapacity - currentBowl
-                    _bowlLevel.value = currentBowl + maxPossible
-                    _totalFoodStorage.value = currentStorage - maxPossible
-                }
-                else -> {
-                    _bowlLevel.value = currentBowl + amount
-                    _totalFoodStorage.value = currentStorage - amount
-                }
+
+                println("✅ Nuovi valori -> Bowl: $newBowlLevel g, Storage: $newStorage g")
+
+                // ✅ Salva in Firebase
+                profileRepository.saveFoodLevels(userId, newStorage, newBowlLevel)
+                loadFoodLevels(userId)
             }
+        }, { error ->
+            println(error)
+        })
+    }
 
-            // ✅ Salva i nuovi livelli in Firebase
-            profileRepository.saveFoodLevels(userId, _totalFoodStorage.value, _bowlLevel.value)
-        }
+
+    fun updateTotalFood(userId: String, newTotal: Float) {
+        _totalFoodStorage.value = newTotal
+        profileRepository.saveFoodLevels(userId, newTotal, _bowlLevel.value)
     }
 }

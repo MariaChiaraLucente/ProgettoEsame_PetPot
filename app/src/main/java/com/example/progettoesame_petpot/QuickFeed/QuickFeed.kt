@@ -23,7 +23,7 @@ import com.example.progettoesame_petpot.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuickFeed(navController: NavController, homeViewModel: ProfileViewModel = viewModel(), viewModel: QuickFeedViewModel = viewModel(), userId: String) {
+fun QuickFeed(navController: NavController, homeViewModel: ProfileViewModel, viewModel: QuickFeedViewModel = viewModel(), userId: String) {
     var showMessage by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var selectedFood by remember { mutableStateOf("") }
